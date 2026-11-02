@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <ProjectReference Include="..\ChatBubbles.Core\ChatBubbles.Core.csproj" />
+    <EmbeddedResource Include="Assets\probe.js" LogicalName="probe.js" />
+    <EmbeddedResource Include="Assets\panel.js" LogicalName="panel.js" />
+    <EmbeddedResource Include="Assets\new-message.wav" LogicalName="new-message.wav" />
+  </ItemGroup>
+</Project>
