@@ -16,7 +16,6 @@ namespace MessengerBubbles;
 // Keeps one Facebook page loaded and suspended, so a bubble opens without a reload.
 class ChatPanel : Window
 {
-    const double PanelW = 380, PanelH = 560;
     const uint SwpNoZOrder = 0x0004;
     const uint MonitorDefaultToNearest = 2;
     const int OpenTries = 40;
@@ -28,6 +27,7 @@ class ChatPanel : Window
     [DllImport("user32.dll")] static extern IntPtr MonitorFromPoint(Point32 point, uint flags);
     [DllImport("shcore.dll")] static extern int GetDpiForMonitor(IntPtr monitor, int type, out uint dpiX, out uint dpiY);
 
+    readonly Settings _settings;
     WebView2 _web = new();
     Task? _init;
     Task? _suspending;
@@ -36,11 +36,13 @@ class ChatPanel : Window
     Box? _bubble;
 
     public event Action? LayoutBroken;
+    // The bubble's thread (empty for the list) and the path of the different thread left open in the panel.
+    public event Action<string, string>? LeftOnOtherThread;
 
-    public ChatPanel()
+    public ChatPanel(Settings settings)
     {
-        Width = PanelW;
-        Height = PanelH;
+        _settings = settings;
+        (Width, Height) = Geometry.PanelDips(settings.PanelSize);
         WindowStyle = WindowStyle.None;
         ResizeMode = ResizeMode.NoResize;
         Topmost = true;
@@ -195,7 +197,8 @@ class ChatPanel : Window
         GetDpiForMonitor(monitor, 0, out var dpi, out _);
         var scale = dpi / 96.0;
         var area = FloatingWindow.WorkAreaAt(bubble.X, bubble.Y);
-        var box = Geometry.PlacePanel(bubble, PanelW * scale, PanelH * scale, area);
+        var (w, h) = Geometry.PanelDips(_settings.PanelSize);
+        var box = Geometry.PlacePanel(bubble, w * scale, h * scale, area);
         SetWindowPos(new WindowInteropHelper(this).Handle, IntPtr.Zero, (int)box.X, (int)box.Y, (int)box.W, (int)box.H, SwpNoZOrder);
     }
 
@@ -217,9 +220,27 @@ class ChatPanel : Window
     void HidePanel()
     {
         if (!IsVisible) return;
+        var opened = _openHref;
         _openHref = null;
         Hide();
-        _suspending = SuspendAsync();
+        _suspending = LeaveAsync(opened);
+    }
+
+    async Task LeaveAsync(string? opened)
+    {
+        if (opened != null && _init?.IsCompletedSuccessfully == true && _web.CoreWebView2 is { IsSuspended: false })
+        {
+            try
+            {
+                var path = JsonSerializer.Deserialize<string>(await RunAsync("window.__cbCurrent?.() ?? null"));
+                if (path != null && path.TrimEnd('/') != opened.TrimEnd('/')) LeftOnOtherThread?.Invoke(opened, path);
+            }
+            catch (Exception e) when (e is COMException or InvalidOperationException or JsonException)
+            {
+                AppPaths.Log($"panel state failed: {e.GetType().Name}");
+            }
+        }
+        await SuspendAsync();
     }
 
     // A suspended page runs nothing, so a thread left open cannot mark incoming messages as read.

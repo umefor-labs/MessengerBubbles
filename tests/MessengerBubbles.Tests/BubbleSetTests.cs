@@ -88,6 +88,66 @@ public class BubbleSetTests
     }
 
     [Fact]
+    public void SwitchTo_ReplacesReadBubbleInPlace()
+    {
+        var s = new BubbleSet();
+        s.OnNewMessage(Row(1));
+        s.OnNewMessage(Row(2));
+        s.MarkRead("/t/1");
+        s.SwitchTo("/t/1", Row(3));
+        Assert.Equal(["/t/3", "/t/2"], s.Visible.Select(b => b.ThreadHref));
+        Assert.Equal(new BubbleState("/t/3", "Người 3", "a3", 0), s.Visible[0]);
+    }
+
+    [Fact]
+    public void SwitchTo_KeepsBubbleWithNewerMessage()
+    {
+        var s = new BubbleSet();
+        s.OnNewMessage(Row(1));
+        s.SwitchTo("/t/1", Row(2));
+        Assert.Equal(["/t/1", "/t/2"], s.Visible.Select(b => b.ThreadHref));
+    }
+
+    [Fact]
+    public void SwitchTo_ThreadAlreadyHasBubble_ClosesOldOne()
+    {
+        var s = new BubbleSet();
+        s.OnNewMessage(Row(1));
+        s.OnNewMessage(Row(2));
+        s.MarkRead("/t/1");
+        s.SwitchTo("/t/1", Row(2));
+        Assert.Equal(1, Assert.Single(s.Visible).Unread);
+    }
+
+    [Fact]
+    public void SwitchTo_FromList_AddsBubble()
+    {
+        var s = new BubbleSet();
+        s.SwitchTo("", Row(1));
+        Assert.Equal("/t/1", Assert.Single(s.Visible).ThreadHref);
+    }
+
+    [Fact]
+    public void SwitchTo_FullOfUnread_ClosesNothing()
+    {
+        var s = FullOfUnread();
+        s.SwitchTo("", Row(6));
+        Assert.Equal(5, s.Visible.Count);
+        Assert.DoesNotContain(s.Visible, b => b.ThreadHref == "/t/6");
+    }
+
+    [Fact]
+    public void SwitchTo_MovesThreadOutOfOverflow()
+    {
+        var s = FullOfUnread();
+        s.OnNewMessage(Row(6));
+        s.MarkRead("/t/1");
+        s.SwitchTo("/t/1", Row(6));
+        Assert.Equal(0, s.Overflow);
+        Assert.Equal("/t/6", s.Visible[0].ThreadHref);
+    }
+
+    [Fact]
     public void Dismissed_ReappearsOnNextMessage()
     {
         var s = new BubbleSet();

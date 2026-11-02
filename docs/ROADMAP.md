@@ -34,11 +34,12 @@ Mục tiêu: dùng cả ngày mà không phải để ý đến app.
 
 Mục tiêu: cảm giác như chat head thật.
 
-- [ ] Hiệu ứng: bóng bật ra, trượt hít vào cạnh, hút vào vùng đóng.
+- [x] Hiệu ứng: bóng bật ra, trượt hít vào cạnh, hút vào vùng đóng. Tắt theo cài đặt "Animation effects" của Windows. Chưa có độ nảy.
 - [ ] Gom bóng: nhiều bóng xếp chồng, bấm vào thì xòe ra.
-- [ ] Tùy chọn tắt âm báo. Hiện âm luôn bật.
+- [x] Tùy chọn tắt âm báo (menu khay).
 - [ ] Không bật bóng và không kêu với cuộc chat đã tắt thông báo trên Facebook.
-- [ ] Đổi được kích thước khung chat và nhớ lại.
+- [x] Đổi kích thước khung chat bằng menu khay (Nhỏ, Vừa, Lớn) và nhớ lại. Chưa kéo cạnh được, vì WebView2 che mất vùng kéo nếu không chừa viền.
+- [x] Rời khung chat khi đang mở cuộc chat khác thì bóng đổi sang cuộc chat đó.
 - [ ] Đếm đúng khi hai tin giống hệt nhau đến liên tiếp.
 
 **Đạt khi:** người dùng thấy dùng thay được cửa sổ Facebook hằng ngày.

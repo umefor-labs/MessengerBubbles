@@ -13,8 +13,21 @@ public static class Geometry
             ? workArea.X
             : workArea.X + workArea.W - bubble.W;
 
+    public static (double W, double H) PanelDips(PanelSize size) => size switch
+    {
+        PanelSize.Small => (340, 480),
+        PanelSize.Large => (460, 720),
+        _ => (380, 560),
+    };
+
+    // Where a dismissed bubble ends up: centered on the mark in the dismiss zone.
+    public static (double X, double Y) DismissTarget(Box bubble, Box workArea) =>
+        (workArea.X + (workArea.W - bubble.W) / 2, workArea.Y + workArea.H - (DismissHeight + bubble.H) / 2);
+
     public static Box PlacePanel(Box bubble, double w, double h, Box workArea)
     {
+        w = Math.Min(w, workArea.W);
+        h = Math.Min(h, workArea.H);
         var onLeft = bubble.X + bubble.W / 2 < workArea.X + workArea.W / 2;
         var x = onLeft ? bubble.X + bubble.W + Gap : bubble.X - w - Gap;
         return new Box(Clamp(x, workArea.X, workArea.X + workArea.W - w),

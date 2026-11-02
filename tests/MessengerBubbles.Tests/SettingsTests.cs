@@ -13,6 +13,8 @@ public class SettingsTests : IDisposable
     {
         Assert.False(s.PersistentBubble);
         Assert.True(s.Preview);
+        Assert.True(s.Sound);
+        Assert.Equal(PanelSize.Medium, s.PanelSize);
         Assert.False(s.Autostart);
         Assert.Empty(s.Positions);
     }

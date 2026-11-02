@@ -2,11 +2,15 @@ using System.Text.Json;
 
 namespace MessengerBubbles.Core;
 
+public enum PanelSize { Small, Medium, Large }
+
 public record Settings
 {
     public bool PersistentBubble { get; set; }
     public bool Preview { get; set; } = true;
     public bool Autostart { get; set; }
+    public bool Sound { get; set; } = true;
+    public PanelSize PanelSize { get; set; } = PanelSize.Medium;
     public Dictionary<string, Box> Positions { get; set; } = new();
 
     public static Settings Load(string path)

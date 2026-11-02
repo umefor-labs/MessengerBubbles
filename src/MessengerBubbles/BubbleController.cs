@@ -68,13 +68,24 @@ class BubbleController
                 _ = LoadAvatarAsync(w, row.AvatarUrl);
 
         if (fresh.Count == 0) return;
-        if (_sound.ShouldPlay(DateTime.Now)) _player.Play();
+        if (_settings.Sound && _sound.ShouldPlay(DateTime.Now)) _player.Play();
         var last = fresh[^1];
         if (_settings.Preview && _windows.TryGetValue(last.ThreadHref, out var bubble))
         {
             var (name, text) = RowText.Parse(last.Text);
             _preview.ShowBeside(bubble.PixelBox(), name, text);
         }
+    }
+
+    // The new bubble takes the old one's place on screen.
+    public void SwitchTo(string from, RowSnapshot to)
+    {
+        var place = _windows.TryGetValue(from, out var old) ? old.PixelBox() : null;
+        var existed = _windows.ContainsKey(to.ThreadHref);
+        _set.SwitchTo(from, to);
+        Refresh();
+        if (place != null && !existed && !_windows.ContainsKey(from) && _windows.TryGetValue(to.ThreadHref, out var w))
+            w.MoveTo(place.X, place.Y);
     }
 
     // Called after a scan and whenever a setting changes.
@@ -144,7 +155,13 @@ class BubbleController
     BubbleWindow NewBubble(string name, string label, Func<string> href, bool canDismiss, string positionKey = AnchorKey)
     {
         var w = new BubbleWindow(name, label);
-        w.Clicked += () => BubbleClicked?.Invoke(href(), w.PixelBox());
+        w.Clicked += () =>
+        {
+            // Opening reads it; anything counted from here on came after.
+            _set.MarkRead(href());
+            Refresh();
+            BubbleClicked?.Invoke(href(), w.PixelBox());
+        };
         w.DragStarted += () =>
         {
             if (!canDismiss) return;
@@ -161,15 +178,23 @@ class BubbleController
         {
             var box = w.PixelBox();
             var area = FloatingWindow.WorkAreaAt(box.X, box.Y);
-            _zone.Hide();
             if (canDismiss && Geometry.InDismissZone(box, area))
             {
+                // Out of _windows first, so Refresh leaves this window to the animation.
+                _windows.Remove(href());
                 _set.Dismiss(href());
                 Refresh();
+                var (x, y) = Geometry.DismissTarget(box, area);
+                w.SuckInto(x, y, () =>
+                {
+                    w.Close();
+                    _zone.Hide();
+                });
                 return;
             }
+            _zone.Hide();
             var snapped = box with { X = Geometry.SnapX(box, area) };
-            w.MoveTo(snapped.X, snapped.Y);
+            w.GlideTo(snapped.X, snapped.Y);
             _settings.Positions[positionKey] = snapped;
             _settings.Save(AppPaths.SettingsFile);
         };
@@ -190,6 +215,7 @@ class BubbleController
 
         var free = Geometry.FindFreeSlot(slot with { W = size.W, H = size.H }, others, area, Spacing);
         w.MoveTo(free.X, free.Y);
+        w.PopIn();
     }
 
     static string Initial(string name) => name.Length > 0 ? name[..1].ToUpper() : "?";

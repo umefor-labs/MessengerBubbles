@@ -3,6 +3,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MessengerBubbles.Core;
@@ -12,6 +13,7 @@ namespace MessengerBubbles;
 class BubbleWindow : FloatingWindow
 {
     const int DragThreshold = 4;
+    static readonly Duration PopTime = TimeSpan.FromMilliseconds(180);
     static readonly Brush Blue = new SolidColorBrush(Color.FromRgb(0x08, 0x66, 0xFF));
 
     readonly Ellipse _face = new() { Fill = Blue, Stroke = Brushes.White, StrokeThickness = 2 };
@@ -22,6 +24,7 @@ class BubbleWindow : FloatingWindow
     };
     readonly TextBlock _badgeText = new() { Foreground = Brushes.White, FontSize = 11, FontWeight = FontWeights.Bold, Margin = new Thickness(5, 0, 5, 1) };
     readonly Border _badge;
+    readonly ScaleTransform _scale = new();
 
     (int X, int Y) _pressCursor;
     Box _pressBox = new(0, 0, 0, 0);
@@ -43,7 +46,8 @@ class BubbleWindow : FloatingWindow
             HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top,
             Child = _badgeText, Visibility = Visibility.Collapsed,
         };
-        var root = new Grid { Cursor = Cursors.Hand };
+        // shortcut: no spring overshoot, the 56px window would clip it; needs a larger transparent window.
+        var root = new Grid { Cursor = Cursors.Hand, RenderTransform = _scale, RenderTransformOrigin = new Point(0.5, 0.5) };
         root.Children.Add(_face);
         root.Children.Add(_label);
         root.Children.Add(_badge);
@@ -51,6 +55,7 @@ class BubbleWindow : FloatingWindow
 
         root.MouseLeftButtonDown += (_, e) =>
         {
+            StopGlide();
             _pressed = true;
             _dragging = false;
             _pressCursor = CursorPixel();
@@ -84,6 +89,32 @@ class BubbleWindow : FloatingWindow
             if (wasDragging) DragEnded?.Invoke();
             else if (fire) Clicked?.Invoke();
         }
+    }
+
+    public void PopIn()
+    {
+        if (MotionOn) Animate(0.4, 1, EasingMode.EaseOut);
+    }
+
+    // Slides into the dismiss mark while shrinking, then calls done.
+    public void SuckInto(double x, double y, Action done)
+    {
+        if (!MotionOn)
+        {
+            done();
+            return;
+        }
+        GlideTo(x, y);
+        Animate(1, 0.2, EasingMode.EaseIn).Completed += (_, _) => done();
+    }
+
+    AnimationClock Animate(double from, double to, EasingMode mode)
+    {
+        var animation = new DoubleAnimation(from, to, PopTime) { EasingFunction = new CubicEase { EasingMode = mode } };
+        var clock = animation.CreateClock();
+        _scale.ApplyAnimationClock(ScaleTransform.ScaleXProperty, clock);
+        _scale.ApplyAnimationClock(ScaleTransform.ScaleYProperty, clock);
+        return clock;
     }
 
     public void SetLabel(string label) => _label.Text = label;

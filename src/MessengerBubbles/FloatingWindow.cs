@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using MessengerBubbles.Core;
 using WinForms = System.Windows.Forms;
 
@@ -13,6 +15,7 @@ class FloatingWindow : Window
     const int GwlExStyle = -20;
     const long WsExNoActivate = 0x08000000, WsExToolWindow = 0x00000080;
     const uint SwpNoSize = 0x0001, SwpNoZOrder = 0x0004, SwpNoActivate = 0x0010;
+    const double GlideMs = 180;
 
     [DllImport("user32.dll")] static extern long GetWindowLongPtr(IntPtr hWnd, int index);
     [DllImport("user32.dll")] static extern long SetWindowLongPtr(IntPtr hWnd, int index, long value);
@@ -22,6 +25,11 @@ class FloatingWindow : Window
 
     [StructLayout(LayoutKind.Sequential)] struct Rect32 { public int L, T, R, B; }
     [StructLayout(LayoutKind.Sequential)] struct Point32 { public int X, Y; }
+
+    // Windows setting "Animation effects"; off means no motion anywhere.
+    protected static bool MotionOn => SystemParameters.ClientAreaAnimation;
+
+    DispatcherTimer? _glide;
 
     protected IntPtr Handle { get; }
 
@@ -39,6 +47,7 @@ class FloatingWindow : Window
         WindowStartupLocation = WindowStartupLocation.Manual;
         Handle = new WindowInteropHelper(this).EnsureHandle();
         SetWindowLongPtr(Handle, GwlExStyle, GetWindowLongPtr(Handle, GwlExStyle) | WsExNoActivate | WsExToolWindow);
+        Closed += (_, _) => StopGlide();
     }
 
     public Box PixelBox()
@@ -47,7 +56,40 @@ class FloatingWindow : Window
         return new Box(r.L, r.T, r.R - r.L, r.B - r.T);
     }
 
-    public void MoveTo(double x, double y) =>
+    public void MoveTo(double x, double y)
+    {
+        StopGlide();
+        SetPosition(x, y);
+    }
+
+    public void GlideTo(double x, double y)
+    {
+        StopGlide();
+        if (!MotionOn)
+        {
+            SetPosition(x, y);
+            return;
+        }
+        var from = PixelBox();
+        var clock = Stopwatch.StartNew();
+        _glide = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(15) };
+        _glide.Tick += (_, _) =>
+        {
+            var t = Math.Min(1, clock.ElapsedMilliseconds / GlideMs);
+            var eased = 1 - Math.Pow(1 - t, 3);
+            SetPosition(from.X + (x - from.X) * eased, from.Y + (y - from.Y) * eased);
+            if (t >= 1) StopGlide();
+        };
+        _glide.Start();
+    }
+
+    protected void StopGlide()
+    {
+        _glide?.Stop();
+        _glide = null;
+    }
+
+    void SetPosition(double x, double y) =>
         SetWindowPos(Handle, IntPtr.Zero, (int)x, (int)y, 0, 0, SwpNoSize | SwpNoZOrder | SwpNoActivate);
 
     public void Place(Box box) =>

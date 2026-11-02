@@ -23,6 +23,7 @@ class Watcher : Window
     CoreWebView2Environment? _env;
     DateTime _lastPost = DateTime.Now;
     int _lastRowCount;
+    List<RowSnapshot> _lastRows = [];
     int _attempt;
     bool _broken, _needsLogin, _exiting;
 
@@ -139,6 +140,10 @@ class Watcher : Window
         }
     }
 
+    // shortcut: a thread not in the watcher's loaded list gets no bubble, it has no name or avatar to show.
+    public RowSnapshot? FindRow(string path) =>
+        _lastRows.Find(r => r.ThreadHref.TrimEnd('/') == path.TrimEnd('/'));
+
     void ReplaceWebView()
     {
         _web.Dispose();
@@ -174,6 +179,7 @@ class Watcher : Window
 
         _lastPost = DateTime.Now;
         _lastRowCount = rows.Count;
+        _lastRows = rows;
         var result = _detector.Scan(rows, DateTime.Now);
         if (result.NewMessages.Count > 0) AppPaths.Log($"new={result.NewMessages.Count}");
         Scanned?.Invoke(result);

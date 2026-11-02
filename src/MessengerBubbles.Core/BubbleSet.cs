@@ -30,6 +30,34 @@ public class BubbleSet
         _visible.Add(bubble);
     }
 
+    // The user moved on from one conversation to another inside the panel.
+    public void SwitchTo(string from, RowSnapshot to)
+    {
+        _overflow.RemoveAll(b => b.ThreadHref == to.ThreadHref);
+        var i = _visible.FindIndex(b => b.ThreadHref == from);
+        // A message that came after the user left must keep its bubble.
+        var replaceable = i >= 0 && _visible[i].Unread == 0;
+        if (_visible.Any(b => b.ThreadHref == to.ThreadHref))
+        {
+            if (replaceable) Dismiss(from);
+            return;
+        }
+        var bubble = new BubbleState(to.ThreadHref, RowText.Parse(to.Text).Name, to.AvatarUrl, 0);
+        if (replaceable)
+        {
+            _visible[i] = bubble;
+            return;
+        }
+        if (_visible.Count >= Max)
+        {
+            var idle = _visible.FindIndex(b => b.Unread == 0);
+            // All full of unread: those matter more than a conversation already read.
+            if (idle < 0) return;
+            _visible.RemoveAt(idle);
+        }
+        _visible.Add(bubble);
+    }
+
     public void MarkRead(string href)
     {
         _overflow.RemoveAll(b => b.ThreadHref == href);

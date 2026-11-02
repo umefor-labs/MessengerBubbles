@@ -26,7 +26,7 @@ static class Program
     {
         var settings = Settings.Load(AppPaths.SettingsFile);
         var watcher = new Watcher();
-        var panel = new ChatPanel();
+        var panel = new ChatPanel(settings);
         var bubbles = new BubbleController(settings, watcher.GetLoadedResourceAsync, panel.IsShowingAsync);
         TrayIcon? tray = null;
         tray = new TrayIcon(settings, watcher.ShowWindow, bubbles.Refresh, () =>
@@ -41,6 +41,10 @@ static class Program
         watcher.HealthChanged += tray.SetBroken;
         bubbles.BubbleClicked += panel.Toggle;
         panel.LayoutBroken += tray.NotifyPanelBroken;
+        panel.LeftOnOtherThread += (from, path) =>
+        {
+            if (watcher.FindRow(path) is { } row) bubbles.SwitchTo(from, row);
+        };
         bubbles.Refresh();
 
         try

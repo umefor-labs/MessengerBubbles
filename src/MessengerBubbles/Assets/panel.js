@@ -55,11 +55,15 @@
   };
 
   // The back button only hides the conversation, so the path alone is not enough.
-  window.__cbShowing = href => {
+  window.__cbCurrent = () => {
     const main = document.querySelector('[role=main]');
+    return /\/messages\/(e2ee\/)?t\//.test(location.pathname) && main?.querySelector('[role=log]')
+      && getComputedStyle(main).visibility === 'visible' ? location.pathname : null;
+  };
+
+  window.__cbShowing = href => {
     const clean = p => p.replace(/\/$/, '');
-    return clean(location.pathname) === clean(href) && !!main?.querySelector('[role=log]')
-      && getComputedStyle(main).visibility === 'visible';
+    return clean(window.__cbCurrent() ?? '') === clean(href);
   };
 
   window.__cbFocus =() => document.querySelector('[role=main] [role=textbox]')?.focus();

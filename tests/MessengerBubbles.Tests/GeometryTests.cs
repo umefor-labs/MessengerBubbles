@@ -30,6 +30,23 @@ public class GeometryTests
     }
 
     [Fact]
+    public void PlacePanel_ShrinksToFitSmallScreen()
+    {
+        var small = new Box(0, 0, 1024, 600);
+        var p = Geometry.PlacePanel(new Box(968, 100, 56, 56), 460, 720, small);
+        Assert.Equal(600, p.H);
+        Assert.Equal(0, p.Y);
+    }
+
+    [Fact]
+    public void DismissTarget_CentersOnMark()
+    {
+        var (x, y) = Geometry.DismissTarget(new Box(100, 100, 56, 56), new Box(0, 0, 1000, 1000));
+        Assert.Equal(472, x);
+        Assert.Equal(902, y);
+    }
+
+    [Fact]
     public void PlacePanel_DoesNotCoverBubble()
     {
         var p = Geometry.PlacePanel(new Box(1864, 300, 56, 56), 380, 560, Screen);

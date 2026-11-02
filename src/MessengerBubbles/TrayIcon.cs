@@ -25,6 +25,11 @@ class TrayIcon : IDisposable
         {
             settings.Preview = on;
         }));
+        menu.Items.Add(Toggle("Âm báo", settings.Sound, on =>
+        {
+            settings.Sound = on;
+        }));
+        menu.Items.Add(SizeMenu());
         menu.Items.Add(Toggle("Khởi động cùng Windows", Autostart.IsOn(), on =>
         {
             Autostart.Set(on, Environment.ProcessPath!);
@@ -34,6 +39,23 @@ class TrayIcon : IDisposable
         menu.Items.Add("Thoát", null, (_, _) => exit());
         _icon.ContextMenuStrip = menu;
         _icon.DoubleClick += (_, _) => openFacebook();
+
+        WinForms.ToolStripMenuItem SizeMenu()
+        {
+            var parent = new WinForms.ToolStripMenuItem("Kích thước khung chat");
+            foreach (var (text, size) in new[] { ("Nhỏ", PanelSize.Small), ("Vừa", PanelSize.Medium), ("Lớn", PanelSize.Large) })
+            {
+                var item = new WinForms.ToolStripMenuItem(text) { Checked = settings.PanelSize == size };
+                item.Click += (_, _) =>
+                {
+                    foreach (WinForms.ToolStripMenuItem other in parent.DropDownItems) other.Checked = other == item;
+                    settings.PanelSize = size;
+                    settings.Save(AppPaths.SettingsFile);
+                };
+                parent.DropDownItems.Add(item);
+            }
+            return parent;
+        }
 
         WinForms.ToolStripMenuItem Toggle(string text, bool state, Action<bool> apply)
         {
