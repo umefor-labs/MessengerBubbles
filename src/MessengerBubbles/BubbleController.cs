@@ -3,6 +3,7 @@ using System.Media;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using MessengerBubbles.Core;
+using Microsoft.Win32;
 
 namespace MessengerBubbles;
 
@@ -33,6 +34,18 @@ class BubbleController
         _isShowing = isShowing;
         _player = new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("new-message.wav"));
         _player.Load();
+        SystemEvents.DisplaySettingsChanged += (_, _) => _zone.Dispatcher.InvokeAsync(BringBubblesOnScreen);
+    }
+
+    void BringBubblesOnScreen()
+    {
+        var areas = FloatingWindow.AllWorkAreas();
+        foreach (var w in _windows.Values.Append(_overflow).Append(_persistent).OfType<BubbleWindow>())
+        {
+            var box = w.PixelBox();
+            var restored = Geometry.RestoreOnScreen(box, areas);
+            if (restored != box) w.MoveTo(restored.X, restored.Y);
+        }
     }
 
     public async void Apply(ScanResult r)
@@ -43,13 +56,15 @@ class BubbleController
             if (!await _isShowing(row.ThreadHref))
                 fresh.Add(row);
 
+        var known = _windows.Keys.ToHashSet();
         foreach (var row in fresh) _set.OnNewMessage(row);
         foreach (var href in r.NowRead) _set.MarkRead(href);
         _unreadThreads = r.UnreadThreads;
         Refresh();
 
+        // New bubbles load their avatar in Refresh; this retries one that failed earlier.
         foreach (var row in fresh)
-            if (_windows.TryGetValue(row.ThreadHref, out var w))
+            if (known.Contains(row.ThreadHref) && _windows.TryGetValue(row.ThreadHref, out var w) && !w.HasAvatar)
                 _ = LoadAvatarAsync(w, row.AvatarUrl);
 
         if (fresh.Count == 0) return;
@@ -77,6 +92,7 @@ class BubbleController
                 w = NewBubble(b.Name, Initial(b.Name), () => b.ThreadHref, canDismiss: true);
                 _windows[b.ThreadHref] = w;
                 PlaceInFreeSlot(w);
+                _ = LoadAvatarAsync(w, b.AvatarUrl);
             }
             w.SetBadge(b.Unread);
         }

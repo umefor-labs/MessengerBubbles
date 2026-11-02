@@ -56,6 +56,9 @@ class TrayIcon : IDisposable
             _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Cần đăng nhập lại Facebook", WinForms.ToolTipIcon.Warning);
     }
 
+    public void NotifyPanelBroken() =>
+        _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Không mở được khung chat. Facebook có thể đã đổi giao diện", WinForms.ToolTipIcon.Error);
+
     public void SetBroken(bool broken)
     {
         _broken = broken;

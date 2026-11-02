@@ -35,6 +35,8 @@ class ChatPanel : Window
     string? _loadedHref;
     Box? _bubble;
 
+    public event Action? LayoutBroken;
+
     public ChatPanel()
     {
         Width = PanelW;
@@ -113,6 +115,7 @@ class ChatPanel : Window
             {
                 // Always click: the user may have gone back to the list inside the panel.
                 await OpenThreadAsync(threadHref, url);
+                await CheckThreadShownAsync(threadHref);
             }
             _web.Focus();
             await RunAsync("window.__cbFocus?.(); 0");
@@ -123,6 +126,19 @@ class ChatPanel : Window
             _init = null;
             HidePanel();
         }
+    }
+
+    // The panel depends on Facebook's page structure, so a change must not fail silently.
+    async Task CheckThreadShownAsync(string href)
+    {
+        for (var i = 0; i < OpenTries && _openHref == href; i++)
+        {
+            if (await IsShowingAsync(href)) return;
+            await Task.Delay(RetryDelay);
+        }
+        if (_openHref != href) return;
+        AppPaths.Log("panel did not show the thread");
+        LayoutBroken?.Invoke();
     }
 
     public async Task<bool> IsShowingAsync(string href)

@@ -4,7 +4,7 @@ Bong bóng chat Facebook nổi trên Windows 11. App bọc `facebook.com/message
 
 ## Chạy
 
-Cần .NET 8 và WebView2 Runtime.
+Cần .NET 10 và WebView2 Runtime.
 
 ```bash
 dotnet run --project src/MessengerBubbles

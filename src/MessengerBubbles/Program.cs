@@ -40,6 +40,7 @@ static class Program
         watcher.NeedsLogin += tray.SetLogin;
         watcher.HealthChanged += tray.SetBroken;
         bubbles.BubbleClicked += panel.Toggle;
+        panel.LayoutBroken += tray.NotifyPanelBroken;
         bubbles.Refresh();
 
         try

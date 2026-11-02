@@ -24,6 +24,7 @@
       position: fixed !important; inset: 0 !important;
       width: auto !important; height: auto !important; margin: 0 !important; border-radius: 0 !important;
       max-width: none !important; max-height: none !important; z-index: 2147482000;
+      visibility: visible !important;
       background: var(--surface-background, #fff) !important;
     }
     [role=navigation] div:has([role=grid]) {

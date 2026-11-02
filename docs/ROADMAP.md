@@ -19,14 +19,14 @@ Các tính năng ở v0.3 trở đi là đề xuất, chưa được người d�
 
 Mục tiêu: dùng cả ngày mà không phải để ý đến app.
 
-- [ ] Đổi lên .NET 10, vì .NET 8 hết hỗ trợ ngày 10/11/2026. Máy chưa có SDK này.
+- [x] Đổi lên .NET 10, vì .NET 8 hết hỗ trợ ngày 10/11/2026.
 - [ ] Kiểm tra hết các mục còn thiếu của v0.1.0, sửa lỗi phát sinh.
 - [ ] Đo bộ nhớ riêng của app khi chạy lâu; nếu trang tăng dần thì tải lại định kỳ.
-- [ ] Báo lỗi ở khay khi khung chat không còn nhận ra cấu trúc trang. Hiện chỉ danh sách chat mới có cảnh báo này.
-- [ ] Rút hoặc cắm màn hình lúc đang chạy: bóng phải về màn hình còn lại.
-- [ ] Bóng được đưa lên từ `+N` phải có avatar ngay.
-- [ ] Lùi bằng lịch sử trình duyệt (`history.back()`) không được làm khung trắng.
-- [ ] Đọc thêm mẫu nhãn thật của Facebook (trạng thái online, chưa đọc), thay cho các mẫu đang đoán.
+- [x] Báo lỗi ở khay khi khung chat không mở được cuộc trò chuyện.
+- [x] Rút hoặc cắm màn hình lúc đang chạy: bóng phải về màn hình còn lại.
+- [x] Bóng được đưa lên từ `+N` phải có avatar ngay.
+- [x] Lùi bằng lịch sử trình duyệt (`history.back()`) không được làm khung trắng.
+- [x] Đối chiếu nhãn thật của Facebook trên một mẫu: "Đang hoạt động" và thời gian khớp. Nhãn "chưa đọc" và "Hoạt động … trước" vẫn là mẫu đoán, vì chưa gặp.
 
 **Đạt khi:** chạy qua đêm, tin đến vẫn bật bóng trong vòng 10 giây; chat nhóm và chat mã hóa đọc, trả lời được; một tuần dùng không bỏ sót tin và không báo nhầm.
 
