@@ -1,4 +1,4 @@
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public record Box(double X, double Y, double W, double H);
 

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public static partial class RowText
 {

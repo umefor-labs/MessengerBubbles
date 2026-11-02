@@ -1,4 +1,4 @@
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public class SoundGate
 {

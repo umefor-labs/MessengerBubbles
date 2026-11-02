@@ -1,11 +1,11 @@
 using Microsoft.Win32;
 
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public static class Autostart
 {
     const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    const string ValueName = "ChatBubbles";
+    const string ValueName = "MessengerBubbles";
 
     public static void Set(bool on, string exePath, string subKey = RunKey)
     {

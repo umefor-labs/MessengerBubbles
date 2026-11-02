@@ -1,10 +1,10 @@
-# ChatBubbles Implementation Plan
+# MessengerBubbles Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** App Windows 11 hiện mỗi cuộc chat Facebook có tin mới thành một bong bóng nổi, bấm vào đọc và trả lời được.
 
-**Architecture:** Logic thuần nằm trong `ChatBubbles.Core` (không phụ thuộc WPF, có unit test). `ChatBubbles` là app WPF: một WebView2 ẩn chạy probe JS đọc danh sách chat, chuyển dữ liệu cho Core, rồi Core quyết định bóng nào hiện. Mọi WebView2 dùng chung một profile.
+**Architecture:** Logic thuần nằm trong `MessengerBubbles.Core` (không phụ thuộc WPF, có unit test). `MessengerBubbles` là app WPF: một WebView2 ẩn chạy probe JS đọc danh sách chat, chuyển dữ liệu cho Core, rồi Core quyết định bóng nào hiện. Mọi WebView2 dùng chung một profile.
 
 **Tech Stack:** C#, .NET 8, WPF, `Microsoft.Web.WebView2` 1.0.2903.40, xUnit. Khay hệ thống dùng `System.Windows.Forms.NotifyIcon` (`UseWindowsForms=true`).
 
@@ -12,11 +12,11 @@
 
 ## Global Constraints
 
-- Thư mục dữ liệu: `%LOCALAPPDATA%\ChatBubbles\` (`profile\`, `settings.json`, log).
+- Thư mục dữ liệu: `%LOCALAPPDATA%\MessengerBubbles\` (`profile\`, `settings.json`, log).
 - Không ghi tên, nội dung tin, avatar xuống đĩa. Log chỉ ghi trạng thái và lỗi.
 - Chỉ nhận tin nhắn từ trang có `https` và host `facebook.com` hoặc `*.facebook.com`.
 - App không lưu, không nhập mật khẩu; không gửi tin tự động.
-- Mọi chữ trên giao diện bằng tiếng Việt. Không dùng logo hay tên Messenger.
+- Mọi chữ trên giao diện bằng tiếng Việt. Không dùng logo Messenger.
 - Đổi lên .NET 10 chỉ được phải sửa `TargetFramework`.
 - Thư mục làm việc chưa có git: bỏ các bước commit trừ khi người dùng bảo khởi tạo repo.
 
@@ -57,9 +57,9 @@ Nhờ nhắn một tin khi app đang mở và không bấm gì trong app. Đạt
 ### Task 2: Phát hiện tin mới
 
 **Files:**
-- Create: `ChatBubbles.sln`, `src/ChatBubbles.Core/ChatBubbles.Core.csproj` (`net8.0`), `tests/ChatBubbles.Tests/ChatBubbles.Tests.csproj` (xUnit)
-- Create: `src/ChatBubbles.Core/RowSnapshot.cs`, `RowText.cs`, `NewMessageDetector.cs`
-- Test: `tests/ChatBubbles.Tests/NewMessageDetectorTests.cs`, `RowTextTests.cs`
+- Create: `MessengerBubbles.sln`, `src/MessengerBubbles.Core/MessengerBubbles.Core.csproj` (`net8.0`), `tests/MessengerBubbles.Tests/MessengerBubbles.Tests.csproj` (xUnit)
+- Create: `src/MessengerBubbles.Core/RowSnapshot.cs`, `RowText.cs`, `NewMessageDetector.cs`
+- Test: `tests/MessengerBubbles.Tests/NewMessageDetectorTests.cs`, `RowTextTests.cs`
 
 **Interfaces:**
 - Produces:
@@ -99,8 +99,8 @@ Run: `dotnet test` — Expected: tất cả đạt.
 ### Task 3: Danh sách bóng và tính vị trí
 
 **Files:**
-- Create: `src/ChatBubbles.Core/BubbleSet.cs`, `Geometry.cs`
-- Test: `tests/ChatBubbles.Tests/BubbleSetTests.cs`, `GeometryTests.cs`
+- Create: `src/MessengerBubbles.Core/BubbleSet.cs`, `Geometry.cs`
+- Test: `tests/MessengerBubbles.Tests/BubbleSetTests.cs`, `GeometryTests.cs`
 
 **Interfaces:**
 - Consumes: `RowSnapshot`
@@ -133,13 +133,13 @@ Run: `dotnet test` — Expected: tất cả đạt.
 ### Task 4: Tùy chọn, khởi động cùng Windows và các bộ đếm phụ
 
 **Files:**
-- Create: `src/ChatBubbles.Core/Settings.cs`, `Autostart.cs`, `SoundGate.cs`, `Backoff.cs`, `FacebookUrl.cs`, `RowsHealth.cs`
-- Test: `tests/ChatBubbles.Tests/SettingsTests.cs`, `AutostartTests.cs`, `HelpersTests.cs`
+- Create: `src/MessengerBubbles.Core/Settings.cs`, `Autostart.cs`, `SoundGate.cs`, `Backoff.cs`, `FacebookUrl.cs`, `RowsHealth.cs`
+- Test: `tests/MessengerBubbles.Tests/SettingsTests.cs`, `AutostartTests.cs`, `HelpersTests.cs`
 
 **Interfaces:**
 - Produces:
   - `record Settings { bool PersistentBubble=false; bool Preview=false; bool Autostart=false; Dictionary<string,Box> Positions; static Settings Load(string path); void Save(string path); }`
-  - `static class Autostart { void Set(bool on, string exePath, string subKey = @"Software\Microsoft\Windows\CurrentVersion\Run"); bool IsOn(string subKey = ...); }` — tên giá trị `ChatBubbles`, đường dẫn có ngoặc kép
+  - `static class Autostart { void Set(bool on, string exePath, string subKey = @"Software\Microsoft\Windows\CurrentVersion\Run"); bool IsOn(string subKey = ...); }` — tên giá trị `MessengerBubbles`, đường dẫn có ngoặc kép
   - `class SoundGate { bool ShouldPlay(DateTime now); }` — 3 giây
   - `static class Backoff { TimeSpan Next(int attempt); }` — 5, 10, 20... giây, tối đa 300 giây
   - `static class FacebookUrl { bool IsTrusted(string uri); bool IsLoginPage(string uri); string? ToThreadUrl(string href); }`
@@ -169,7 +169,7 @@ Run: `dotnet test` — Expected: tất cả đạt.
 Chờ kết quả Task 1.
 
 **Files:**
-- Create: `src/ChatBubbles/ChatBubbles.csproj` (`net8.0-windows`, `UseWPF`, `UseWindowsForms`), `Program.cs`, `AppPaths.cs`, `Watcher.cs`, `Assets/probe.js` (nhúng làm resource)
+- Create: `src/MessengerBubbles/MessengerBubbles.csproj` (`net8.0-windows`, `UseWPF`, `UseWindowsForms`), `Program.cs`, `AppPaths.cs`, `Watcher.cs`, `Assets/probe.js` (nhúng làm resource)
 
 **Interfaces:**
 - Consumes: `NewMessageDetector`, `FacebookUrl`, `RowsHealth`, `Backoff`
@@ -187,16 +187,16 @@ Dùng URL và cách ẩn đã chốt ở Task 1. Đặt `IsMuted = true`. Bỏ q
 
 - [ ] **Step 3: Viết `Program.cs`**
 
-Một phiên chạy bằng named mutex `ChatBubbles.SingleInstance`; phiên thứ hai thoát ngay. Tạm ghi số lượng `NewMessages` vào log, không ghi nội dung.
+Một phiên chạy bằng named mutex `MessengerBubbles.SingleInstance`; phiên thứ hai thoát ngay. Tạm ghi số lượng `NewMessages` vào log, không ghi nội dung.
 
 - [ ] **Step 4: Kiểm tra với tin thật**
 
-Run: `dotnet run --project src/ChatBubbles`. Expected: nhắn một tin, log có đúng `new=1`; tải lại trang khi còn tin chưa đọc, log có `new=0`.
+Run: `dotnet run --project src/MessengerBubbles`. Expected: nhắn một tin, log có đúng `new=1`; tải lại trang khi còn tin chưa đọc, log có `new=0`.
 
 ### Task 6: Cửa sổ bóng
 
 **Files:**
-- Create: `src/ChatBubbles/BubbleWindow.cs`, `BubbleController.cs`, `DismissZoneWindow.cs`
+- Create: `src/MessengerBubbles/BubbleWindow.cs`, `BubbleController.cs`, `DismissZoneWindow.cs`
 
 **Interfaces:**
 - Consumes: `Watcher.Scanned`, `BubbleSet`, `Geometry`, `Settings.Positions`
@@ -219,7 +219,7 @@ Expected: nhắn từ hai người ra hai bóng và đang gõ ở app khác khô
 ### Task 7: Khung chat
 
 **Files:**
-- Create: `src/ChatBubbles/ChatPanel.cs`
+- Create: `src/MessengerBubbles/ChatPanel.cs`
 
 **Interfaces:**
 - Consumes: `BubbleController.BubbleClicked`, `Geometry.PlacePanel`, `FacebookUrl.ToThreadUrl`, `AppPaths.CreateEnvironmentAsync`
@@ -236,8 +236,8 @@ Expected: đọc và trả lời được ở khung nhỏ với chat thường, 
 ### Task 8: Tùy chọn, âm thanh, khay hệ thống
 
 **Files:**
-- Create: `src/ChatBubbles/TrayIcon.cs`, `PreviewWindow.cs`, `Assets/new-message.wav`, `Assets/tray.ico`, `Assets/tray-error.ico`
-- Modify: `src/ChatBubbles/BubbleController.cs`, `src/ChatBubbles/Program.cs`
+- Create: `src/MessengerBubbles/TrayIcon.cs`, `PreviewWindow.cs`, `Assets/new-message.wav`, `Assets/tray.ico`, `Assets/tray-error.ico`
+- Modify: `src/MessengerBubbles/BubbleController.cs`, `src/MessengerBubbles/Program.cs`
 
 **Interfaces:**
 - Consumes: `Settings`, `Autostart`, `SoundGate`, `RowText.Parse`, `Watcher.NeedsLogin`, `Watcher.HealthChanged`
@@ -269,7 +269,7 @@ Run: `dotnet test` — Expected: tất cả đạt.
 
 - [ ] **Step 2: Đóng gói bản chạy**
 
-Run: `dotnet publish src/ChatBubbles -c Release -o publish`. Expected: có `publish\ChatBubbles.exe` chạy được, mở lần hai không tạo phiên thứ hai.
+Run: `dotnet publish src/MessengerBubbles -c Release -o publish`. Expected: có `publish\MessengerBubbles.exe` chạy được, mở lần hai không tạo phiên thứ hai.
 
 - [ ] **Step 3: Rà soát "coi là thất bại" trong spec với tin thật**
 

@@ -1,6 +1,6 @@
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 
-namespace ChatBubbles.Tests;
+namespace MessengerBubbles.Tests;
 
 public class RowTextTests
 {

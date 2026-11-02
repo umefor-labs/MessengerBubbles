@@ -2,10 +2,10 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using WinForms = System.Windows.Forms;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 // Borderless always-on-top window that never takes focus. Positions are physical pixels, for mixed-DPI screens.
 class FloatingWindow : Window

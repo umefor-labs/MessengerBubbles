@@ -18,7 +18,7 @@ Người dùng muốn nhận và trả lời tin Messenger trên Windows 11 bằ
 
 - Không gửi tin tự động, không đọc hàng loạt lịch sử chat, không dùng API không chính thức của Meta.
 - Không hỗ trợ nhiều tài khoản, không có bộ cài, không phát hành cho người khác.
-- Không dùng logo hay tên Messenger cho app. Tên tạm: ChatBubbles.
+- Không dùng logo Messenger cho app. Tên app là Messenger Bubbles, theo quyết định của người dùng.
 - Bản đầu không có gọi thoại/video trong khung chat nhỏ.
 
 ## Coi là thất bại nếu
@@ -75,7 +75,7 @@ Bản thử là code bỏ đi. App thật là project mới, chỉ mang theo nh�
 4. **Khung chat:** một WebView2 dùng chung, mở cuộc chat được chọn.
 5. **Khay hệ thống:** mở lại trang Facebook, các tùy chọn trong mục "Tùy chọn", thoát.
 
-Mọi WebView2 dùng chung một thư mục profile `%LOCALAPPDATA%\ChatBubbles\profile`, nên chỉ đăng nhập một lần.
+Mọi WebView2 dùng chung một thư mục profile `%LOCALAPPDATA%\MessengerBubbles\profile`, nên chỉ đăng nhập một lần.
 
 ### Phát hiện tin mới
 
@@ -109,7 +109,7 @@ Trang Facebook có thể tự mở một cuộc chat khi vào `/messages`. Trìn
 
 ### Tùy chọn
 
-Bật/tắt trong menu khay, tiếng Việt, có hiệu lực ngay. Lưu ở `%LOCALAPPDATA%\ChatBubbles\settings.json`, chỉ gồm tùy chọn và vị trí bóng.
+Bật/tắt trong menu khay, tiếng Việt, có hiệu lực ngay. Lưu ở `%LOCALAPPDATA%\MessengerBubbles\settings.json`, chỉ gồm tùy chọn và vị trí bóng.
 
 | Tùy chọn | Mặc định | Hành vi |
 |---|---|---|

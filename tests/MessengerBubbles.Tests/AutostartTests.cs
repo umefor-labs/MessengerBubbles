@@ -1,21 +1,21 @@
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using Microsoft.Win32;
 
-namespace ChatBubbles.Tests;
+namespace MessengerBubbles.Tests;
 
 public class AutostartTests : IDisposable
 {
-    const string SubKey = @"Software\ChatBubblesTest";
+    const string SubKey = @"Software\MessengerBubblesTest";
 
     public void Dispose() => Registry.CurrentUser.DeleteSubKeyTree(SubKey, false);
 
     [Fact]
     public void Set_On_WritesQuotedPath()
     {
-        Autostart.Set(true, @"C:\My Apps\ChatBubbles.exe", SubKey);
+        Autostart.Set(true, @"C:\My Apps\MessengerBubbles.exe", SubKey);
         Assert.True(Autostart.IsOn(SubKey));
         using var key = Registry.CurrentUser.OpenSubKey(SubKey);
-        Assert.Equal("\"C:\\My Apps\\ChatBubbles.exe\"", key!.GetValue("ChatBubbles"));
+        Assert.Equal("\"C:\\My Apps\\MessengerBubbles.exe\"", key!.GetValue("MessengerBubbles"));
     }
 
     [Fact]

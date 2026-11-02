@@ -6,12 +6,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
-using Geometry = ChatBubbles.Core.Geometry;
+using Geometry = MessengerBubbles.Core.Geometry;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 // Keeps one Facebook page loaded and suspended, so a bubble opens without a reload.
 class ChatPanel : Window

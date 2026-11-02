@@ -1,4 +1,4 @@
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public record RowSnapshot(string ThreadHref, string Text, bool Bold, string AvatarUrl);
 

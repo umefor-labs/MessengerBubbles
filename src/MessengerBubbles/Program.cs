@@ -1,15 +1,15 @@
 using System.Windows;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using Microsoft.Web.WebView2.Core;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 static class Program
 {
     [STAThread]
     static void Main()
     {
-        using var mutex = new Mutex(true, "ChatBubbles.SingleInstance", out var first);
+        using var mutex = new Mutex(true, "MessengerBubbles.SingleInstance", out var first);
         if (!first) return;
 
         var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
@@ -49,7 +49,7 @@ static class Program
         }
         catch (WebView2RuntimeNotFoundException)
         {
-            MessageBox.Show("Máy chưa có WebView2 Runtime, app không chạy được.", "ChatBubbles");
+            MessageBox.Show("Máy chưa có WebView2 Runtime, app không chạy được.", "Messenger Bubbles");
             tray.Dispose();
             app.Shutdown();
         }

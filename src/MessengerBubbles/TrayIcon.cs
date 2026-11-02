@@ -1,12 +1,12 @@
 using System.Drawing;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using WinForms = System.Windows.Forms;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 class TrayIcon : IDisposable
 {
-    readonly WinForms.NotifyIcon _icon = new() { Text = "ChatBubbles", Visible = true };
+    readonly WinForms.NotifyIcon _icon = new() { Text = "Messenger Bubbles", Visible = true };
     readonly Icon _ok = Draw(Color.FromArgb(8, 102, 255));
     readonly Icon _error = Draw(Color.FromArgb(220, 40, 40));
     bool _login, _broken;
@@ -53,7 +53,7 @@ class TrayIcon : IDisposable
         _login = needed;
         _icon.Icon = _login || _broken ? _error : _ok;
         if (needed)
-            _icon.ShowBalloonTip(5000, "ChatBubbles", "Cần đăng nhập lại Facebook", WinForms.ToolTipIcon.Warning);
+            _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Cần đăng nhập lại Facebook", WinForms.ToolTipIcon.Warning);
     }
 
     public void SetBroken(bool broken)
@@ -61,7 +61,7 @@ class TrayIcon : IDisposable
         _broken = broken;
         _icon.Icon = _login || _broken ? _error : _ok;
         if (broken)
-            _icon.ShowBalloonTip(5000, "ChatBubbles", "Không đọc được danh sách chat. Facebook có thể đã đổi giao diện", WinForms.ToolTipIcon.Error);
+            _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Không đọc được danh sách chat. Facebook có thể đã đổi giao diện", WinForms.ToolTipIcon.Error);
     }
 
     public void Dispose()

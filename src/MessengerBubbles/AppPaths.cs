@@ -1,16 +1,16 @@
 using System.Diagnostics;
 using System.IO;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using Microsoft.Web.WebView2.Core;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 static class AppPaths
 {
     public const string MessagesUrl = "https://www.facebook.com/messages";
 
     static readonly string Dir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ChatBubbles");
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MessengerBubbles");
 
     public static string SettingsFile => Path.Combine(Dir, "settings.json");
 

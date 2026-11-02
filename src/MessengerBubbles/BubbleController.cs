@@ -2,9 +2,9 @@ using System.IO;
 using System.Media;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 class BubbleController
 {

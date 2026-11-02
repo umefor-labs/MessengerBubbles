@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public record Settings
 {

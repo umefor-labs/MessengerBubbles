@@ -2,10 +2,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ChatBubbles.Core;
-using Geometry = ChatBubbles.Core.Geometry;
+using MessengerBubbles.Core;
+using Geometry = MessengerBubbles.Core.Geometry;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 class DismissZoneWindow : FloatingWindow
 {

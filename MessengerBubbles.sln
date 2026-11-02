@@ -1,17 +1,17 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7F3EAC2A-A8A1-499D-A5D7-0EC0F73D6327}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBubbles.Core", "src\ChatBubbles.Core\ChatBubbles.Core.csproj", "{85DD0E5C-7C7E-40BB-9E92-443BD282646A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessengerBubbles.Core", "src\MessengerBubbles.Core\MessengerBubbles.Core.csproj", "{85DD0E5C-7C7E-40BB-9E92-443BD282646A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5E964406-8AD0-4A11-BB30-2A58FA717856}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBubbles.Tests", "tests\ChatBubbles.Tests\ChatBubbles.Tests.csproj", "{5AB8D19D-F398-4881-8F3C-85F4999C0C7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessengerBubbles.Tests", "tests\MessengerBubbles.Tests\MessengerBubbles.Tests.csproj", "{5AB8D19D-F398-4881-8F3C-85F4999C0C7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBubbles", "src\ChatBubbles\ChatBubbles.csproj", "{7B27B947-B138-4D45-86B7-6161D233D619}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessengerBubbles", "src\MessengerBubbles\MessengerBubbles.csproj", "{7B27B947-B138-4D45-86B7-6161D233D619}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

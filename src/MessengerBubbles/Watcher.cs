@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
-using ChatBubbles.Core;
+using MessengerBubbles.Core;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
-namespace ChatBubbles;
+namespace MessengerBubbles;
 
 class Watcher : Window
 {
@@ -32,7 +32,7 @@ class Watcher : Window
 
     public Watcher()
     {
-        Title = "ChatBubbles: đăng nhập Facebook, xong thì đóng cửa sổ này";
+        Title = "Messenger Bubbles: đăng nhập Facebook, xong thì đóng cửa sổ này";
         Width = 1100;
         Height = 800;
         ShowInTaskbar = false;

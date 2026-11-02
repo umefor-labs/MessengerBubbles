@@ -1,4 +1,4 @@
-namespace ChatBubbles.Core;
+namespace MessengerBubbles.Core;
 
 public record BubbleState(string ThreadHref, string Name, string AvatarUrl, int Unread);
 

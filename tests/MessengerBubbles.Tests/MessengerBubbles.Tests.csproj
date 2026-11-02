@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ChatBubbles.Core\ChatBubbles.Core.csproj" />
+    <ProjectReference Include="..\..\src\MessengerBubbles.Core\MessengerBubbles.Core.csproj" />
   </ItemGroup>
 
 </Project>
