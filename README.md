@@ -27,6 +27,10 @@ Tải `MessengerBubbles-<tag>-win-x64.exe` ở GitHub Releases rồi chạy. Fil
 
 Lần đầu, cửa sổ đăng nhập hiện ra. Đăng nhập Facebook, nhập mã PIN tin nhắn mã hóa nếu được hỏi, rồi đóng cửa sổ. Đóng cửa sổ chỉ ẩn nó đi. Muốn tắt app thì chọn `Thoát` trong menu khay.
 
+## Ngôn ngữ
+
+App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ngữ trước khi làm gì khác. Đóng hộp thoại mà không chọn thì app chọn tiếng Việt nếu Windows dùng tiếng Việt, còn lại là tiếng Anh. Đổi lại ở mục `Ngôn ngữ` trong menu khay, có hiệu lực ngay. Ngôn ngữ này chỉ áp dụng cho phần của app. Trong khung chat, Facebook vẫn dùng ngôn ngữ của tài khoản.
+
 ## Menu khay
 
 | Mục | Mặc định | Tác dụng |
@@ -37,6 +41,7 @@ Lần đầu, cửa sổ đăng nhập hiện ra. Đăng nhập Facebook, nhập
 | `Xem trước nội dung` | Bật | Hiện thẻ tên và nội dung tin bên cạnh bóng trong 5 giây |
 | `Âm báo` | Bật | Âm riêng của app, cách nhau ít nhất 3 giây |
 | `Kích thước khung chat` | Vừa | Nhỏ 340×480, Vừa 380×560, Lớn 460×720 (DIP). Áp dụng từ lần mở sau |
+| `Ngôn ngữ` | Hỏi ở lần đầu | Tiếng Việt hoặc English |
 | `Khởi động cùng Windows` | Tắt | Ghi giá trị `MessengerBubbles` vào `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
 | `Thoát` | | Tắt app |
 
@@ -65,7 +70,7 @@ Solution có ba project:
 
 | Project | Nội dung |
 |---|---|
-| `src/MessengerBubbles.Core` | Logic không phụ thuộc giao diện: phát hiện tin, tập bóng, hình học, cài đặt, autostart |
+| `src/MessengerBubbles.Core` | Logic không phụ thuộc giao diện: phát hiện tin, tập bóng, hình học, cài đặt, autostart, chữ hai ngôn ngữ (`Texts.cs`) |
 | `src/MessengerBubbles` | WPF, WinForms `NotifyIcon`, WebView2, tài nguyên nhúng |
 | `tests/MessengerBubbles.Tests` | xUnit, chỉ test project Core |
 
@@ -79,6 +84,7 @@ Solution có ba project:
 | `FloatingWindow.cs` | Lớp nền của cửa sổ nổi: vị trí theo pixel vật lý, không nhận focus |
 | `OverlayWindows.cs` | Vùng đóng bóng và thẻ xem trước |
 | `TrayIcon.cs` | Icon khay, menu, thông báo lỗi |
+| `LanguageWindow.cs` | Hộp chọn ngôn ngữ ở lần chạy đầu |
 | `AppPaths.cs` | Đường dẫn, môi trường WebView2, ghi log, các hạn chế bảo mật |
 | `Assets/probe.js` | Đọc dòng chat trong trang theo dõi |
 | `Assets/panel.js` | CSS và hàm điều khiển trong trang khung chat |
@@ -203,6 +209,7 @@ Mọi thứ nằm trong `%LOCALAPPDATA%\MessengerBubbles\`:
 | `Autostart` | bool | `false` |
 | `Sound` | bool | `true` |
 | `GroupBubbles` | bool | `false` |
+| `Language` | 0 tiếng Việt, 1 tiếng Anh | `null`, tức chưa chọn |
 | `PanelSize` | 0 nhỏ, 1 vừa, 2 lớn | `1` |
 | `Positions` | Từ khóa `anchor`, `persistent` sang `{X, Y, W, H}` | rỗng |
 
@@ -248,7 +255,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-Gồm 111 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
+Gồm 118 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
 
 Đóng gói một file tự chứa .NET vào `publish\MessengerBubbles.exe`, khoảng 166 MB. File không nén, vì `EnableCompressionInSingleFile` giảm còn 72 MB nhưng làm app tốn thêm gần 80 MB bộ nhớ riêng:
 

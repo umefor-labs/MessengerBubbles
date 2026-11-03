@@ -61,6 +61,7 @@ Mục tiêu: cài và cập nhật dễ, không cần `dotnet`.
 
 - [x] Công khai repo ngày 03/11/2026, vẫn dùng tên cũ: [ghi chú](PUBLISHING.md).
 - [ ] Chọn license.
+- [x] Giao diện tiếng Anh, chọn ngôn ngữ ở lần chạy đầu và trong menu khay.
 - [x] Viết README cho người ngoài, nêu rõ rủi ro với tài khoản.
 - [x] Facebook đổi giao diện thì sửa được nhanh: cấu trúc trang chỉ nằm trong `probe.js` và `panel.js`, nhãn chữ nằm trong `RowText.cs`, có [danh sách kiểm tra](FACEBOOK-CHECKLIST.md).
 

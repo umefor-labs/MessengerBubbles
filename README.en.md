@@ -4,7 +4,7 @@ English | [Tiếng Việt](README.md)
 
 A Windows 11 desktop app that shows Facebook chats as floating bubbles, one bubble per conversation, similar to chat heads on Android. Built with WPF and WebView2, it wraps `https://www.facebook.com/messages`. This is a personal project and is not affiliated with Meta.
 
-The app's interface is in Vietnamese only, and so are the documents in `docs/`.
+The documents in `docs/` are in Vietnamese.
 
 Latest version: `v0.4.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
 
@@ -27,20 +27,25 @@ The app reads Facebook's web interface because there is no public API:
 
 Download `MessengerBubbles-<tag>-win-x64.exe` from GitHub Releases and run it. The file has no digital signature, so SmartScreen may warn you.
 
-On first run a login window appears. Log in to Facebook, enter your encrypted messages PIN if asked, then close the window. Closing it only hides it. To quit the app, choose `Thoát` in the tray menu.
+On first run a login window appears. Log in to Facebook, enter your encrypted messages PIN if asked, then close the window. Closing it only hides it. To quit the app, choose `Quit` in the tray menu.
+
+## Language
+
+The app comes in Vietnamese and English. On first run it asks for a language before doing anything else. If you close that window without choosing, it picks Vietnamese when Windows is in Vietnamese, and English otherwise. Change it later under `Language` in the tray menu, which applies at once. This covers the app's own text only. Inside the chat panel, Facebook uses your account's language.
 
 ## Tray menu
 
 | Item | Default | Effect |
 |---|---|---|
-| `Mở Facebook` (Open Facebook) | | Shows the watcher page window. Double-clicking the icon does the same |
-| `Bóng thường trực` (Persistent bubble) | Off | A fixed bubble that opens the chat list and shows the number of unread chats |
-| `Gom bóng` (Group bubbles) | Off | Two or more bubbles stack. A click spreads them, and they regroup after 5 seconds |
-| `Xem trước nội dung` (Preview content) | On | Shows a card with the name and message beside the bubble for 5 seconds |
-| `Âm báo` (Sound) | On | The app's own sound, at least 3 seconds apart |
-| `Kích thước khung chat` (Chat panel size) | Medium | Small 340×480, Medium 380×560, Large 460×720 (DIP). Applies from the next time the panel opens |
-| `Khởi động cùng Windows` (Start with Windows) | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
-| `Thoát` (Quit) | | Quits the app |
+| `Open Facebook` | | Shows the watcher page window. Double-clicking the icon does the same |
+| `Persistent bubble` | Off | A fixed bubble that opens the chat list and shows the number of unread chats |
+| `Group bubbles` | Off | Two or more bubbles stack. A click spreads them, and they regroup after 5 seconds |
+| `Preview messages` | On | Shows a card with the name and message beside the bubble for 5 seconds |
+| `Sound` | On | The app's own sound, at least 3 seconds apart |
+| `Chat panel size` | Medium | Small 340×480, Medium 380×560, Large 460×720 (DIP). Applies from the next time the panel opens |
+| `Language` | Asked on first run | Tiếng Việt or English |
+| `Start with Windows` | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
+| `Quit` | | Quits the app |
 
 The tray icon turns red when you need to log in again or when reading the chat list fails.
 
@@ -67,7 +72,7 @@ The solution has three projects:
 
 | Project | Contents |
 |---|---|
-| `src/MessengerBubbles.Core` | Logic with no UI dependency: message detection, bubble set, geometry, settings, autostart |
+| `src/MessengerBubbles.Core` | Logic with no UI dependency: message detection, bubble set, geometry, settings, autostart, texts in both languages (`Texts.cs`) |
 | `src/MessengerBubbles` | WPF, WinForms `NotifyIcon`, WebView2, embedded resources |
 | `tests/MessengerBubbles.Tests` | xUnit, tests the Core project only |
 
@@ -81,6 +86,7 @@ The solution has three projects:
 | `FloatingWindow.cs` | Base class for floating windows: physical pixel positions, never takes focus |
 | `OverlayWindows.cs` | Dismiss zone and preview card |
 | `TrayIcon.cs` | Tray icon, menu, error notices |
+| `LanguageWindow.cs` | Language window on first run |
 | `AppPaths.cs` | Paths, WebView2 environment, logging, security restrictions |
 | `Assets/probe.js` | Reads chat rows in the watcher page |
 | `Assets/panel.js` | CSS and control functions in the panel page |
@@ -205,6 +211,7 @@ Everything is in `%LOCALAPPDATA%\MessengerBubbles\`:
 | `Autostart` | bool | `false` |
 | `Sound` | bool | `true` |
 | `GroupBubbles` | bool | `false` |
+| `Language` | 0 Vietnamese, 1 English | `null`, meaning not chosen yet |
 | `PanelSize` | 0 small, 1 medium, 2 large | `1` |
 | `Positions` | Map of `anchor`, `persistent` to `{X, Y, W, H}` | empty |
 
@@ -217,7 +224,7 @@ Restrictions in `AppPaths.Harden` and `FacebookUrl`:
 
 The app sends no data of its own anywhere; the only requests are those the Facebook page makes itself. Avatars are read from images the page already loaded, through CDP `Page.getResourceContent`, kept in memory, up to 2 MB each. WebView2 runs with `--disk-cache-size=1`, plus `--disable-background-timer-throttling` and `--disable-renderer-backgrounding` so hidden pages keep running on time. The watcher page is muted.
 
-To uninstall: log out of Facebook through `Mở Facebook`, turn off `Khởi động cùng Windows`, choose `Thoát`, then delete the folder above and the `.exe`.
+To uninstall: log out of Facebook through `Open Facebook`, turn off `Start with Windows`, choose `Quit`, then delete the folder above and the `.exe`.
 
 ## Reading the log
 
@@ -250,7 +257,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-There are 111 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
+There are 118 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
 
 Package one self-contained file to `publish\MessengerBubbles.exe`, about 166 MB. The file is uncompressed, because `EnableCompressionInSingleFile` brings it down to 72 MB but costs the app almost 80 MB more private memory:
 

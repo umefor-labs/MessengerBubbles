@@ -16,6 +16,7 @@ public class SettingsTests : IDisposable
         Assert.True(s.Sound);
         Assert.Equal(PanelSize.Medium, s.PanelSize);
         Assert.False(s.Autostart);
+        Assert.Null(s.Language);
         Assert.Empty(s.Positions);
     }
 
@@ -37,10 +38,11 @@ public class SettingsTests : IDisposable
     [Fact]
     public void SaveLoad_RoundTrips()
     {
-        var s = new Settings { Preview = false, Positions = { ["anchor"] = new Box(1, 2, 56, 56) } };
+        var s = new Settings { Preview = false, Language = AppLanguage.English, Positions = { ["anchor"] = new Box(1, 2, 56, 56) } };
         s.Save(Path_);
         var loaded = Settings.Load(Path_);
         Assert.False(loaded.Preview);
+        Assert.Equal(AppLanguage.English, loaded.Language);
         Assert.False(loaded.PersistentBubble);
         Assert.Equal(new Box(1, 2, 56, 56), loaded.Positions["anchor"]);
     }

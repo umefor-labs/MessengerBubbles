@@ -37,8 +37,7 @@ class BubbleWindow : FloatingWindow
 
     public BubbleWindow(string name, string label) : base(56, 56)
     {
-        AutomationProperties.SetName(this, name);
-        ToolTip = name;
+        SetName(name);
         _label.Text = label;
         _badge = new Border
         {
@@ -89,6 +88,12 @@ class BubbleWindow : FloatingWindow
             if (wasDragging) DragEnded?.Invoke();
             else if (fire) Clicked?.Invoke();
         }
+    }
+
+    public void SetName(string name)
+    {
+        AutomationProperties.SetName(this, name);
+        ToolTip = name;
     }
 
     public void PopIn()

@@ -9,45 +9,59 @@ class TrayIcon : IDisposable
     readonly WinForms.NotifyIcon _icon = new() { Text = "Messenger Bubbles", Visible = true };
     readonly Icon _ok = Icon.ExtractAssociatedIcon(Environment.ProcessPath!)!;
     readonly Icon _error = DrawError();
+    readonly Settings _settings;
+    readonly Action _openFacebook, _settingsChanged, _exit;
     bool _login, _broken;
 
     public TrayIcon(Settings settings, Action openFacebook, Action settingsChanged, Action exit)
     {
+        _settings = settings;
+        _openFacebook = openFacebook;
+        _settingsChanged = settingsChanged;
+        _exit = exit;
         _icon.Icon = _ok;
+        _icon.ContextMenuStrip = BuildMenu();
+        _icon.DoubleClick += (_, _) => openFacebook();
+    }
+
+    WinForms.ContextMenuStrip BuildMenu()
+    {
+        var texts = Texts.Current;
+        var settings = _settings;
         var menu = new WinForms.ContextMenuStrip();
-        menu.Items.Add("Mở Facebook", null, (_, _) => openFacebook());
+        menu.Items.Add(texts.OpenFacebook, null, (_, _) => _openFacebook());
         menu.Items.Add(new WinForms.ToolStripSeparator());
-        menu.Items.Add(Toggle("Bóng thường trực", settings.PersistentBubble, on =>
+        menu.Items.Add(Toggle(texts.PersistentBubble, settings.PersistentBubble, on =>
         {
             settings.PersistentBubble = on;
         }));
-        menu.Items.Add(Toggle("Gom bóng", settings.GroupBubbles, on =>
+        menu.Items.Add(Toggle(texts.GroupBubbles, settings.GroupBubbles, on =>
         {
             settings.GroupBubbles = on;
         }));
-        menu.Items.Add(Toggle("Xem trước nội dung", settings.Preview, on =>
+        menu.Items.Add(Toggle(texts.Preview, settings.Preview, on =>
         {
             settings.Preview = on;
         }));
-        menu.Items.Add(Toggle("Âm báo", settings.Sound, on =>
+        menu.Items.Add(Toggle(texts.Sound, settings.Sound, on =>
         {
             settings.Sound = on;
         }));
         menu.Items.Add(SizeMenu());
-        menu.Items.Add(Toggle("Khởi động cùng Windows", Autostart.IsOn(), on =>
+        menu.Items.Add(LanguageMenu());
+        menu.Items.Add(Toggle(texts.Autostart, Autostart.IsOn(), on =>
         {
             Autostart.Set(on, Environment.ProcessPath!);
             settings.Autostart = on;
         }));
         menu.Items.Add(new WinForms.ToolStripSeparator());
-        menu.Items.Add("Thoát", null, (_, _) => exit());
-        _icon.ContextMenuStrip = menu;
-        _icon.DoubleClick += (_, _) => openFacebook();
+        menu.Items.Add(texts.Exit, null, (_, _) => _exit());
+        return menu;
 
         WinForms.ToolStripMenuItem SizeMenu()
         {
-            var parent = new WinForms.ToolStripMenuItem("Kích thước khung chat");
-            foreach (var (text, size) in new[] { ("Nhỏ", PanelSize.Small), ("Vừa", PanelSize.Medium), ("Lớn", PanelSize.Large) })
+            var parent = new WinForms.ToolStripMenuItem(texts.PanelSize);
+            foreach (var (text, size) in new[] { (texts.Small, PanelSize.Small), (texts.Medium, PanelSize.Medium), (texts.Large, PanelSize.Large) })
             {
                 var item = new WinForms.ToolStripMenuItem(text) { Checked = settings.PanelSize == size };
                 item.Click += (_, _) =>
@@ -61,6 +75,25 @@ class TrayIcon : IDisposable
             return parent;
         }
 
+        WinForms.ToolStripMenuItem LanguageMenu()
+        {
+            var parent = new WinForms.ToolStripMenuItem(texts.Language);
+            foreach (var (text, language) in new[] { ("Tiếng Việt", AppLanguage.Vietnamese), ("English", AppLanguage.English) })
+            {
+                var item = new WinForms.ToolStripMenuItem(text) { Checked = settings.Language == language };
+                item.Click += (_, _) =>
+                {
+                    settings.Language = language;
+                    settings.Save(AppPaths.SettingsFile);
+                    Texts.Current = Texts.For(language);
+                    _icon.ContextMenuStrip = BuildMenu();
+                    _settingsChanged();
+                };
+                parent.DropDownItems.Add(item);
+            }
+            return parent;
+        }
+
         WinForms.ToolStripMenuItem Toggle(string text, bool state, Action<bool> apply)
         {
             var item = new WinForms.ToolStripMenuItem(text) { CheckOnClick = true, Checked = state };
@@ -68,7 +101,7 @@ class TrayIcon : IDisposable
             {
                 apply(item.Checked);
                 settings.Save(AppPaths.SettingsFile);
-                settingsChanged();
+                _settingsChanged();
             };
             return item;
         }
@@ -79,18 +112,18 @@ class TrayIcon : IDisposable
         _login = needed;
         _icon.Icon = _login || _broken ? _error : _ok;
         if (needed)
-            _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Cần đăng nhập lại Facebook", WinForms.ToolTipIcon.Warning);
+            _icon.ShowBalloonTip(5000, "Messenger Bubbles", Texts.Current.NeedLogin, WinForms.ToolTipIcon.Warning);
     }
 
     public void NotifyPanelBroken() =>
-        _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Không mở được khung chat. Facebook có thể đã đổi giao diện", WinForms.ToolTipIcon.Error);
+        _icon.ShowBalloonTip(5000, "Messenger Bubbles", Texts.Current.PanelBroken, WinForms.ToolTipIcon.Error);
 
     public void SetBroken(bool broken)
     {
         _broken = broken;
         _icon.Icon = _login || _broken ? _error : _ok;
         if (broken)
-            _icon.ShowBalloonTip(5000, "Messenger Bubbles", "Không đọc được danh sách chat. Facebook có thể đã đổi giao diện", WinForms.ToolTipIcon.Error);
+            _icon.ShowBalloonTip(5000, "Messenger Bubbles", Texts.Current.ListBroken, WinForms.ToolTipIcon.Error);
     }
 
     public void Dispose()

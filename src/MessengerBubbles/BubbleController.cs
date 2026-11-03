@@ -205,9 +205,10 @@ class BubbleController
         }
         if (_overflow == null)
         {
-            _overflow = NewBubble("Các cuộc chat khác", "", () => "", canDismiss: false);
+            _overflow = NewBubble(Texts.Current.OtherChats, "", () => "", canDismiss: false);
             PlaceInFreeSlot(_overflow);
         }
+        _overflow.SetName(Texts.Current.OtherChats);
         _overflow.SetLabel($"+{_set.Overflow}");
     }
 
@@ -221,7 +222,7 @@ class BubbleController
         }
         if (_persistent == null)
         {
-            _persistent = NewBubble("Danh sách chat", "💬", () => "", canDismiss: false, PersistentKey);
+            _persistent = NewBubble(Texts.Current.ChatList, "💬", () => "", canDismiss: false, PersistentKey);
             _persistent.Show();
             if (_settings.Positions.TryGetValue(PersistentKey, out var saved))
             {
@@ -233,6 +234,7 @@ class BubbleController
                 PlaceInFreeSlot(_persistent);
             }
         }
+        _persistent.SetName(Texts.Current.ChatList);
         _persistent.SetBadge(_unreadThreads);
     }
 

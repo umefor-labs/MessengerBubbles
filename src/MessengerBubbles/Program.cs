@@ -25,6 +25,12 @@ static class Program
     static async Task StartAsync(Application app)
     {
         var settings = Settings.Load(AppPaths.SettingsFile);
+        if (settings.Language == null)
+        {
+            settings.Language = LanguageWindow.Ask();
+            settings.Save(AppPaths.SettingsFile);
+        }
+        Texts.Current = Texts.For(settings.Language.Value);
         var watcher = new Watcher();
         var panel = new ChatPanel(settings);
         var bubbles = new BubbleController(settings, watcher.GetLoadedResourceAsync, panel.IsShowingAsync, () => panel.ScreenBox);
@@ -54,7 +60,7 @@ static class Program
         }
         catch (WebView2RuntimeNotFoundException)
         {
-            MessageBox.Show("Máy chưa có WebView2 Runtime, app không chạy được.", "Messenger Bubbles");
+            MessageBox.Show(Texts.Current.NoRuntime, "Messenger Bubbles");
             tray.Dispose();
             app.Shutdown();
         }

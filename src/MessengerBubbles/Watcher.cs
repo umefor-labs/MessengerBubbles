@@ -33,7 +33,6 @@ class Watcher : Window
 
     public Watcher()
     {
-        Title = "Messenger Bubbles: đăng nhập Facebook, xong thì đóng cửa sổ này";
         Width = 1100;
         Height = 800;
         ShowInTaskbar = false;
@@ -58,6 +57,7 @@ class Watcher : Window
 
     public void ShowWindow()
     {
+        Title = Texts.Current.LoginTitle;
         var area = SystemParameters.WorkArea;
         Left = area.Left + (area.Width - Width) / 2;
         Top = area.Top + (area.Height - Height) / 2;
