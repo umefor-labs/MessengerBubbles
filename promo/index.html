@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<title>Messenger Bubbles intro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b1324; font-family: "Segoe UI", sans-serif; }
+  .abs, .abs * { position: absolute; }
+  .abs { left: 0; top: 0; will-change: transform, opacity; transform-origin: 50% 50%; }
+
+  #stage { position: absolute; inset: 0; overflow: hidden; }
+  #wall { inset: 0; position: absolute; background:
+    radial-gradient(1100px 760px at 78% 18%, #3f7be0 0%, transparent 62%),
+    radial-gradient(1200px 900px at 18% 92%, #6b4bd8 0%, transparent 60%),
+    linear-gradient(135deg, #16264d, #0f1a38); }
+
+  #doc { position: absolute; left: 96px; top: 210px; width: 1060px; height: 730px; background: #fbfbfd; border-radius: 12px; box-shadow: 0 24px 60px #0006; overflow: hidden; }
+  #doc .bar { height: 52px; background: #eef0f5; border-bottom: 1px solid #dfe2ea; display: flex; align-items: center; padding: 0 22px; color: #4a5060; font-size: 18px; }
+  #doc h2 { margin: 42px 64px 26px; font-size: 38px; font-weight: 600; color: #20242e; }
+  #doc i { display: block; height: 15px; max-width: calc(100% - 128px); margin: 0 64px 20px; border-radius: 8px; background: #e3e6ee; }
+
+  #taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: #f1f3f9ee; border-top: 1px solid #fff8; }
+  #taskbar b { position: absolute; top: 16px; width: 40px; height: 40px; border-radius: 9px; }
+  #clock { position: absolute; right: 26px; top: 12px; text-align: right; font-size: 17px; line-height: 24px; color: #1b1f2a; }
+  #trayicon { position: absolute; left: 1672px; top: 18px; width: 36px; height: 36px; }
+  #traypad { position: absolute; left: 1660px; top: 10px; width: 60px; height: 52px; border-radius: 8px; background: #0000000f; }
+
+  #caption { width: 1080px; }
+  #caption .h { position: static; color: #fff; font-size: 52px; font-weight: 600; line-height: 62px; letter-spacing: -.5px; text-shadow: 0 2px 14px #0007; }
+  #caption .s { position: static; color: #dfe7fb; font-size: 28px; line-height: 38px; margin-top: 4px; text-shadow: 0 2px 10px #0008; }
+
+  .bubble { width: 84px; height: 84px; }
+  .face { inset: 0; border-radius: 50%; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 34px; font-weight: 600; box-shadow: 0 6px 18px #0005; }
+  .badge { right: 0; top: 0; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 15px; background: #f02849; color: #fff; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  #preview { width: 420px; height: 84px; background: #fff; border-radius: 42px; box-shadow: 0 6px 22px #0004; }
+  #preview .av { left: 12px; top: 12px; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 600; }
+  #preview .n { left: 86px; top: 13px; right: 26px; font-size: 20px; font-weight: 600; color: #050505; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #preview .t { left: 86px; top: 41px; right: 26px; font-size: 18px; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  #panel { width: 570px; height: 840px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 16px 48px #0006; outline: 1px solid #0002; transform-origin: 100% 20%; }
+  .view { inset: 0; background: #fff; }
+  .head { left: 0; right: 0; top: 0; height: 96px; border-bottom: 1px solid #eceef2; box-shadow: 0 2px 6px #0000000f; }
+  .back { left: 22px; top: 28px; font-size: 36px; line-height: 40px; color: #0866ff; font-weight: 600; }
+  .hav { left: 70px; top: 18px; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 600; }
+  .hn { left: 144px; top: 18px; font-size: 24px; font-weight: 600; color: #050505; white-space: nowrap; }
+  .hs { left: 144px; top: 51px; font-size: 18px; color: #65676b; white-space: nowrap; }
+  .msg { max-width: 400px; padding: 13px 20px; border-radius: 26px; font-size: 22px; line-height: 30px; white-space: nowrap; }
+  .in { left: 28px; background: #f0f0f0; color: #050505; }
+  .out { right: 28px; background: #0866ff; color: #fff; transform-origin: 100% 100%; }
+  .composer { left: 22px; right: 22px; bottom: 20px; height: 62px; border-radius: 31px; background: #f0f2f5; }
+  .composer span { left: 26px; top: 14px; font-size: 22px; line-height: 34px; color: #050505; white-space: nowrap; }
+  .composer em { font-style: normal; color: #8a8d91; }
+  .ttl { left: 26px; top: 26px; font-size: 34px; font-weight: 700; color: #050505; }
+  .row { left: 10px; right: 10px; height: 96px; border-radius: 12px; }
+  .row .a { left: 14px; top: 12px; width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 30px; font-weight: 600; }
+  .row .n { left: 102px; top: 17px; font-size: 22px; color: #050505; white-space: nowrap; }
+  .row .t { left: 102px; top: 50px; font-size: 19px; color: #65676b; white-space: nowrap; }
+  .row.bold .n, .row.bold .t { font-weight: 700; color: #050505; }
+
+  #zone { width: 360px; height: 210px; }
+  #mark { left: 138px; top: 63px; width: 84px; height: 84px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+
+  .menu { background: #fbfbfd; border-radius: 12px; box-shadow: 0 14px 44px #0005; outline: 1px solid #0001; transform-origin: 80% 100%; }
+  .mi { left: 6px; right: 6px; height: 48px; border-radius: 7px; font-size: 21px; line-height: 48px; padding-left: 50px; color: #1a1c22; white-space: nowrap; }
+  .mi u { text-decoration: none; left: 18px; top: 0; }
+  .mi s { text-decoration: none; right: 16px; top: 0; color: #666; }
+  .sep { left: 16px; right: 16px; height: 1px; background: #e2e4ea; }
+
+  #cursor { width: 44px; height: 60px; filter: drop-shadow(0 3px 5px #0007); transform-origin: 0 0; }
+  #ripple { width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%; border: 4px solid #fff; }
+
+  .full { inset: 0; position: absolute; z-index: 50; background:
+    radial-gradient(1000px 700px at 50% 38%, #24498f 0%, transparent 70%), #0b1324; }
+  .center { left: 0; width: 1920px; text-align: center; color: #fff; }
+  .chip { height: 70px; padding: 0 34px; border-radius: 35px; background: #ffffff17; outline: 1px solid #ffffff2b; color: #fff; font-size: 27px; line-height: 70px; white-space: nowrap; }
+</style>
+
+<div id="stage">
+  <div id="wall"></div>
+  <div id="doc"><div class="bar">Báo cáo tuần.docx</div><h2>Báo cáo tuần</h2><i style="width:88%"></i><i style="width:94%"></i><i style="width:80%"></i><i style="width:91%"></i><i style="width:58%;margin-bottom:46px"></i><i style="width:90%"></i><i style="width:84%"></i><i style="width:93%"></i><i style="width:66%"></i></div>
+  <div id="taskbar"><b style="left:800px;background:#3b82f6"></b><b style="left:856px;background:#f59e0b"></b><b style="left:912px;background:#10b981"></b><b style="left:968px;background:#8b5cf6"></b><b style="left:1024px;background:#475569"></b><div id="traypad"></div><img id="trayicon" src="app-icon.png"><div id="clock">09:41<br>03/11/2026</div></div>
+  <div id="caption" class="abs"><div class="h"></div><div class="s"></div></div>
+  <div id="zone" class="abs"><div id="mark" class="abs">✕</div></div>
+  <div id="host"></div>
+  <div id="titleL" class="full"></div>
+  <div id="outroL" class="full"></div>
+  <div id="ripple" class="abs"></div>
+  <svg id="cursor" class="abs" viewBox="0 0 22 30"><path d="M2 1 L2 24 L8 18.5 L12 28 L16 26.3 L12 17 L20 17 Z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>
+</div>
+
+<script>
+// Every property is a pure function of t, so any frame renders on its own.
+function bezier(x1, y1, x2, y2) {
+  const f = (a, b, s) => 3 * a * s * (1 - s) ** 2 + 3 * b * s * s * (1 - s) + s ** 3;
+  return x => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 24; i++) {
+      const m = (lo + hi) / 2;
+      if (f(x1, x2, m) < x) lo = m; else hi = m;
+    }
+    return f(y1, y2, (lo + hi) / 2);
+  };
+}
+const OUT = bezier(.23, 1, .32, 1), IO = bezier(.77, 0, .175, 1), LIN = x => x;
+const prog = (t, a, b, e = OUT) => e(Math.min(1, Math.max(0, (t - a) / (b - a))));
+function kf(t, keys, e = IO) {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) {
+    if (t <= keys[i][0]) return keys[i - 1][1] + (keys[i][1] - keys[i - 1][1]) * prog(t, keys[i - 1][0], keys[i][0], e);
+  }
+  return keys[keys.length - 1][1];
+}
+// Fades in at a, out at b.
+const span = (t, a, b, f = .2) => prog(t, a, a + f) * (1 - prog(t, b - f, b, LIN));
+const el = (html, cls = 'abs') => {
+  const d = document.createElement('div');
+  d.className = cls;
+  d.innerHTML = html;
+  document.getElementById('host').appendChild(d);
+  return d;
+};
+const put = (e, x, y, s = 1, o = 1, z) => {
+  e.style.transform = `translate(${x}px,${y}px) scale(${s})`;
+  e.style.opacity = o;
+  e.style.visibility = o <= .001 ? 'hidden' : 'visible';
+  if (z !== undefined) e.style.zIndex = z;
+};
+
+const P = {
+  lan: ['Lan Anh', 'L', 'linear-gradient(135deg,#ff7a9a,#d6336c)'],
+  khoa: ['Minh Khoa', 'M', 'linear-gradient(135deg,#34c8a6,#0b8a72)'],
+  vy: ['Hà Vy', 'H', 'linear-gradient(135deg,#ffb347,#f0761f)'],
+  huy: ['Quang Huy', 'Q', 'linear-gradient(135deg,#8e7bff,#5a3fd6)'],
+  nhom: ['Nhóm Dự án', 'N', 'linear-gradient(135deg,#5cb8ff,#1f73d6)'],
+};
+const av = (cls, p) => `<div class="${cls}" style="background:${P[p][2]}">${P[p][1]}</div>`;
+const bubble = p => el(`<div class="face" style="background:${P[p][2]}">${P[p][1]}</div><div class="badge"></div>`, 'abs bubble');
+
+const bLan = bubble('lan'), bKhoa = bubble('khoa'), bKhoa2 = bubble('khoa'), bHuy = bubble('huy');
+const lanFace = bLan.querySelector('.face');
+const vyFace = document.createElement('div');
+vyFace.className = 'face';
+vyFace.style.background = P.vy[2];
+vyFace.textContent = P.vy[1];
+bLan.insertBefore(vyFace, bLan.querySelector('.badge'));
+
+const preview = el(`<div class="av"></div><div class="n"></div><div class="t"></div>`);
+preview.id = 'preview';
+
+const rows = [['lan', 'Bạn: 7 giờ nhé, link gửi sau', 0], ['vy', 'Cuối tuần đi cà phê không?', 1], ['khoa', 'Gửi bạn file báo giá', 1], ['huy', 'Mai mình qua lấy tài liệu', 0], ['nhom', 'Chốt lịch thứ Năm nha', 0]];
+const head = p => `<div class="head"><div class="back">←</div>${av('hav', p)}<div class="hn">${P[p][0]}</div><div class="hs">Đang hoạt động</div></div>`;
+const panel = el(`
+  <div class="view" id="vA">${head('lan')}
+    <div class="msg in" style="top:130px">Tối nay họp lúc mấy giờ?</div>
+    <div class="msg in" style="top:194px">Nhắn lại giúp mình nhé</div>
+    <div class="msg out" id="sent" style="top:274px">7 giờ nhé, link gửi sau</div>
+    <div class="msg in" id="reply" style="top:354px">Ok, cảm ơn nha!</div>
+    <div class="composer"><span id="typed"></span></div>
+  </div>
+  <div class="view" id="vL"><div class="ttl">Đoạn chat</div>
+    ${rows.map((r, i) => `<div class="row ${r[2] ? 'bold' : ''}" id="r${i}" style="top:${90 + i * 96}px">${av('a', r[0])}<div class="n">${P[r[0]][0]}</div><div class="t">${r[1]}</div></div>`).join('')}
+  </div>
+  <div class="view" id="vV">${head('vy')}
+    <div class="msg in" style="top:130px">Cuối tuần đi cà phê không?</div>
+    <div class="composer"><span><em>Aa</em></span></div>
+  </div>`);
+panel.id = 'panel';
+
+const VI = ['Mở Facebook', 'Bóng thường trực', 'Gom bóng', 'Xem trước nội dung', 'Âm báo', 'Kích thước khung chat', 'Ngôn ngữ', 'Khởi động cùng Windows', 'Báo bản mới', 'Thoát'];
+const EN = ['Open Facebook', 'Persistent bubble', 'Group bubbles', 'Preview messages', 'Sound', 'Chat panel size', 'Language', 'Start with Windows', 'Notify about updates', 'Quit'];
+const CHECKED = [2, 3, 4, 8], SUB = [5, 6];
+const menuHtml = () => {
+  let y = 6, h = '';
+  VI.forEach((_, i) => {
+    h += `<div class="mi" data-i="${i}" style="top:${y}px"><u>${CHECKED.includes(i) ? '✓' : ''}</u><span style="position:static"></span><s>${SUB.includes(i) ? '›' : ''}</s></div>`;
+    y += 48;
+    if (i === 0 || i === 8) { h += `<div class="sep" style="top:${y + 6}px"></div>`; y += 14; }
+  });
+  return h;
+};
+const menu = el(menuHtml(), 'abs menu');
+menu.style.width = '420px';
+menu.style.height = '520px';
+const sub = el(`<div class="mi" style="top:6px"><u>✓</u><span style="position:static">Tiếng Việt</span></div><div class="mi" id="subEn" style="top:54px"><u></u><span style="position:static">English</span></div>`, 'abs menu');
+sub.style.width = '240px';
+sub.style.height = '108px';
+
+const title = document.getElementById('titleL');
+title.innerHTML = `
+  <img id="tIcon" class="abs" src="app-icon.png" style="width:190px;height:190px;left:865px;top:300px">
+  <div id="tName" class="abs center" style="top:520px;font-size:84px;font-weight:700;letter-spacing:-1px">Messenger Bubbles</div>
+  <div id="tSub" class="abs center" style="top:636px;font-size:36px;color:#cfdcf8">Chat Facebook dạng bong bóng nổi trên Windows 11</div>`;
+const CHIPS = ['Mỗi người một bóng', 'Không tải lại trang', 'Mở app không làm tin thành đã đọc', 'Một file .exe, không cần cài đặt', 'Tiếng Việt, English', 'Báo khi có bản mới'];
+const outro = document.getElementById('outroL');
+outro.innerHTML = `
+  <img id="oIcon" class="abs" src="app-icon.png" style="width:130px;height:130px;left:895px;top:130px">
+  <div id="oName" class="abs center" style="top:276px;font-size:66px;font-weight:700">Messenger Bubbles</div>
+  ${CHIPS.map((c, i) => `<div class="abs chip" id="c${i}">${c}</div>`).join('')}
+  <div id="oUrl" class="abs center" style="top:760px;font-size:36px;font-weight:600">github.com/umefor-labs/MessengerBubbles</div>
+  <div id="oNote" class="abs center" style="top:930px;font-size:22px;color:#9fb0d6">Dự án cá nhân, không liên kết với Meta. Video minh họa bằng dữ liệu giả.</div>`;
+function layoutChips() {
+  [[0, 1, 2], [3, 4, 5]].forEach((line, row) => {
+    const widths = line.map(i => document.getElementById('c' + i).offsetWidth);
+    let x = (1920 - widths.reduce((a, b) => a + b, 0) - 24 * 2) / 2;
+    line.forEach((i, k) => {
+      const c = document.getElementById('c' + i);
+      c.dataset.x = x;
+      c.dataset.y = 420 + row * 94;
+      x += widths[k] + 24;
+    });
+  });
+}
+
+const CAPTIONS = [
+  [3.8, 10.9, 'Có tin là bật bóng', 'Mỗi người một bóng, bóng mới nằm trên bóng cũ.'],
+  [11.1, 15.9, 'Bấm là vào thẳng cuộc chat', 'Không tải lại trang, chỉ hiện khung chat.'],
+  [16.1, 18.9, 'Đang đọc thì không báo trùng', 'Cuộc chat đang mở không bật thêm thông báo.'],
+  [19.1, 24.3, 'Đổi cuộc chat, bóng đổi theo', 'Rời khung ở cuộc chat nào, bóng thành của người đó.'],
+  [24.5, 30.8, 'Kéo đi đâu cũng được', 'Thả ra thì hít vào cạnh, kéo xuống đáy để đóng.'],
+  [31, 37.6, 'Gom bóng khi có nhiều người', 'Xếp thành chồng, bấm để xòe ra, rồi tự gom lại.'],
+  [37.8, 44.3, 'Tùy chỉnh ngay ở khay', 'Âm báo, xem trước, cỡ khung chat, tiếng Việt hoặc English.'],
+];
+const CURSOR_X = [[3.5,1040],[11,1040],[12,1878],[12.6,1878],[13,1600],[18.8,1600],[19.4,1294],[19.7,1294],[20.6,1500],[21.6,1500],[22.4,720],[24.4,720],[25.1,1878],[25.2,1878],[26.2,462],[26.6,462],[27.1,1878],[27.2,1878],[28.4,960],[29,960],[30,720],[33.6,720],[34.2,42],[35,42],[35.8,720],[37.5,720],[38.6,1690],[39,1690],[39.6,1620],[39.9,1620],[40.6,1280],[41.5,1280],[41.9,1690],[44.6,1690]];
+const CURSOR_Y = [[3.5,720],[11,720],[12,342],[12.6,342],[13,780],[18.8,780],[19.4,218],[19.7,218],[20.6,402],[21.6,402],[22.4,640],[24.4,640],[25.1,342],[25.2,342],[26.2,582],[26.6,582],[27.1,246],[27.2,246],[28.4,903],[29,903],[30,640],[33.6,640],[34.2,582],[35,582],[35.8,640],[37.5,640],[38.6,1044],[39,1044],[39.6,812],[39.9,812],[40.6,868],[41.5,868],[41.9,1044],[44.6,1044]];
+const CLICKS = [12.1, 19.5, 20.7, 22.5, 34.3, 38.7, 41.2, 42];
+const TYPED = '7 giờ nhé, link gửi sau';
+
+const EDGE = 1836, LANY = 300, KHOAY = 204, ANCHOR = 540, PANELX = 1254, PANELY = 168;
+const BADGE = (b, n) => {
+  const d = b.querySelector('.badge');
+  d.textContent = n;
+  d.style.display = n > 0 ? 'flex' : 'none';
+};
+const pop = (t, a) => .4 + .6 * prog(t, a, a + .25);
+const seen = (t, a) => prog(t, a, a + .12, LIN);
+
+function setPreview(p, text, x, y, o) {
+  const a = preview.querySelector('.av');
+  a.style.background = P[p][2];
+  a.textContent = P[p][1];
+  preview.querySelector('.n').textContent = P[p][0];
+  preview.querySelector('.t').textContent = text;
+  put(preview, x, y, 1, o, 30);
+}
+
+window.seek = t => {
+  // Layers
+  title.style.opacity = 1 - prog(t, 3.2, 3.7, LIN);
+  title.style.visibility = t >= 3.7 ? 'hidden' : 'visible';
+  put(document.getElementById('tIcon'), 0, 22 * (1 - prog(t, .25, .95)), .95 + .05 * prog(t, .25, .95), prog(t, .25, .8));
+  put(document.getElementById('tName'), 0, 22 * (1 - prog(t, .55, 1.25)), 1, prog(t, .55, 1.1));
+  put(document.getElementById('tSub'), 0, 22 * (1 - prog(t, .85, 1.55)), 1, prog(t, .85, 1.4));
+  outro.style.opacity = prog(t, 44.4, 44.95, LIN);
+  outro.style.visibility = t < 44.4 ? 'hidden' : 'visible';
+  put(document.getElementById('oIcon'), 0, 16 * (1 - prog(t, 44.8, 45.4)), 1, prog(t, 44.8, 45.3));
+  put(document.getElementById('oName'), 0, 16 * (1 - prog(t, 45, 45.6)), 1, prog(t, 45, 45.5));
+  CHIPS.forEach((_, i) => {
+    const c = document.getElementById('c' + i), a = 45.3 + i * .12;
+    put(c, +c.dataset.x, +c.dataset.y + 16 * (1 - prog(t, a, a + .5)), 1, prog(t, a, a + .4));
+  });
+  put(document.getElementById('oUrl'), 0, 0, 1, prog(t, 46.3, 46.8));
+  put(document.getElementById('oNote'), 0, 0, 1, prog(t, 46.6, 47.1));
+
+  // Caption
+  const cap = document.getElementById('caption');
+  const cur = CAPTIONS.find(c => t >= c[0] && t < c[1]);
+  if (cur) {
+    cap.querySelector('.h').textContent = cur[2];
+    cap.querySelector('.s').textContent = cur[3];
+    const o = span(t, cur[0], cur[1], .25);
+    put(cap, 96, 40 + 10 * (1 - prog(t, cur[0], cur[0] + .35)), 1, o);
+  } else put(cap, 96, 40, 1, 0);
+
+  // Lan's bubble, which becomes Vy's at 22.6
+  const stackAt = (i, n) => ANCHOR + (n - 1 - i) * 6;
+  const group = prog(t, 32.6, 33, IO) - prog(t, 34.4, 34.75, IO) + prog(t, 36.6, 37, IO);
+  const lanX = t < 25.2 ? EDGE : kf(t, [[25.2, EDGE], [26.2, 420]], IO) * (t < 26.2 ? 1 : 0) + (t >= 26.2 ? kf(t, [[26.25, 420], [26.6, 0]], OUT) : 0);
+  const lanYDrag = kf(t, [[25.2, LANY], [26.2, ANCHOR]]);
+  const spreadT = prog(t, 34.4, 34.75, IO) - prog(t, 36.6, 37, IO);
+  const stackLan = 552 + (372 - 552) * spreadT, stackKhoa = 546 + (456 - 546) * spreadT, stackHuy = 540;
+  const lanY = t < 32.6 ? lanYDrag : t < 33 ? ANCHOR + (552 - ANCHOR) * prog(t, 32.6, 33, IO) : stackLan;
+  put(bLan, lanX, lanY, pop(t, 4.2), seen(t, 4.2), 11);
+  const swap = prog(t, 22.6, 22.85, LIN);
+  lanFace.style.opacity = 1 - swap;
+  vyFace.style.opacity = swap;
+  BADGE(bLan, t < 4.2 ? 0 : t < 5.8 ? 1 : t < 12.1 ? 2 : 0);
+
+  // Khoa's first bubble, dismissed at 28.5
+  const kx = kf(t, [[27.2, EDGE], [28.4, 918]]), ky = kf(t, [[27.2, KHOAY], [28.4, 861]]);
+  const suck = prog(t, 28.5, 28.72, IO);
+  put(bKhoa, kx, ky, pop(t, 7.6) * (1 - .8 * suck), seen(t, 7.6) * (1 - prog(t, 28.6, 28.75, LIN)), 12);
+  BADGE(bKhoa, 1);
+
+  // Zone
+  const zoneO = prog(t, 27.25, 27.45, LIN) * (1 - prog(t, 28.72, 28.9, LIN));
+  put(document.getElementById('zone'), 780, 798, 1, zoneO, 5);
+  document.getElementById('mark').style.background = t > 28 ? '#dc2828e6' : '#282828c8';
+
+  // Khoa's new bubble and Huy's, at the new anchor on the left
+  const k2y = t < 32.6 ? 456 : t < 33 ? 456 + (546 - 456) * prog(t, 32.6, 33, IO) : stackKhoa;
+  put(bKhoa2, 0, k2y, pop(t, 31.2), seen(t, 31.2), 13);
+  const hy = t < 32.6 ? 372 : t < 33 ? 372 + (540 - 372) * prog(t, 32.6, 33, IO) : stackHuy;
+  put(bHuy, 0, hy, pop(t, 31.8), seen(t, 31.8), 14);
+  const stacked = (t >= 32.75 && t < 34.5) || t >= 36.75;
+  BADGE(bKhoa2, stacked ? 0 : 1);
+  BADGE(bHuy, stacked ? 2 : 1);
+
+  // Preview
+  if (t < 7.6) setPreview('lan', t < 5.8 ? 'Tối nay họp lúc mấy giờ?' : 'Nhắn lại giúp mình nhé', 1404, LANY, span(t, 4.35, 7.4));
+  else if (t < 12) setPreview('khoa', 'Gửi bạn file báo giá', 1404, KHOAY, span(t, 7.75, 10.8));
+  else if (t < 31.8) setPreview('khoa', 'Mai gọi mình nhé', 96, 456, span(t, 31.3, 31.8, .15));
+  else setPreview('huy', 'Mai mình qua lấy tài liệu', 96, 372, span(t, 31.9, 32.55, .15));
+
+  // Panel
+  const open = t >= 12.15 && t < 22.55;
+  put(panel, PANELX, PANELY, .97 + .03 * prog(t, 12.15, 12.42), open ? prog(t, 12.15, 12.36) : 0, 20);
+  const view = t < 19.6 ? 'A' : t < 20.8 ? 'L' : 'V';
+  ['A', 'L', 'V'].forEach(v => document.getElementById('v' + v).style.visibility = v === view && open ? 'visible' : 'hidden');
+  const typing = Math.floor(prog(t, 13.1, 14.8, LIN) * TYPED.length);
+  const sent = t >= 15;
+  document.getElementById('typed').innerHTML = sent || t < 13.1 ? '<em>Aa</em>' : TYPED.slice(0, typing);
+  const s = document.getElementById('sent');
+  s.style.opacity = prog(t, 15, 15.18);
+  s.style.transform = `scale(${.94 + .06 * prog(t, 15, 15.25)})`;
+  const r = document.getElementById('reply');
+  r.style.opacity = prog(t, 16.6, 16.8);
+  r.style.transform = `translateY(${8 * (1 - prog(t, 16.6, 16.85))}px)`;
+  document.getElementById('r1').style.background = t > 20.3 ? '#f0f2f5' : 'transparent';
+
+  // Tray menu
+  const firstMenu = t >= 38.75 && t < 41.25, secondMenu = t >= 42.05 && t < 44.35;
+  const lang = t >= 41.25 ? EN : VI;
+  menu.querySelectorAll('.mi').forEach(m => {
+    const i = +m.dataset.i;
+    m.querySelector('span').textContent = lang[i];
+    m.style.background = firstMenu && i === 6 && t > 39.45 ? '#e8ebf2' : 'transparent';
+  });
+  const mo = firstMenu ? prog(t, 38.75, 38.93) : secondMenu ? prog(t, 42.05, 42.23) : 0;
+  const ma = firstMenu ? 38.75 : 42.05;
+  put(menu, 1410, 480, .97 + .03 * prog(t, ma, ma + .2), mo, 40);
+  put(sub, 1164, 790, 1, firstMenu ? prog(t, 39.7, 39.86) : 0, 41);
+  document.getElementById('subEn').style.background = t > 40.4 ? '#e8ebf2' : 'transparent';
+
+  // Cursor and clicks
+  const cx = kf(t, CURSOR_X), cy = kf(t, CURSOR_Y);
+  const cursor = document.getElementById('cursor');
+  const hidden = t < 3.6 || t > 44.7;
+  put(cursor, cx, cy, 1, hidden ? 0 : prog(t, 3.6, 3.9) * (1 - prog(t, 44.45, 44.7, LIN)), 60);
+  const hit = CLICKS.find(c => t >= c && t < c + .4);
+  const rip = document.getElementById('ripple');
+  if (hit !== undefined) put(rip, cx, cy, .4 + .9 * prog(t, hit, hit + .4), .8 * (1 - prog(t, hit, hit + .4, LIN)), 59);
+  else put(rip, 0, 0, 1, 0, 59);
+};
+
+layoutChips();
+window.seek(0);
+window.DURATION = 49;
+const q = new URLSearchParams(location.search).get('t');
+if (q) window.seek(+q);
+</script>
+</html>
