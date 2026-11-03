@@ -46,9 +46,12 @@
   if (document.documentElement) addStyle();
   else addEventListener('DOMContentLoaded', addStyle);
 
+  const rowsSelector = 'a[href*="/messages/t/"],a[href*="/messages/e2ee/t/"]';
+  window.__cbHasRows = () => document.querySelector(rowsSelector) !== null;
+
   // Clicking a row routes inside the page, without a reload; a direct URL at this width lands on the list.
   window.__cbOpen = href => {
-    const rows = [...document.querySelectorAll('a[href*="/messages/t/"],a[href*="/messages/e2ee/t/"]')];
+    const rows = [...document.querySelectorAll(rowsSelector)];
     if (rows.length === 0 && location.pathname.startsWith('/messages')) return 'wait';
     if (!location.pathname.startsWith('/messages')) return 'off-page';
     const row = rows.find(a => a.getAttribute('href') === href);

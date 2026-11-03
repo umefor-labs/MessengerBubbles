@@ -79,7 +79,7 @@ class ChatPanel : Window
             await (_init ??= InitAsync());
             for (var i = 0; i < OpenTries * 2 && _openHref == null; i++)
             {
-                if (await RunAsync("document.querySelector('a[href*=\"/messages/t/\"],a[href*=\"/messages/e2ee/t/\"]') !== null") == "true") break;
+                if (await RunAsync("window.__cbHasRows?.() === true") == "true") break;
                 await Task.Delay(RetryDelay);
             }
         }

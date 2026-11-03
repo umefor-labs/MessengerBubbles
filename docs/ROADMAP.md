@@ -4,7 +4,9 @@ Mỗi phiên bản là một đợt phát hành nhỏ, có tiêu chí đạt rõ
 
 Các tính năng ở v0.3 trở đi là đề xuất, chưa được người dùng chốt. Mỗi đợt nên chốt lại phạm vi trước khi làm.
 
-## v0.1.0: Bản dùng được (hiện tại)
+Bản phát hành mới nhất là `v0.4.0`. Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
+
+## v0.1.0: Bản dùng được
 
 Đã có và đã thấy chạy với tin thật:
 
@@ -57,14 +59,15 @@ Mục tiêu: cài và cập nhật dễ, không cần `dotnet`.
 
 ## v1.0: Sẵn sàng phát hành
 
-- [ ] Quyết định có công khai repo không. Trước đó phải xem điều khoản của Meta và việc dùng tên "Messenger", vì tên này là nhãn hiệu của Meta.
-- [ ] Chọn license, viết README cho người ngoài, nêu rõ rủi ro với tài khoản.
-- [ ] Facebook đổi giao diện thì sửa được nhanh: gom các chỗ phụ thuộc cấu trúc trang vào `probe.js` và `panel.js`, có danh sách kiểm tra lại.
+- [ ] Quyết định có công khai repo không. Đã xem điều khoản và tên: [ghi chú](PUBLISHING.md).
+- [ ] Chọn license.
+- [x] Viết README cho người ngoài, nêu rõ rủi ro với tài khoản.
+- [x] Facebook đổi giao diện thì sửa được nhanh: cấu trúc trang chỉ nằm trong `probe.js` và `panel.js`, nhãn chữ nằm trong `RowText.cs`, có [danh sách kiểm tra](FACEBOOK-CHECKLIST.md).
 
 **Đạt khi:** dùng ổn định một tháng và đã có quyết định về công khai.
 
 ## Rủi ro xuyên suốt
 
 - App đọc giao diện Facebook, không có API chính thức, nên có thể hỏng bất cứ lúc nào.
-- Chưa kiểm tra app có phù hợp điều khoản của Meta không.
-- Dùng tên "Messenger" chưa phải vấn đề khi repo riêng tư, nhưng phải xem lại trước khi công khai.
+- Điều khoản Facebook cấm truy cập bằng phương tiện tự động nếu chưa được phép, nên tài khoản có thể bị hạn chế.
+- Dùng tên "Messenger" chưa phải vấn đề khi repo riêng tư, nhưng nên đổi tên trước khi công khai.

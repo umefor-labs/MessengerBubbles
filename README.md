@@ -1,6 +1,21 @@
 # Messenger Bubbles
 
-Bong bóng chat Facebook nổi trên Windows 11. App bọc `facebook.com/messages` trong WebView2, nên Facebook đổi giao diện thì phần phát hiện tin có thể hỏng; khi đó icon khay chuyển đỏ và báo.
+Bong bóng chat Facebook nổi trên Windows 11, mỗi người một bóng, giống chat head trên Android. App không phải của Meta và không liên kết với Meta.
+
+## Trước khi dùng
+
+- **Tài khoản:** app tự đọc trang Facebook, trong khi [điều khoản của Facebook](https://www.facebook.com/terms.php) cấm truy cập bằng phương tiện tự động nếu chưa được phép. Tài khoản có thể bị hạn chế. Tự cân nhắc trước khi dùng.
+- **Có thể hỏng:** không có API chính thức, nên Facebook đổi giao diện là phần phát hiện tin có thể hỏng. Khi đó icon khay chuyển đỏ và báo. Xem [danh sách kiểm tra](docs/FACEBOOK-CHECKLIST.md).
+- **Dữ liệu:** app không gửi dữ liệu đi đâu ngoài Facebook. Phiên đăng nhập lưu trên máy, xem mục Dữ liệu.
+
+## Tính năng
+
+- Có tin mới thì bật bóng có avatar, số tin và âm báo riêng.
+- Bấm bóng vào thẳng cuộc chat, không tải lại trang, chỉ hiện khung chat.
+- Mở app không làm tin thành đã đọc. Tin chỉ thành đã đọc khi mở cuộc chat đó.
+- Kéo bóng để đổi chỗ, kéo xuống đáy để đóng.
+
+Các tùy chọn nằm trong menu icon khay: bóng thường trực, gom bóng, xem trước nội dung, âm báo, kích thước khung chat, khởi động cùng Windows.
 
 ## Chạy
 
@@ -36,4 +51,8 @@ Tất cả nằm ở `%LOCALAPPDATA%\MessengerBubbles\`:
 - `settings.json`: tùy chọn và vị trí bóng.
 - `app.log`: trạng thái và lỗi, không có tên hay nội dung tin.
 
-Muốn xóa: đăng xuất Facebook trong app (`Mở Facebook` ở khay), tắt `Khởi động cùng Windows`, chọn `Thoát`, rồi xóa thư mục trên.
+Gỡ app: đăng xuất Facebook trong app (`Mở Facebook` ở khay), tắt `Khởi động cùng Windows`, chọn `Thoát`, rồi xóa thư mục trên và file `.exe`.
+
+## License
+
+Chưa có license, nên mặc định chưa cấp quyền dùng lại mã nguồn.
