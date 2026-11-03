@@ -90,5 +90,19 @@ public static class Geometry
             x < o.X + o.W && o.X < x + start.W && y < o.Y + o.H && o.Y < y + start.H);
     }
 
+    // One free slot per bubble, each search seeing the slots before it.
+    public static IReadOnlyList<Box> SpreadSlots(Box start, int count, IReadOnlyList<Box> taken, Box area, double spacing)
+    {
+        var occupied = taken.ToList();
+        var slots = new List<Box>();
+        for (var i = 0; i < count; i++)
+        {
+            var slot = FindFreeSlot(start, occupied, area, spacing);
+            slots.Add(slot);
+            occupied.Add(slot);
+        }
+        return slots;
+    }
+
     static double Clamp(double v, double min, double max) => Math.Max(min, Math.Min(v, max));
 }

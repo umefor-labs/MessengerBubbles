@@ -10,6 +10,7 @@ public record Settings
     public bool Preview { get; set; } = true;
     public bool Autostart { get; set; }
     public bool Sound { get; set; } = true;
+    public bool GroupBubbles { get; set; }
     public PanelSize PanelSize { get; set; } = PanelSize.Medium;
     public Dictionary<string, Box> Positions { get; set; } = new();
 

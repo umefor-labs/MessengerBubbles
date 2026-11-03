@@ -21,6 +21,10 @@ class TrayIcon : IDisposable
         {
             settings.PersistentBubble = on;
         }));
+        menu.Items.Add(Toggle("Gom bóng", settings.GroupBubbles, on =>
+        {
+            settings.GroupBubbles = on;
+        }));
         menu.Items.Add(Toggle("Xem trước nội dung", settings.Preview, on =>
         {
             settings.Preview = on;

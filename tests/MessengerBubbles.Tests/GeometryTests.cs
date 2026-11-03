@@ -97,6 +97,14 @@ public class GeometryTests
     }
 
     [Fact]
+    public void SpreadSlots_StacksUpwardWithoutOverlap()
+    {
+        var start = new Box(1864, 300, 56, 56);
+        var slots = Geometry.SpreadSlots(start, 3, [], Screen, 8);
+        Assert.Equal([300, 236, 172], slots.Select(s => s.Y));
+    }
+
+    [Fact]
     public void PlacePreview_NoPanel_SitsBesideBubble()
     {
         var bubble = new Box(1864, 300, 56, 56);

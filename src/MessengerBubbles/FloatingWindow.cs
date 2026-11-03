@@ -14,6 +14,7 @@ class FloatingWindow : Window
 {
     const int GwlExStyle = -20;
     const long WsExNoActivate = 0x08000000, WsExToolWindow = 0x00000080;
+    const uint SwpNoMove = 0x0002;
     const uint SwpNoSize = 0x0001, SwpNoZOrder = 0x0004, SwpNoActivate = 0x0010;
     const double GlideMs = 180;
 
@@ -91,6 +92,9 @@ class FloatingWindow : Window
 
     void SetPosition(double x, double y) =>
         SetWindowPos(Handle, IntPtr.Zero, (int)x, (int)y, 0, 0, SwpNoSize | SwpNoZOrder | SwpNoActivate);
+
+    public void BringToFront() =>
+        SetWindowPos(Handle, IntPtr.Zero, 0, 0, 0, 0, SwpNoMove | SwpNoSize | SwpNoActivate);
 
     public void Place(Box box) =>
         SetWindowPos(Handle, IntPtr.Zero, (int)box.X, (int)box.Y, (int)box.W, (int)box.H, SwpNoZOrder | SwpNoActivate);
