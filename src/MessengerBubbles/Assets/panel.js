@@ -7,6 +7,13 @@
     [role=banner] { display: none !important; }
     html, body { overflow: hidden !important; scrollbar-gutter: auto !important; }
     html::-webkit-scrollbar, body::-webkit-scrollbar { display: none !important; }
+    /* Chromium ignores the rules below while either standard scrollbar property is set. */
+    * { scrollbar-width: auto !important; scrollbar-color: auto !important; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; background: transparent; }
+    ::-webkit-scrollbar-button { display: none; }
+    ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(134, 142, 153, .4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(134, 142, 153, .8); }
     [role=main]:has([role=log]) {
       position: fixed !important; inset: 0 !important;
       width: auto !important; height: auto !important;

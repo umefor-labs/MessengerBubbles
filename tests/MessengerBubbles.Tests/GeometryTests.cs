@@ -76,17 +76,47 @@ public class GeometryTests
     }
 
     [Fact]
-    public void FindFreeSlot_Taken_GoesBelow()
+    public void FindFreeSlot_Taken_GoesAbove()
     {
         var start = new Box(1864, 300, 56, 56);
-        Assert.Equal(start with { Y = 364 }, Geometry.FindFreeSlot(start, [start], Screen, 8));
+        Assert.Equal(start with { Y = 236 }, Geometry.FindFreeSlot(start, [start], Screen, 8));
     }
 
     [Fact]
-    public void FindFreeSlot_RightEdgeNearBottom_WrapsToTopOfColumn()
+    public void FindFreeSlot_HoleInStack_StillGoesAboveTop()
     {
-        var start = new Box(1864, 950, 56, 56);
-        Assert.Equal(start with { Y = 0 }, Geometry.FindFreeSlot(start, [start], Screen, 8));
+        var start = new Box(1864, 300, 56, 56);
+        Assert.Equal(start with { Y = 172 }, Geometry.FindFreeSlot(start, [start with { Y = 236 }], Screen, 8));
+    }
+
+    [Fact]
+    public void FindFreeSlot_NoRoomAbove_GoesBelow()
+    {
+        var start = new Box(1864, 10, 56, 56);
+        Assert.Equal(start with { Y = 74 }, Geometry.FindFreeSlot(start, [start], Screen, 8));
+    }
+
+    [Fact]
+    public void PlacePreview_NoPanel_SitsBesideBubble()
+    {
+        var bubble = new Box(1864, 300, 56, 56);
+        Assert.Equal(Geometry.PlacePanel(bubble, 280, 56, Screen), Geometry.PlacePreview(bubble, 280, 56, Screen, null));
+    }
+
+    [Fact]
+    public void PlacePreview_OverPanel_MovesAbovePanel()
+    {
+        var panel = new Box(1476, 200, 380, 560);
+        var p = Geometry.PlacePreview(new Box(1864, 300, 56, 56), 280, 56, Screen, panel);
+        Assert.Equal(136, p.Y);
+    }
+
+    [Fact]
+    public void PlacePreview_PanelAtTop_MovesBelowPanel()
+    {
+        var panel = new Box(1476, 0, 380, 560);
+        var p = Geometry.PlacePreview(new Box(1864, 300, 56, 56), 280, 56, Screen, panel);
+        Assert.Equal(568, p.Y);
     }
 
     [Fact]

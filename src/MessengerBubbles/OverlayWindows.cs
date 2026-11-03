@@ -1,6 +1,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using MessengerBubbles.Core;
 using Geometry = MessengerBubbles.Core.Geometry;
@@ -40,23 +43,53 @@ class DismissZoneWindow : FloatingWindow
 
 class PreviewWindow : FloatingWindow
 {
-    const double W = 260, H = 64;
+    const double CardW = 280, CardH = 56, ShadowRoom = 10;
 
-    readonly TextBlock _name = new() { FontWeight = FontWeights.SemiBold, Foreground = Brushes.White, TextTrimming = TextTrimming.CharacterEllipsis };
-    readonly TextBlock _body = new() { Foreground = Brushes.White, TextTrimming = TextTrimming.CharacterEllipsis };
+    readonly Ellipse _avatar = new() { Width = 40, Height = 40 };
+    readonly TextBlock _initial = new()
+    {
+        Foreground = Brushes.White, FontSize = 16, FontWeight = FontWeights.SemiBold,
+        HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center,
+    };
+    readonly TextBlock _name = new()
+    {
+        FontSize = 13, FontWeight = FontWeights.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis,
+        Foreground = new SolidColorBrush(Color.FromRgb(0x05, 0x05, 0x05)),
+    };
+    readonly TextBlock _body = new()
+    {
+        FontSize = 12, Margin = new Thickness(0, 1, 0, 0), TextTrimming = TextTrimming.CharacterEllipsis,
+        Foreground = new SolidColorBrush(Color.FromRgb(0x65, 0x67, 0x6B)),
+    };
+    readonly Border _card;
     readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(5) };
 
-    public PreviewWindow() : base(W, H)
+    public PreviewWindow() : base(CardW + 2 * ShadowRoom, CardH + 2 * ShadowRoom)
     {
-        var stack = new StackPanel { Margin = new Thickness(12, 8, 12, 8), VerticalAlignment = VerticalAlignment.Center };
-        stack.Children.Add(_name);
-        stack.Children.Add(_body);
-        Content = new Border
+        var face = new Grid { Margin = new Thickness(8, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center };
+        face.Children.Add(_avatar);
+        face.Children.Add(_initial);
+
+        var text = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 14, 0) };
+        text.Children.Add(_name);
+        text.Children.Add(_body);
+
+        var row = new Grid();
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        row.ColumnDefinitions.Add(new ColumnDefinition());
+        Grid.SetColumn(text, 1);
+        row.Children.Add(face);
+        row.Children.Add(text);
+
+        _card = new Border
         {
-            CornerRadius = new CornerRadius(12),
-            Background = new SolidColorBrush(Color.FromArgb(235, 30, 30, 30)),
-            Child = stack,
+            Margin = new Thickness(ShadowRoom),
+            CornerRadius = new CornerRadius(CardH / 2),
+            Background = Brushes.White,
+            Effect = new DropShadowEffect { BlurRadius = 10, ShadowDepth = 2, Direction = 270, Opacity = 0.3 },
+            Child = row,
         };
+        Content = _card;
         _timer.Tick += (_, _) =>
         {
             _timer.Stop();
@@ -64,16 +97,27 @@ class PreviewWindow : FloatingWindow
         };
     }
 
-    public void ShowBeside(Box bubble, string name, string preview)
+    public void ShowBeside(Box bubble, string name, string preview, ImageSource? avatar, Box? panel)
     {
         _name.Text = name;
         _body.Text = preview;
+        _initial.Text = BubbleController.Initial(name);
+        _avatar.Fill = new SolidColorBrush(Color.FromRgb(0x08, 0x66, 0xFF));
+        if (avatar != null) SetAvatar(avatar);
         Show();
+        // The placed box is the card; the window around it only holds the shadow.
         var size = PixelBox();
-        var area = WorkAreaAt(bubble.X, bubble.Y);
-        var box = Geometry.PlacePanel(bubble, size.W, size.H, area);
-        MoveTo(box.X, box.Y);
+        var scale = size.W / (CardW + 2 * ShadowRoom);
+        var box = Geometry.PlacePreview(bubble, CardW * scale, CardH * scale, WorkAreaAt(bubble.X, bubble.Y), panel);
+        MoveTo(box.X - ShadowRoom * scale, box.Y - ShadowRoom * scale);
+        if (MotionOn) _card.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150)));
         _timer.Stop();
         _timer.Start();
+    }
+
+    public void SetAvatar(ImageSource image)
+    {
+        _avatar.Fill = new ImageBrush(image) { Stretch = Stretch.UniformToFill };
+        _initial.Text = "";
     }
 }

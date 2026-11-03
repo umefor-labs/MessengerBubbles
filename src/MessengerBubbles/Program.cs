@@ -27,7 +27,7 @@ static class Program
         var settings = Settings.Load(AppPaths.SettingsFile);
         var watcher = new Watcher();
         var panel = new ChatPanel(settings);
-        var bubbles = new BubbleController(settings, watcher.GetLoadedResourceAsync, panel.IsShowingAsync);
+        var bubbles = new BubbleController(settings, watcher.GetLoadedResourceAsync, panel.IsShowingAsync, () => panel.ScreenBox);
         TrayIcon? tray = null;
         tray = new TrayIcon(settings, watcher.ShowWindow, bubbles.Refresh, () =>
         {

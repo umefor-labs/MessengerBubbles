@@ -34,6 +34,19 @@ public static class Geometry
                        Clamp(bubble.Y, workArea.Y, workArea.Y + workArea.H - h), w, h);
     }
 
+    // Beside the bubble, moved above or below the open chat panel rather than covering it.
+    public static Box PlacePreview(Box bubble, double w, double h, Box workArea, Box? panel)
+    {
+        var box = PlacePanel(bubble, w, h, workArea);
+        if (panel == null || !Overlaps(box, panel)) return box;
+        if (panel.Y - Gap - h >= workArea.Y) return box with { Y = panel.Y - Gap - h };
+        if (panel.Y + panel.H + Gap + h <= workArea.Y + workArea.H) return box with { Y = panel.Y + panel.H + Gap };
+        return box;
+    }
+
+    static bool Overlaps(Box a, Box b) =>
+        a.X < b.X + b.W && b.X < a.X + a.W && a.Y < b.Y + b.H && b.Y < a.Y + a.H;
+
     public static Box RestoreOnScreen(Box saved, IReadOnlyList<Box> workAreas)
     {
         var cx = saved.X + saved.W / 2;
@@ -56,7 +69,7 @@ public static class Geometry
             && cy >= workArea.Y + workArea.H - DismissHeight;
     }
 
-    // Searches each column from start.Y down, then from the top; columns move away from the bubble's edge.
+    // A new bubble goes above the column's stack, then below start.Y when the top is full; columns move away from the bubble's edge.
     public static Box FindFreeSlot(Box start, IReadOnlyList<Box> taken, Box area, double spacing)
     {
         var inward = start.X + start.W / 2 < area.X + area.W / 2 ? 1 : -1;
@@ -64,9 +77,11 @@ public static class Geometry
         var stepY = start.H + spacing;
         for (var x = start.X; x >= area.X && x + start.W <= area.X + area.W; x += stepX)
         {
-            for (var y = start.Y; y + start.H <= area.Y + area.H; y += stepY)
+            var column = taken.Where(o => x < o.X + o.W && o.X < x + start.W).ToList();
+            var top = column.Count > 0 ? Math.Min(start.Y, column.Min(o => o.Y)) : start.Y;
+            for (var y = top; y >= area.Y; y -= stepY)
                 if (IsFree(x, y)) return start with { X = x, Y = y };
-            for (var y = area.Y; y < start.Y; y += stepY)
+            for (var y = start.Y; y + start.H <= area.Y + area.H; y += stepY)
                 if (IsFree(x, y)) return start with { X = x, Y = y };
         }
         return start;

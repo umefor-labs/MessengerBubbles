@@ -21,11 +21,14 @@ class ChatPanel : Window
     const int OpenTries = 40;
     static readonly TimeSpan RetryDelay = TimeSpan.FromMilliseconds(500);
 
+    const int DwmwaWindowCornerPreference = 33, DwmwcpRound = 2;
+
     [StructLayout(LayoutKind.Sequential)] struct Point32 { public int X, Y; }
 
     [DllImport("user32.dll")] static extern bool SetWindowPos(IntPtr hWnd, IntPtr after, int x, int y, int cx, int cy, uint flags);
     [DllImport("user32.dll")] static extern IntPtr MonitorFromPoint(Point32 point, uint flags);
     [DllImport("shcore.dll")] static extern int GetDpiForMonitor(IntPtr monitor, int type, out uint dpiX, out uint dpiY);
+    [DllImport("dwmapi.dll")] static extern int DwmSetWindowAttribute(IntPtr hWnd, int attribute, ref int value, int size);
 
     readonly Settings _settings;
     WebView2 _web = new();
@@ -34,6 +37,9 @@ class ChatPanel : Window
     string? _openHref;
     string? _loadedHref;
     Box? _bubble;
+    Box? _placed;
+
+    public Box? ScreenBox => IsVisible ? _placed : null;
 
     public event Action? LayoutBroken;
     // The bubble's thread (empty for the list) and the path of the different thread left open in the panel.
@@ -49,10 +55,17 @@ class ChatPanel : Window
         ShowInTaskbar = false;
         ShowActivated = false;
         WindowStartupLocation = WindowStartupLocation.Manual;
-        BorderBrush = Brushes.Gray;
-        BorderThickness = new Thickness(1);
         Content = _web;
         Deactivated += (_, _) => HidePanel();
+        SourceInitialized += (_, _) => RoundCorners();
+    }
+
+    // A window without a frame gets rounded corners only by asking the compositor.
+    void RoundCorners()
+    {
+        var handle = new WindowInteropHelper(this).Handle;
+        var round = DwmwcpRound;
+        DwmSetWindowAttribute(handle, DwmwaWindowCornerPreference, ref round, sizeof(int));
     }
 
     // Loads the page off-screen at startup; the control needs a shown window to initialize.
@@ -199,6 +212,7 @@ class ChatPanel : Window
         var area = FloatingWindow.WorkAreaAt(bubble.X, bubble.Y);
         var (w, h) = Geometry.PanelDips(_settings.PanelSize);
         var box = Geometry.PlacePanel(bubble, w * scale, h * scale, area);
+        _placed = box;
         SetWindowPos(new WindowInteropHelper(this).Handle, IntPtr.Zero, (int)box.X, (int)box.Y, (int)box.W, (int)box.H, SwpNoZOrder);
     }
 

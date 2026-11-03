@@ -15,6 +15,7 @@ class BubbleController
 
     readonly Func<string, Task<byte[]?>> _loadResource;
     readonly Func<string, Task<bool>> _isShowing;
+    readonly Func<Box?> _panelBox;
     readonly Settings _settings;
     readonly BubbleSet _set = new();
     readonly Dictionary<string, BubbleWindow> _windows = new();
@@ -22,13 +23,14 @@ class BubbleController
     readonly PreviewWindow _preview = new();
     readonly SoundGate _sound = new();
     readonly SoundPlayer _player;
-    BubbleWindow? _overflow, _persistent;
+    BubbleWindow? _overflow, _persistent, _previewFor;
     int _unreadThreads;
 
     public event Action<string, Box>? BubbleClicked;
 
-    public BubbleController(Settings settings, Func<string, Task<byte[]?>> loadResource, Func<string, Task<bool>> isShowing)
+    public BubbleController(Settings settings, Func<string, Task<byte[]?>> loadResource, Func<string, Task<bool>> isShowing, Func<Box?> panelBox)
     {
+        _panelBox = panelBox;
         _settings = settings;
         _loadResource = loadResource;
         _isShowing = isShowing;
@@ -64,7 +66,7 @@ class BubbleController
 
         // New bubbles load their avatar in Refresh; this retries one that failed earlier.
         foreach (var row in fresh)
-            if (known.Contains(row.ThreadHref) && _windows.TryGetValue(row.ThreadHref, out var w) && !w.HasAvatar)
+            if (known.Contains(row.ThreadHref) && _windows.TryGetValue(row.ThreadHref, out var w) && w.Avatar == null)
                 _ = LoadAvatarAsync(w, row.AvatarUrl);
 
         if (fresh.Count == 0) return;
@@ -73,7 +75,8 @@ class BubbleController
         if (_settings.Preview && _windows.TryGetValue(last.ThreadHref, out var bubble))
         {
             var (name, text) = RowText.Parse(last.Text);
-            _preview.ShowBeside(bubble.PixelBox(), name, text);
+            _previewFor = bubble;
+            _preview.ShowBeside(bubble.PixelBox(), name, text, bubble.Avatar, _panelBox());
         }
     }
 
@@ -157,6 +160,7 @@ class BubbleController
         var w = new BubbleWindow(name, label);
         w.Clicked += () =>
         {
+            _preview.Hide();
             // Opening reads it; anything counted from here on came after.
             _set.MarkRead(href());
             Refresh();
@@ -218,7 +222,7 @@ class BubbleController
         w.PopIn();
     }
 
-    static string Initial(string name) => name.Length > 0 ? name[..1].ToUpper() : "?";
+    public static string Initial(string name) => name.Length > 0 ? name[..1].ToUpper() : "?";
 
     async Task LoadAvatarAsync(BubbleWindow w, string url)
     {
@@ -234,6 +238,8 @@ class BubbleController
             image.EndInit();
             image.Freeze();
             w.SetAvatar(image);
+            // A new bubble's preview appears before its avatar has loaded.
+            if (_previewFor == w) _preview.SetAvatar(image);
         }
         catch (Exception e) when (e is NotSupportedException or IOException or InvalidOperationException)
         {

@@ -125,11 +125,11 @@ class BubbleWindow : FloatingWindow
         _badge.Visibility = count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    public bool HasAvatar { get; private set; }
+    public BitmapSource? Avatar { get; private set; }
 
     public void SetAvatar(BitmapSource image)
     {
-        HasAvatar = true;
+        Avatar = image;
         _face.Fill = new ImageBrush(image) { Stretch = Stretch.UniformToFill };
         _label.Text = "";
     }
