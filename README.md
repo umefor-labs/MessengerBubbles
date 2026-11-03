@@ -248,10 +248,10 @@ dotnet test
 
 Gồm 111 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
 
-Đóng gói một file tự chứa .NET vào `publish\MessengerBubbles.exe`, khoảng 72 MB:
+Đóng gói một file tự chứa .NET vào `publish\MessengerBubbles.exe`, khoảng 166 MB. File không nén, vì `EnableCompressionInSingleFile` giảm còn 72 MB nhưng làm app tốn thêm gần 80 MB bộ nhớ riêng:
 
 ```bash
-dotnet publish src/MessengerBubbles -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
+dotnet publish src/MessengerBubbles -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
 ```
 
 Phụ thuộc chính: `Microsoft.Web.WebView2` 1.0.2903.40, xUnit 2.5.3. Số phiên bản khi build tại máy nằm trong `src/MessengerBubbles/MessengerBubbles.csproj`.
@@ -275,15 +275,16 @@ git push origin v0.5.0
 
 ## Tài nguyên
 
-Đo trên một máy, với hai trang WebView2 đang tải:
+Đo một lần trên một máy, 3 phút sau khi mở, với hai trang WebView2 đang tải:
 
-| Tiến trình | Bộ nhớ riêng |
-|---|---|
-| App, bản một file, 30 giây sau khi mở | Khoảng 128 MB |
-| App, bản nhiều file, 8 giờ sau khi mở | 62 MB |
-| WebView2, 8 đến 9 tiến trình | 490 đến 700 MB |
+| Tiến trình | Bộ nhớ riêng | Working set |
+|---|---|---|
+| App | 61 MB | 142 MB |
+| WebView2, 9 tiến trình | 495 MB | 403 MB |
 
-WebView2 dùng 658 MB sau 6 phút và 700 MB sau 8 giờ. Hai lần đo chưa đủ để kết luận có rò rỉ hay không.
+Working set cộng dồn cả bộ nhớ dùng chung giữa các tiến trình. Trang theo dõi chạy với `MemoryUsageTargetLevel = Low`.
+
+Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 700 MB sau 8 giờ. Chưa đo bản hiện tại khi chạy lâu, nên chưa kết luận được có rò rỉ hay không.
 
 ## Giới hạn đã biết
 

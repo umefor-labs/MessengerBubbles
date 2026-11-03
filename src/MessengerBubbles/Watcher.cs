@@ -101,6 +101,7 @@ class Watcher : Window
             await _web.EnsureCoreWebView2Async(_env);
             var core = _web.CoreWebView2;
             core.IsMuted = true;
+            core.MemoryUsageTargetLevel = CoreWebView2MemoryUsageTargetLevel.Low;
             AppPaths.Harden(core);
             core.WebMessageReceived += OnMessage;
             core.NavigationStarting += (_, _) => _detector.Reset();
