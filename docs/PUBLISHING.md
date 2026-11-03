@@ -20,5 +20,4 @@ Không được dùng logo của Messenger, và không được làm người kh
 
 1. Cân nhắc đổi tên app và repo sang tên không chứa "Messenger" hay "Facebook".
 2. Chọn license.
-3. Thêm báo bản mới trên GitHub Releases.
-4. Thử file phát hành trên một máy sạch.
+3. Thử file phát hành trên một máy sạch.

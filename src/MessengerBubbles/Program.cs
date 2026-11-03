@@ -53,6 +53,10 @@ static class Program
         };
         bubbles.Refresh();
 
+        var updates = new UpdateChecker(settings);
+        updates.NewerFound += tray.NotifyUpdate;
+        updates.Start();
+
         try
         {
             await watcher.StartAsync(await AppPaths.CreateEnvironmentAsync());

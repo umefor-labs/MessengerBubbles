@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using MessengerBubbles.Core;
 using WinForms = System.Windows.Forms;
@@ -11,7 +12,7 @@ class TrayIcon : IDisposable
     readonly Icon _error = DrawError();
     readonly Settings _settings;
     readonly Action _openFacebook, _settingsChanged, _exit;
-    bool _login, _broken;
+    bool _login, _broken, _updateBalloon;
 
     public TrayIcon(Settings settings, Action openFacebook, Action settingsChanged, Action exit)
     {
@@ -22,6 +23,10 @@ class TrayIcon : IDisposable
         _icon.Icon = _ok;
         _icon.ContextMenuStrip = BuildMenu();
         _icon.DoubleClick += (_, _) => openFacebook();
+        _icon.BalloonTipClicked += (_, _) =>
+        {
+            if (_updateBalloon) Process.Start(new ProcessStartInfo(UpdateCheck.PageUrl) { UseShellExecute = true });
+        };
     }
 
     WinForms.ContextMenuStrip BuildMenu()
@@ -53,6 +58,10 @@ class TrayIcon : IDisposable
         {
             Autostart.Set(on, Environment.ProcessPath!);
             settings.Autostart = on;
+        }));
+        menu.Items.Add(Toggle(texts.CheckUpdates, settings.CheckUpdates, on =>
+        {
+            settings.CheckUpdates = on;
         }));
         menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add(texts.Exit, null, (_, _) => _exit());
@@ -107,23 +116,30 @@ class TrayIcon : IDisposable
         }
     }
 
+    // A click only opens the release page after a balloon that said so.
+    void Balloon(string text, WinForms.ToolTipIcon kind, bool update = false)
+    {
+        _updateBalloon = update;
+        _icon.ShowBalloonTip(5000, "Messenger Bubbles", text, kind);
+    }
+
+    public void NotifyUpdate(Version version) =>
+        Balloon(string.Format(Texts.Current.UpdateAvailable, version), WinForms.ToolTipIcon.Info, update: true);
+
     public void SetLogin(bool needed)
     {
         _login = needed;
         _icon.Icon = _login || _broken ? _error : _ok;
-        if (needed)
-            _icon.ShowBalloonTip(5000, "Messenger Bubbles", Texts.Current.NeedLogin, WinForms.ToolTipIcon.Warning);
+        if (needed) Balloon(Texts.Current.NeedLogin, WinForms.ToolTipIcon.Warning);
     }
 
-    public void NotifyPanelBroken() =>
-        _icon.ShowBalloonTip(5000, "Messenger Bubbles", Texts.Current.PanelBroken, WinForms.ToolTipIcon.Error);
+    public void NotifyPanelBroken() => Balloon(Texts.Current.PanelBroken, WinForms.ToolTipIcon.Error);
 
     public void SetBroken(bool broken)
     {
         _broken = broken;
         _icon.Icon = _login || _broken ? _error : _ok;
-        if (broken)
-            _icon.ShowBalloonTip(5000, "Messenger Bubbles", Texts.Current.ListBroken, WinForms.ToolTipIcon.Error);
+        if (broken) Balloon(Texts.Current.ListBroken, WinForms.ToolTipIcon.Error);
     }
 
     public void Dispose()

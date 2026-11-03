@@ -17,6 +17,7 @@ public class SettingsTests : IDisposable
         Assert.Equal(PanelSize.Medium, s.PanelSize);
         Assert.False(s.Autostart);
         Assert.Null(s.Language);
+        Assert.True(s.CheckUpdates);
         Assert.Empty(s.Positions);
     }
 

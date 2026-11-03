@@ -44,6 +44,7 @@ The app comes in Vietnamese and English. On first run it asks for a language bef
 | `Sound` | On | The app's own sound, at least 3 seconds apart |
 | `Chat panel size` | Medium | Small 340×480, Medium 380×560, Large 460×720 (DIP). Applies from the next time the panel opens |
 | `Language` | Asked on first run | Tiếng Việt or English |
+| `Notify about updates` | On | Asks GitHub for the latest version, 1 minute after starting and every 24 hours. If there is a newer one it shows a notice, and clicking it opens the download page. The app never downloads or installs anything itself |
 | `Start with Windows` | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
 | `Quit` | | Quits the app |
 
@@ -86,6 +87,7 @@ The solution has three projects:
 | `FloatingWindow.cs` | Base class for floating windows: physical pixel positions, never takes focus |
 | `OverlayWindows.cs` | Dismiss zone and preview card |
 | `TrayIcon.cs` | Tray icon, menu, error notices |
+| `UpdateChecker.cs` | Asks GitHub for the latest version |
 | `LanguageWindow.cs` | Language window on first run |
 | `AppPaths.cs` | Paths, WebView2 environment, logging, security restrictions |
 | `Assets/probe.js` | Reads chat rows in the watcher page |
@@ -211,6 +213,7 @@ Everything is in `%LOCALAPPDATA%\MessengerBubbles\`:
 | `Autostart` | bool | `false` |
 | `Sound` | bool | `true` |
 | `GroupBubbles` | bool | `false` |
+| `CheckUpdates` | bool | `true` |
 | `Language` | 0 Vietnamese, 1 English | `null`, meaning not chosen yet |
 | `PanelSize` | 0 small, 1 medium, 2 large | `1` |
 | `Positions` | Map of `anchor`, `persistent` to `{X, Y, W, H}` | empty |
@@ -222,7 +225,7 @@ Restrictions in `AppPaths.Harden` and `FacebookUrl`:
 - Opens no new windows inside the app.
 - Rejects conversation links not under `/messages/`.
 
-The app sends no data of its own anywhere; the only requests are those the Facebook page makes itself. Avatars are read from images the page already loaded, through CDP `Page.getResourceContent`, kept in memory, up to 2 MB each. WebView2 runs with `--disk-cache-size=1`, plus `--disable-background-timer-throttling` and `--disable-renderer-backgrounding` so hidden pages keep running on time. The watcher page is muted.
+Apart from the requests the Facebook page makes itself, the app only sends one request to `api.github.com` to ask for the latest version, with no user data in it. GitHub sees the machine's IP address. Turning off `Notify about updates` stops this request. Avatars are read from images the page already loaded, through CDP `Page.getResourceContent`, kept in memory, up to 2 MB each. WebView2 runs with `--disk-cache-size=1`, plus `--disable-background-timer-throttling` and `--disable-renderer-backgrounding` so hidden pages keep running on time. The watcher page is muted.
 
 To uninstall: log out of Facebook through `Open Facebook`, turn off `Start with Windows`, choose `Quit`, then delete the folder above and the `.exe`.
 
@@ -241,6 +244,8 @@ To uninstall: log out of Facebook through `Open Facebook`, turn off `Start with 
 | `navigation failed: <status>` | Page load error, will retry |
 | `process failed: <kind>` | WebView2 process error |
 | `avatar not available: <type>` | Avatar could not be read, the bubble shows an initial |
+| `update available: <version>` | A newer version is on GitHub |
+| `update check failed: <type>` | Could not reach GitHub, will try again in 24 hours |
 | `unhandled: <type>` | Unhandled exception |
 
 ## Build
@@ -257,7 +262,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-There are 118 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
+There are 133 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
 
 Package one self-contained file to `publish\MessengerBubbles.exe`, about 166 MB. The file is uncompressed, because `EnableCompressionInSingleFile` brings it down to 72 MB but costs the app almost 80 MB more private memory:
 
@@ -304,7 +309,6 @@ The build before that setting used 658 MB of WebView2 memory after 6 minutes and
 - The panel size changes only through the menu, not from the panel itself, because WebView2 covers the resize area unless a border is left around it.
 - The panel has no drop shadow. The preview card is always white and does not follow dark mode.
 - Dragging a stack into the dismiss zone closes only the top bubble.
-- There is no notice when a new version is out.
 - The release file has not been tried on a clean machine.
 
 ## Other documents

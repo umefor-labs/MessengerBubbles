@@ -11,6 +11,7 @@ public record Settings
     public bool Autostart { get; set; }
     public bool Sound { get; set; } = true;
     public bool GroupBubbles { get; set; }
+    public bool CheckUpdates { get; set; } = true;
     // Null until chosen, so the first run asks.
     public AppLanguage? Language { get; set; }
     public PanelSize PanelSize { get; set; } = PanelSize.Medium;

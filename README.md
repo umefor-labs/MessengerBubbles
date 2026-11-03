@@ -42,6 +42,7 @@ App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ng�
 | `Âm báo` | Bật | Âm riêng của app, cách nhau ít nhất 3 giây |
 | `Kích thước khung chat` | Vừa | Nhỏ 340×480, Vừa 380×560, Lớn 460×720 (DIP). Áp dụng từ lần mở sau |
 | `Ngôn ngữ` | Hỏi ở lần đầu | Tiếng Việt hoặc English |
+| `Báo bản mới` | Bật | Hỏi GitHub phiên bản mới nhất, 1 phút sau khi mở và mỗi 24 giờ. Có bản mới thì hiện thông báo, bấm vào để mở trang tải. App không tự tải hay tự cài |
 | `Khởi động cùng Windows` | Tắt | Ghi giá trị `MessengerBubbles` vào `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
 | `Thoát` | | Tắt app |
 
@@ -84,6 +85,7 @@ Solution có ba project:
 | `FloatingWindow.cs` | Lớp nền của cửa sổ nổi: vị trí theo pixel vật lý, không nhận focus |
 | `OverlayWindows.cs` | Vùng đóng bóng và thẻ xem trước |
 | `TrayIcon.cs` | Icon khay, menu, thông báo lỗi |
+| `UpdateChecker.cs` | Hỏi GitHub phiên bản mới |
 | `LanguageWindow.cs` | Hộp chọn ngôn ngữ ở lần chạy đầu |
 | `AppPaths.cs` | Đường dẫn, môi trường WebView2, ghi log, các hạn chế bảo mật |
 | `Assets/probe.js` | Đọc dòng chat trong trang theo dõi |
@@ -209,6 +211,7 @@ Mọi thứ nằm trong `%LOCALAPPDATA%\MessengerBubbles\`:
 | `Autostart` | bool | `false` |
 | `Sound` | bool | `true` |
 | `GroupBubbles` | bool | `false` |
+| `CheckUpdates` | bool | `true` |
 | `Language` | 0 tiếng Việt, 1 tiếng Anh | `null`, tức chưa chọn |
 | `PanelSize` | 0 nhỏ, 1 vừa, 2 lớn | `1` |
 | `Positions` | Từ khóa `anchor`, `persistent` sang `{X, Y, W, H}` | rỗng |
@@ -220,7 +223,7 @@ Các hạn chế trong `AppPaths.Harden` và `FacebookUrl`:
 - Không mở cửa sổ mới trong app.
 - Từ chối link cuộc chat không nằm dưới `/messages/`.
 
-App không tự gửi dữ liệu đi đâu ngoài các request của chính trang Facebook. Avatar đọc từ ảnh trang đã tải qua CDP `Page.getResourceContent`, giữ trong bộ nhớ, tối đa 2 MB mỗi ảnh. WebView2 chạy với `--disk-cache-size=1`, cùng `--disable-background-timer-throttling` và `--disable-renderer-backgrounding` để trang ẩn vẫn chạy đúng giờ. Trang theo dõi bị tắt tiếng.
+Ngoài các request của chính trang Facebook, app chỉ gửi một request tới `api.github.com` để hỏi phiên bản mới, không kèm dữ liệu của người dùng. GitHub thấy địa chỉ IP của máy. Tắt `Báo bản mới` thì không còn request này. Avatar đọc từ ảnh trang đã tải qua CDP `Page.getResourceContent`, giữ trong bộ nhớ, tối đa 2 MB mỗi ảnh. WebView2 chạy với `--disk-cache-size=1`, cùng `--disable-background-timer-throttling` và `--disable-renderer-backgrounding` để trang ẩn vẫn chạy đúng giờ. Trang theo dõi bị tắt tiếng.
 
 Gỡ app: đăng xuất Facebook trong `Mở Facebook`, tắt `Khởi động cùng Windows`, chọn `Thoát`, rồi xóa thư mục trên và file `.exe`.
 
@@ -239,6 +242,8 @@ Gỡ app: đăng xuất Facebook trong `Mở Facebook`, tắt `Khởi động c�
 | `navigation failed: <status>` | Tải trang lỗi, sẽ thử lại |
 | `process failed: <kind>` | Tiến trình WebView2 lỗi |
 | `avatar not available: <type>` | Không đọc được avatar, bóng hiện chữ cái đầu |
+| `update available: <version>` | Có bản mới trên GitHub |
+| `update check failed: <type>` | Không hỏi được GitHub, sẽ thử lại sau 24 giờ |
 | `unhandled: <type>` | Ngoại lệ không bắt được |
 
 ## Build
@@ -255,7 +260,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-Gồm 118 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
+Gồm 133 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
 
 Đóng gói một file tự chứa .NET vào `publish\MessengerBubbles.exe`, khoảng 166 MB. File không nén, vì `EnableCompressionInSingleFile` giảm còn 72 MB nhưng làm app tốn thêm gần 80 MB bộ nhớ riêng:
 
@@ -302,7 +307,6 @@ Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 7
 - Đổi cỡ khung chat chỉ qua menu, không điều chỉnh trực tiếp từ khung chat, vì WebView2 che vùng kéo nếu không chừa viền.
 - Khung chat không có bóng đổ. Thẻ xem trước luôn màu trắng, không theo chế độ tối.
 - Kéo chồng bóng vào vùng đóng chỉ đóng bóng trên cùng.
-- Chưa báo khi có bản mới.
 - File phát hành chưa được thử trên máy sạch.
 
 ## Tài liệu khác
