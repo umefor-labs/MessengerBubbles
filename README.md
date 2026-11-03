@@ -17,7 +17,7 @@ App đọc giao diện web của Facebook do không có API công khai:
 |---|---|
 | Hệ điều hành | Windows |
 | WebView2 Runtime | Bắt buộc, Windows 11 có sẵn. Thiếu thì app báo lỗi rồi thoát |
-| .NET |
+| .NET | Không cần với file phát hành. Build từ mã nguồn cần SDK .NET 10 |
 
 ## Cài và chạy
 
