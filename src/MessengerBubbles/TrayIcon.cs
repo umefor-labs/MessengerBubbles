@@ -7,8 +7,8 @@ namespace MessengerBubbles;
 class TrayIcon : IDisposable
 {
     readonly WinForms.NotifyIcon _icon = new() { Text = "Messenger Bubbles", Visible = true };
-    readonly Icon _ok = Draw(Color.FromArgb(8, 102, 255));
-    readonly Icon _error = Draw(Color.FromArgb(220, 40, 40));
+    readonly Icon _ok = Icon.ExtractAssociatedIcon(Environment.ProcessPath!)!;
+    readonly Icon _error = DrawError();
     bool _login, _broken;
 
     public TrayIcon(Settings settings, Action openFacebook, Action settingsChanged, Action exit)
@@ -99,14 +99,17 @@ class TrayIcon : IDisposable
         _icon.Dispose();
     }
 
-    static Icon Draw(Color color)
+    // The app icon's shape in red.
+    static Icon DrawError()
     {
         using var bitmap = new Bitmap(32, 32);
         using (var g = Graphics.FromImage(bitmap))
-        using (var brush = new SolidBrush(color))
+        using (var brush = new SolidBrush(Color.FromArgb(220, 40, 40)))
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            g.FillEllipse(brush, 2, 2, 28, 28);
+            g.FillEllipse(brush, 1, 1, 30, 30);
+            g.FillRectangle(Brushes.White, 8, 9, 16, 11);
+            g.FillPolygon(Brushes.White, [new Point(11, 20), new Point(16, 20), new Point(11, 25)]);
         }
         return Icon.FromHandle(bitmap.GetHicon());
     }

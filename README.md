@@ -4,17 +4,21 @@ Bong bóng chat Facebook nổi trên Windows 11. App bọc `facebook.com/message
 
 ## Chạy
 
-Cần .NET 10 và WebView2 Runtime.
+Tải file `.exe` ở GitHub Releases rồi chạy, không cần cài .NET. Máy cần có WebView2 Runtime; Windows 11 có sẵn.
+
+Tự build thì cần .NET 10:
 
 ```bash
 dotnet run --project src/MessengerBubbles
 ```
 
-Hoặc đóng gói rồi chạy `publish\MessengerBubbles.exe`:
+Đóng gói thành một file `publish\MessengerBubbles.exe`:
 
 ```bash
-dotnet publish src/MessengerBubbles -c Release -o publish
+dotnet publish src/MessengerBubbles -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
 ```
+
+Gắn tag `v*` và đẩy lên thì GitHub Actions tự chạy test, build file đó và tạo bản phát hành.
 
 Lần đầu, tự đăng nhập Facebook trong cửa sổ hiện ra (nhập cả mã PIN tin nhắn mã hóa nếu được hỏi), rồi đóng cửa sổ đó. App vẫn chạy ở khay hệ thống; chọn `Thoát` trong menu khay để tắt.
 

@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet test
+      - name: Build one exe
+        run: >
+          dotnet publish src/MessengerBubbles -c Release -r win-x64 --self-contained
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:Version=$($env:TAG.TrimStart('v')) -o out
+      - name: Publish release
+        run: |
+          Move-Item out/MessengerBubbles.exe "MessengerBubbles-$env:TAG-win-x64.exe"
+          gh release create $env:TAG "MessengerBubbles-$env:TAG-win-x64.exe" --generate-notes

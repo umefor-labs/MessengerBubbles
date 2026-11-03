@@ -48,10 +48,10 @@ Mục tiêu: cảm giác như chat head thật.
 
 Mục tiêu: cài và cập nhật dễ, không cần `dotnet`.
 
-- [ ] Một file `.exe` chạy được trên máy chưa cài .NET.
-- [ ] Biểu tượng riêng cho app và khay, thay cho chấm tròn hiện tại.
-- [ ] GitHub Actions: chạy test mỗi lần đẩy code, tạo bản phát hành khi gắn tag.
-- [ ] Báo khi có bản mới trên GitHub Releases.
+- [x] Một file `.exe` tự chứa .NET. Chưa thử trên máy sạch.
+- [x] Biểu tượng riêng cho app và khay.
+- [x] GitHub Actions: chạy test mỗi lần đẩy code, tạo bản phát hành khi gắn tag. Luồng phát hành chưa chạy lần nào.
+- [ ] Báo khi có bản mới trên GitHub Releases. Chờ công khai repo: repo riêng tư thì app không đọc được Releases nếu không có token.
 
 **Đạt khi:** tải file từ GitHub, chạy trên một máy sạch, đăng nhập và nhận được tin.
 
