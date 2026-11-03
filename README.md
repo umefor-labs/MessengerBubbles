@@ -4,7 +4,7 @@
 
 App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, mỗi cuộc chat một bóng, tương tự chat head trên Android. Viết bằng WPF và WebView2, bọc trang `https://www.facebook.com/messages`. Đây là dự án cá nhân, không liên kết với Meta.
 
-Phiên bản mới nhất: `v0.4.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
+Phiên bản mới nhất: `v0.5.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
 
 ## Rủi ro
 

@@ -6,7 +6,7 @@ A Windows 11 desktop app that shows Facebook chats as floating bubbles, one bubb
 
 The documents in `docs/` are in Vietnamese.
 
-Latest version: `v0.4.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
+Latest version: `v0.5.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
 
 ## Risks
 
