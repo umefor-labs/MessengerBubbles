@@ -1,12 +1,12 @@
 # Messenger Bubbles
 
-App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, mỗi cuộc chat một bóng, giống chat head trên Android. Viết bằng WPF và WebView2, bọc trang `https://www.facebook.com/messages`. Đây là dự án cá nhân, không liên kết với Meta.
+App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, mỗi cuộc chat một bóng, tương tự chat head trên Android. Viết bằng WPF và WebView2, bọc trang `https://www.facebook.com/messages`. Đây là dự án cá nhân, không liên kết với Meta.
 
 Phiên bản mới nhất: `v0.4.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
 
 ## Rủi ro
 
-App đọc giao diện web của Facebook vì không có API công khai cho việc này. Hai hệ quả:
+App đọc giao diện web của Facebook do không có API công khai:
 
 - Facebook đổi cấu trúc trang là phần phát hiện tin hoặc khung chat có thể hỏng. Cách xử lý ở [danh sách kiểm tra](docs/FACEBOOK-CHECKLIST.md).
 - [Điều khoản của Facebook](https://www.facebook.com/terms.php) cấm truy cập bằng phương tiện tự động nếu chưa được phép. App tự đọc danh sách chat ít nhất 5 giây một lần, nên tài khoản có thể bị hạn chế. Ghi chú đầy đủ ở [PUBLISHING.md](docs/PUBLISHING.md).
@@ -15,13 +15,13 @@ App đọc giao diện web của Facebook vì không có API công khai cho vi�
 
 | Thành phần | Yêu cầu |
 |---|---|
-| Hệ điều hành | Windows 11 x64. Mới chạy thử trên bản 10.0.26300 |
+| Hệ điều hành | Windows |
 | WebView2 Runtime | Bắt buộc, Windows 11 có sẵn. Thiếu thì app báo lỗi rồi thoát |
-| .NET | Không cần với file phát hành. Build từ mã nguồn cần SDK .NET 10 |
+| .NET |
 
 ## Cài và chạy
 
-Tải `MessengerBubbles-<tag>-win-x64.exe` ở GitHub Releases rồi chạy. File không có chữ ký số, nên SmartScreen có thể cảnh báo. Repo đang riêng tư, nên chỉ tài khoản có quyền vào repo mới tải được.
+Tải `MessengerBubbles-<tag>-win-x64.exe` ở GitHub Releases rồi chạy. File không có chữ ký số, nên SmartScreen có thể cảnh báo. 
 
 Lần đầu, cửa sổ đăng nhập hiện ra. Đăng nhập Facebook, nhập mã PIN tin nhắn mã hóa nếu được hỏi, rồi đóng cửa sổ. Đóng cửa sổ chỉ ẩn nó đi. Muốn tắt app thì chọn `Thoát` trong menu khay.
 
@@ -137,7 +137,7 @@ Khung ẩn khi mất focus hoặc khi nhấn `Esc`. Nếu lúc ẩn đang mở m
 | Đã đủ 5 bóng đều chưa đọc | Không thêm |
 | Cuộc chat không có trong danh sách của trang theo dõi | Không đổi, vì không có tên và avatar |
 
-## Bóng
+## Bong bóng
 
 Tối đa 5 bóng hiện cùng lúc. Bóng thứ 6 trở đi thay bóng cũ nhất không còn tin chưa đọc. Nếu cả 5 đều chưa đọc thì vào bóng `+N`, và được đưa lên khi có chỗ trống.
 
@@ -288,10 +288,8 @@ WebView2 dùng 658 MB sau 6 phút và 700 MB sau 8 giờ. Hai lần đo chưa đ
 ## Giới hạn đã biết
 
 - Hai tin giống hệt nhau đến liên tiếp khi dòng vẫn in đậm chỉ tính một, vì danh sách chat không có tín hiệu riêng cho từng tin.
-- Cuộc chat đã tắt thông báo trên Facebook vẫn bật bóng và kêu.
-- Chat nhóm và chat mã hóa chưa được kiểm tra với tin thật.
-- Nhãn "Tin nhắn chưa đọc" và "Hoạt động … trước" trong `RowText.cs` là mẫu đoán, chưa gặp trên trang thật. Nhãn chỉ có tiếng Việt và tiếng Anh.
-- Đổi cỡ khung chat chỉ qua menu, không kéo cạnh được, vì WebView2 che vùng kéo nếu không chừa viền.
+- Cuộc trò chuyện đã tắt thông báo trên Facebook vẫn bật bóng và kêu.
+- Đổi cỡ khung chat chỉ qua menu, không điều chỉnh trực tiếp từ khung chat, vì WebView2 che vùng kéo nếu không chừa viền.
 - Khung chat không có bóng đổ. Thẻ xem trước luôn màu trắng, không theo chế độ tối.
 - Kéo chồng bóng vào vùng đóng chỉ đóng bóng trên cùng.
 - Chưa báo khi có bản mới, vì repo riêng tư thì app không đọc được Releases nếu không nhúng token.
