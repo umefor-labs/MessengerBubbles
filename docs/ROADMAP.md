@@ -53,13 +53,13 @@ Mục tiêu: cài và cập nhật dễ, không cần `dotnet`.
 - [x] Một file `.exe` tự chứa .NET. Chưa thử trên máy sạch.
 - [x] Biểu tượng riêng cho app và khay.
 - [x] GitHub Actions: chạy test mỗi lần đẩy code, tạo bản phát hành khi gắn tag. Luồng phát hành chưa chạy lần nào.
-- [ ] Báo khi có bản mới trên GitHub Releases. Chờ công khai repo: repo riêng tư thì app không đọc được Releases nếu không có token.
+- [ ] Báo khi có bản mới trên GitHub Releases.
 
 **Đạt khi:** tải file từ GitHub, chạy trên một máy sạch, đăng nhập và nhận được tin.
 
 ## v1.0: Sẵn sàng phát hành
 
-- [ ] Quyết định có công khai repo không. Đã xem điều khoản và tên: [ghi chú](PUBLISHING.md).
+- [x] Công khai repo ngày 03/11/2026, vẫn dùng tên cũ: [ghi chú](PUBLISHING.md).
 - [ ] Chọn license.
 - [x] Viết README cho người ngoài, nêu rõ rủi ro với tài khoản.
 - [x] Facebook đổi giao diện thì sửa được nhanh: cấu trúc trang chỉ nằm trong `probe.js` và `panel.js`, nhãn chữ nằm trong `RowText.cs`, có [danh sách kiểm tra](FACEBOOK-CHECKLIST.md).
@@ -70,4 +70,4 @@ Mục tiêu: cài và cập nhật dễ, không cần `dotnet`.
 
 - App đọc giao diện Facebook, không có API chính thức, nên có thể hỏng bất cứ lúc nào.
 - Điều khoản Facebook cấm truy cập bằng phương tiện tự động nếu chưa được phép, nên tài khoản có thể bị hạn chế.
-- Dùng tên "Messenger" chưa phải vấn đề khi repo riêng tư, nhưng nên đổi tên trước khi công khai.
+- Repo công khai vẫn dùng tên "Messenger", là nhãn hiệu của Meta, nên có thể bị yêu cầu đổi tên.

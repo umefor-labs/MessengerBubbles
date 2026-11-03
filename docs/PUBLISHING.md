@@ -1,6 +1,6 @@
-# Trước khi công khai repo
+# Công khai repo
 
-Ghi lại ngày 03/11/2026. Đây là ghi chú khi đọc điều khoản, không phải tư vấn pháp lý.
+Repo công khai từ ngày 03/11/2026. Đây là ghi chú khi đọc điều khoản, không phải tư vấn pháp lý.
 
 ## Điều khoản Facebook
 
@@ -16,11 +16,9 @@ Hậu quả có thể xảy ra là tài khoản bị hạn chế. Người dùng
 
 Không được dùng logo của Messenger, và không được làm người khác tưởng app là của Meta.
 
-## Việc cần làm nếu công khai
+## Việc còn lại
 
-1. Đổi tên app và repo sang tên không chứa "Messenger" hay "Facebook".
+1. Cân nhắc đổi tên app và repo sang tên không chứa "Messenger" hay "Facebook".
 2. Chọn license.
 3. Thêm báo bản mới trên GitHub Releases.
 4. Thử file phát hành trên một máy sạch.
-
-Không công khai thì không cần làm mục 1 và 3.

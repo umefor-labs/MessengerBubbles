@@ -293,7 +293,7 @@ Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 7
 - Đổi cỡ khung chat chỉ qua menu, không điều chỉnh trực tiếp từ khung chat, vì WebView2 che vùng kéo nếu không chừa viền.
 - Khung chat không có bóng đổ. Thẻ xem trước luôn màu trắng, không theo chế độ tối.
 - Kéo chồng bóng vào vùng đóng chỉ đóng bóng trên cùng.
-- Chưa báo khi có bản mới, vì repo riêng tư thì app không đọc được Releases nếu không nhúng token.
+- Chưa báo khi có bản mới.
 - File phát hành chưa được thử trên máy sạch.
 
 ## Tài liệu khác
@@ -301,7 +301,7 @@ Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 7
 - [Lộ trình](docs/ROADMAP.md)
 - [Thiết kế ban đầu](docs/2026-11-02-messenger-bubbles-design.md)
 - [Danh sách kiểm tra khi Facebook đổi giao diện](docs/FACEBOOK-CHECKLIST.md)
-- [Ghi chú trước khi công khai repo](docs/PUBLISHING.md)
+- [Ghi chú về công khai repo](docs/PUBLISHING.md)
 
 ## License
 
