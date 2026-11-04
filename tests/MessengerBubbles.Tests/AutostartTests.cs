@@ -27,6 +27,23 @@ public class AutostartTests : IDisposable
     }
 
     [Fact]
+    public void Refresh_On_WritesNewPath()
+    {
+        Autostart.Set(true, @"C:\old\a.exe", SubKey);
+        Autostart.Refresh(@"C:\new\a.exe", SubKey);
+        using var key = Registry.CurrentUser.OpenSubKey(SubKey);
+        Assert.Equal("\"C:\\new\\a.exe\"", key!.GetValue("MessengerBubbles"));
+    }
+
+    [Fact]
+    public void Refresh_Off_StaysOff()
+    {
+        Autostart.Set(false, @"C:\a.exe", SubKey);
+        Autostart.Refresh(@"C:\new\a.exe", SubKey);
+        Assert.False(Autostart.IsOn(SubKey));
+    }
+
+    [Fact]
     public void Set_OffWhenAlreadyOff_DoesNotThrow()
     {
         Autostart.Set(false, @"C:\a.exe", SubKey);

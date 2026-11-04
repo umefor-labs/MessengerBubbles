@@ -16,6 +16,12 @@ public static class Autostart
             key.DeleteValue(ValueName, false);
     }
 
+    // The exe may have moved since autostart was turned on.
+    public static void Refresh(string exePath, string subKey = RunKey)
+    {
+        if (IsOn(subKey)) Set(true, exePath, subKey);
+    }
+
     public static bool IsOn(string subKey = RunKey)
     {
         using var key = Registry.CurrentUser.OpenSubKey(subKey);

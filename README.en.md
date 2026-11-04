@@ -10,7 +10,7 @@ The documents in `docs/` are in Vietnamese.
 
 A 49-second intro video, in Vietnamese, recreating the interface with made-up data. The image above is silent. The version with the notification sound is the [MP4 file](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4), which GitHub downloads rather than plays. The source is in `promo/`, and `python promo/render.py` exports it again.
 
-Latest version: `v0.6.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
+Latest version: `v0.6.1`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
 
 ## Risks
 
@@ -49,7 +49,7 @@ The app comes in Vietnamese and English. On first run it asks for a language bef
 | `Chat panel size` | Medium | Small 340×480, Medium 380×560, Large 460×720 (DIP). Applies from the next time the panel opens |
 | `Language` | Asked on first run | Tiếng Việt or English |
 | `Notify about updates` | On | Asks GitHub for the latest version, 1 minute after starting and every 24 hours. If there is a newer one it shows a notice, and clicking it opens the download page. The app never downloads or installs anything itself |
-| `Start with Windows` | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
+| `Start with Windows` | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. While on, the app rewrites its own path each time it opens, so after moving the file, opening it once is enough |
 | `Quit` | | Quits the app |
 
 The tray icon turns red when you need to log in again or when reading the chat list fails.
@@ -266,7 +266,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-There are 133 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
+There are 135 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
 
 Package one self-contained file to `publish\MessengerBubbles.exe`, about 166 MB. The file is uncompressed, because `EnableCompressionInSingleFile` brings it down to 72 MB but costs the app almost 80 MB more private memory:
 

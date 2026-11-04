@@ -8,7 +8,7 @@ App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, m
 
 Video giới thiệu 49 giây, dựng lại giao diện bằng dữ liệu giả. Ảnh trên không có tiếng, bản có âm báo là [file MP4](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4) (GitHub sẽ tải về, không phát trực tiếp). Mã nguồn video ở `promo/`, xuất lại bằng `python promo/render.py`.
 
-Phiên bản mới nhất: `v0.6.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
+Phiên bản mới nhất: `v0.6.1`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
 
 ## Rủi ro
 
@@ -47,7 +47,7 @@ App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ng�
 | `Kích thước khung chat` | Vừa | Nhỏ 340×480, Vừa 380×560, Lớn 460×720 (DIP). Áp dụng từ lần mở sau |
 | `Ngôn ngữ` | Hỏi ở lần đầu | Tiếng Việt hoặc English |
 | `Báo bản mới` | Bật | Hỏi GitHub phiên bản mới nhất, 1 phút sau khi mở và mỗi 24 giờ. Có bản mới thì hiện thông báo, bấm vào để mở trang tải. App không tự tải hay tự cài |
-| `Khởi động cùng Windows` | Tắt | Ghi giá trị `MessengerBubbles` vào `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
+| `Khởi động cùng Windows` | Tắt | Ghi giá trị `MessengerBubbles` vào `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. Khi đang bật, mỗi lần mở app ghi lại đường dẫn của chính nó, nên chuyển file đi chỗ khác rồi mở một lần là đủ |
 | `Thoát` | | Tắt app |
 
 Icon khay chuyển đỏ khi cần đăng nhập lại hoặc khi đọc danh sách chat thất bại.
@@ -264,7 +264,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-Gồm 133 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
+Gồm 135 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
 
 Đóng gói một file tự chứa .NET vào `publish\MessengerBubbles.exe`, khoảng 166 MB. File không nén, vì `EnableCompressionInSingleFile` giảm còn 72 MB nhưng làm app tốn thêm gần 80 MB bộ nhớ riêng:
 

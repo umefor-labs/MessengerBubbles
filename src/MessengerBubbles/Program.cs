@@ -24,6 +24,7 @@ static class Program
 
     static async Task StartAsync(Application app)
     {
+        Autostart.Refresh(Environment.ProcessPath!);
         var settings = Settings.Load(AppPaths.SettingsFile);
         if (settings.Language == null)
         {
