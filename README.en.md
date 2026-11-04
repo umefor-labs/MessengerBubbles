@@ -10,7 +10,7 @@ The documents in `docs/` are in Vietnamese.
 
 A 49-second intro video, in Vietnamese, recreating the interface with made-up data. The image above is silent. The version with the notification sound is the [MP4 file](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4), which GitHub downloads rather than plays. The source is in `promo/`, and `python promo/render.py` exports it again.
 
-Latest version: `v0.5.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
+Latest version: `v0.6.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
 
 ## Risks
 
