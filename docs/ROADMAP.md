@@ -22,7 +22,7 @@ Bản phát hành mới nhất là `v0.4.0`. Tiêu chí của v0.2, v0.3 và v0.
 Mục tiêu: dùng cả ngày mà không phải để ý đến app.
 
 - [x] Đổi lên .NET 10, vì .NET 8 hết hỗ trợ ngày 10/11/2026.
-- [ ] Kiểm tra hết các mục còn thiếu của v0.1.0, sửa lỗi phát sinh.
+- [ ] Kiểm tra hết các mục còn thiếu của v0.1.0, sửa lỗi phát sinh. Chat nhóm đạt, chat mã hóa bỏ qua vì không có nhóm để thử.
 - [ ] Đo bộ nhớ riêng của app khi chạy lâu; nếu trang tăng dần thì tải lại định kỳ.
 - [x] Báo lỗi ở khay khi khung chat không mở được cuộc trò chuyện.
 - [x] Rút hoặc cắm màn hình lúc đang chạy: bóng phải về màn hình còn lại.
@@ -39,7 +39,7 @@ Mục tiêu: cảm giác như chat head thật.
 - [x] Hiệu ứng: bóng bật ra, trượt hít vào cạnh, hút vào vùng đóng. Tắt theo cài đặt "Animation effects" của Windows. Chưa có độ nảy.
 - [x] Gom bóng: nhiều bóng xếp chồng, bấm vào thì xòe ra, 5 giây sau gom lại. Bật ở menu khay, mặc định tắt.
 - [x] Tùy chọn tắt âm báo (menu khay).
-- [ ] Không bật bóng và không kêu với cuộc chat đã tắt thông báo trên Facebook.
+- [x] Không bật bóng và không kêu với cuộc chat đã tắt thông báo trên Facebook, nhận biết qua icon chuông gạch ngang trong danh sách chat.
 - [x] Đổi kích thước khung chat bằng menu khay (Nhỏ, Vừa, Lớn) và nhớ lại. Chưa kéo cạnh được, vì WebView2 che mất vùng kéo nếu không chừa viền.
 - [x] Rời khung chat khi đang mở cuộc chat khác thì bóng đổi sang cuộc chat đó.
 - [ ] Đếm đúng khi hai tin giống hệt nhau đến liên tiếp.
@@ -60,7 +60,7 @@ Mục tiêu: cài và cập nhật dễ, không cần `dotnet`.
 ## v1.0: Sẵn sàng phát hành
 
 - [x] Công khai repo ngày 03/11/2026, vẫn dùng tên cũ: [ghi chú](PUBLISHING.md).
-- [ ] Chọn license.
+- [x] Chọn license: MIT.
 - [x] Giao diện tiếng Anh, chọn ngôn ngữ ở lần chạy đầu và trong menu khay.
 - [x] Viết README cho người ngoài, nêu rõ rủi ro với tài khoản.
 - [x] Facebook đổi giao diện thì sửa được nhanh: cấu trúc trang chỉ nằm trong `probe.js` và `panel.js`, nhãn chữ nằm trong `RowText.cs`, có [danh sách kiểm tra](FACEBOOK-CHECKLIST.md).

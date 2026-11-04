@@ -8,6 +8,8 @@
         text: a.innerText || '',
         bold: [...a.querySelectorAll('span')].some(s => +getComputedStyle(s).fontWeight >= 600),
         avatar: img?.src || img?.getAttribute('xlink:href') || '',
+        // Facebook's crossed-out bell icon on a chat with notifications off.
+        muted: [...a.querySelectorAll('svg path')].some(p => p.getAttribute('d')?.startsWith('M2.5 6c0-.322')),
       };
     });
     try { chrome.webview.postMessage({ rows }); } catch {}

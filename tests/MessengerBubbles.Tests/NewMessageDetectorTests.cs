@@ -120,4 +120,36 @@ public class NewMessageDetectorTests
         var later = Settled.AddMinutes(5);
         Assert.Empty(d.Scan([Row("/t/1", "An\nMới", true), Row("/t/2", "Bình\nAlo", true)], later).NewMessages);
     }
+
+    [Fact]
+    public void MutedRow_NewMessage_IsNotReported()
+    {
+        var d = new NewMessageDetector();
+        var start = new DateTime(2026, 1, 1);
+        d.Scan([new RowSnapshot("/t/1", "A\ncu", false, "", Muted: true)], start);
+        var r = d.Scan([new RowSnapshot("/t/1", "A\nmoi", true, "", Muted: true)], start.AddMinutes(1));
+        Assert.Empty(r.NewMessages);
+    }
+
+    [Fact]
+    public void MutedRow_TurnedBackOn_DoesNotReportOldMessage()
+    {
+        var d = new NewMessageDetector();
+        var start = new DateTime(2026, 1, 1);
+        d.Scan([new RowSnapshot("/t/1", "A\ncu", false, "", Muted: true)], start);
+        d.Scan([new RowSnapshot("/t/1", "A\nmoi", true, "", Muted: true)], start.AddMinutes(1));
+        var r = d.Scan([new RowSnapshot("/t/1", "A\nmoi", true, "")], start.AddMinutes(2));
+        Assert.Empty(r.NewMessages);
+    }
+
+    [Fact]
+    public void MutedRow_TurnedBackOn_ReportsNextMessage()
+    {
+        var d = new NewMessageDetector();
+        var start = new DateTime(2026, 1, 1);
+        d.Scan([new RowSnapshot("/t/1", "A\ncu", false, "", Muted: true)], start);
+        d.Scan([new RowSnapshot("/t/1", "A\ncu", false, "")], start.AddMinutes(1));
+        var r = d.Scan([new RowSnapshot("/t/1", "A\nmoi", true, "")], start.AddMinutes(2));
+        Assert.Single(r.NewMessages);
+    }
 }

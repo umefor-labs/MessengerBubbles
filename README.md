@@ -107,6 +107,7 @@ Hai WebView2 dùng chung một thư mục hồ sơ và cùng tùy chọn, nên c
 | `text` | `innerText` của dòng |
 | `bold` | Có `span` với `font-weight` từ 600 trở lên |
 | `avatar` | `src` của `img` hoặc `xlink:href` của `image` |
+| `muted` | Có icon chuông gạch ngang, nhận biết qua `d` của `path` bắt đầu bằng `M2.5 6c0-.322` |
 
 Lệnh gửi chạy sau mỗi thay đổi DOM, gộp trong 500 ms, và tự chạy mỗi 5 giây. App bỏ qua dữ liệu đến từ trang không phải `facebook.com` qua HTTPS.
 
@@ -114,7 +115,7 @@ Lệnh gửi chạy sau mỗi thay đổi DOM, gộp trong 500 ms, và tự ch�
 
 | Kết quả | Điều kiện |
 |---|---|
-| Tin mới | Đã qua thời gian chờ, dòng in đậm, và (dòng chưa từng thấy, hoặc trước đó không in đậm, hoặc nội dung đổi) |
+| Tin mới | Đã qua thời gian chờ, dòng in đậm, không có `muted`, và (dòng chưa từng thấy, hoặc trước đó không in đậm, hoặc nội dung đổi) |
 | Đã đọc | Trước đó in đậm, giờ không in đậm |
 
 Thời gian chờ là 10 giây tính từ lần đầu thấy dòng chat, vì Facebook dựng danh sách dần sau khi tải. Mỗi lần trang theo dõi điều hướng thì trạng thái được đặt lại. Nhờ đó nhãn "Đang hoạt động" đổi hay thời gian nhảy không tính là tin mới.
@@ -264,7 +265,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-Gồm 135 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
+Gồm 138 test cho phát hiện tin, tách nội dung dòng chat, tập bóng, hình học, cài đặt, autostart và URL. Phần WPF và WebView2 không có test tự động, phải kiểm tra tay theo [danh sách](docs/FACEBOOK-CHECKLIST.md).
 
 Đóng gói một file tự chứa .NET vào `publish\MessengerBubbles.exe`, khoảng 166 MB. File không nén, vì `EnableCompressionInSingleFile` giảm còn 72 MB nhưng làm app tốn thêm gần 80 MB bộ nhớ riêng:
 
@@ -307,7 +308,7 @@ Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 7
 ## Giới hạn đã biết
 
 - Hai tin giống hệt nhau đến liên tiếp khi dòng vẫn in đậm chỉ tính một, vì danh sách chat không có tín hiệu riêng cho từng tin.
-- Cuộc trò chuyện đã tắt thông báo trên Facebook vẫn bật bóng và kêu.
+- Cuộc chat đã tắt thông báo chỉ được nhận biết qua hình icon, nên Facebook đổi icon là lại bật bóng. Tin của các cuộc chat này vẫn được tính vào số trên bóng thường trực.
 - Đổi cỡ khung chat chỉ qua menu, không điều chỉnh trực tiếp từ khung chat, vì WebView2 che vùng kéo nếu không chừa viền.
 - Khung chat không có bóng đổ. Thẻ xem trước luôn màu trắng, không theo chế độ tối.
 - Kéo chồng bóng vào vùng đóng chỉ đóng bóng trên cùng.
@@ -322,4 +323,4 @@ Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 7
 
 ## License
 
-Chưa có, nên hiện chưa ai được phép dùng lại mã nguồn.
+[MIT](LICENSE).

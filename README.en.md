@@ -109,6 +109,7 @@ Both WebView2 controls use the same profile folder and options, so they share on
 | `text` | The row's `innerText` |
 | `bold` | Whether a `span` has a `font-weight` of 600 or more |
 | `avatar` | `src` of `img` or `xlink:href` of `image` |
+| `muted` | Whether the crossed-out bell icon is there, found by a `path` whose `d` starts with `M2.5 6c0-.322` |
 
 Sending runs after DOM changes, batched over 500 ms, and also every 5 seconds. The app ignores data from any page that is not `facebook.com` over HTTPS.
 
@@ -116,7 +117,7 @@ Sending runs after DOM changes, batched over 500 ms, and also every 5 seconds. T
 
 | Result | Condition |
 |---|---|
-| New message | Settling time has passed, the row is bold, and (the row is unseen, or it was not bold before, or its text changed) |
+| New message | Settling time has passed, the row is bold, has no `muted`, and (the row is unseen, or it was not bold before, or its text changed) |
 | Read | The row was bold and no longer is |
 
 Settling time is 10 seconds from the first rendered row, because Facebook builds the list gradually after loading. State resets each time the watcher page navigates. Removing the labels means a changed "Active now" label or a ticking time does not count as a new message.
@@ -266,7 +267,7 @@ dotnet run --project src/MessengerBubbles
 dotnet test
 ```
 
-There are 135 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
+There are 138 tests covering message detection, chat row parsing, the bubble set, geometry, settings, autostart and URLs. The WPF and WebView2 parts have no automated tests and are checked by hand using the [checklist](docs/FACEBOOK-CHECKLIST.md).
 
 Package one self-contained file to `publish\MessengerBubbles.exe`, about 166 MB. The file is uncompressed, because `EnableCompressionInSingleFile` brings it down to 72 MB but costs the app almost 80 MB more private memory:
 
@@ -309,7 +310,7 @@ The build before that setting used 658 MB of WebView2 memory after 6 minutes and
 ## Known limits
 
 - Two identical messages in a row on a row that stays bold count as one, because the chat list has no per-message signal.
-- Conversations muted on Facebook still pop a bubble and play the sound.
+- Muted conversations are recognised only by the shape of the icon, so if Facebook changes it they pop bubbles again. Their messages still count toward the number on the persistent bubble.
 - The panel size changes only through the menu, not from the panel itself, because WebView2 covers the resize area unless a border is left around it.
 - The panel has no drop shadow. The preview card is always white and does not follow dark mode.
 - Dragging a stack into the dismiss zone closes only the top bubble.
@@ -326,4 +327,4 @@ These are in Vietnamese.
 
 ## License
 
-None yet, so no one has permission to reuse the code for now.
+[MIT](LICENSE).

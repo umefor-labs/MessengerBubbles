@@ -170,7 +170,8 @@ class Watcher : Window
                 r.GetProperty("href").GetString() ?? "",
                 r.GetProperty("text").GetString() ?? "",
                 r.GetProperty("bold").GetBoolean(),
-                r.GetProperty("avatar").GetString() ?? "")).Where(r => r.ThreadHref != "").ToList();
+                r.GetProperty("avatar").GetString() ?? "",
+                r.GetProperty("muted").GetBoolean())).Where(r => r.ThreadHref != "").ToList();
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException)
         {

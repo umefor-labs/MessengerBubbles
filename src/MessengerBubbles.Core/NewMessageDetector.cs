@@ -28,7 +28,7 @@ public class NewMessageDetector
             var text = RowText.WithoutTime(row.Text);
             var known = _seen.TryGetValue(row.ThreadHref, out var prior);
             // shortcut: two identical messages in a row on a bold row count once, fix if a per-message signal turns up
-            if (settled && row.Bold && (!known || !prior.Bold || prior.Text != text))
+            if (settled && row.Bold && !row.Muted && (!known || !prior.Bold || prior.Text != text))
                 fresh.Add(row);
             if (known && prior.Bold && !row.Bold)
                 read.Add(row.ThreadHref);

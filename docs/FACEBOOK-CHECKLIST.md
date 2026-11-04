@@ -20,6 +20,7 @@ App không có API chính thức, chỉ đọc trang web của Facebook. Tài li
 | `probe.js`, `panel.js` | `a[href*="/messages/t/"]`, `a[href*="/messages/e2ee/t/"]` | Tìm dòng chat |
 | `probe.js` | Có `span` với `font-weight` từ 600 trở lên | Biết dòng chưa đọc |
 | `probe.js` | `img` hoặc `image` trong dòng chat | Lấy avatar |
+| `probe.js` | `path` có `d` bắt đầu bằng `M2.5 6c0-.322` | Icon chuông gạch ngang của chat đã tắt thông báo |
 | `panel.js` | `[role=banner]` | Ẩn thanh Facebook |
 | `panel.js` | `[role=main]`, `[role=log]` | Khung cuộc chat, biết cuộc chat có đang hiện không |
 | `panel.js` | `[role=navigation]`, `[role=grid]` | Danh sách chat |
