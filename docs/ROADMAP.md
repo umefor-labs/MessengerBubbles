@@ -4,7 +4,7 @@ Mỗi phiên bản là một đợt phát hành nhỏ, có tiêu chí đạt rõ
 
 Các tính năng ở v0.3 trở đi là đề xuất, chưa được người dùng chốt. Mỗi đợt nên chốt lại phạm vi trước khi làm.
 
-Bản phát hành mới nhất là `v0.4.0`. Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
+Bản phát hành mới nhất là `v0.7.0`, các thay đổi từng bản nằm trong [CHANGELOG](../CHANGELOG.md). Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
 
 ## v0.1.0: Bản dùng được
 
@@ -23,7 +23,7 @@ Mục tiêu: dùng cả ngày mà không phải để ý đến app.
 
 - [x] Đổi lên .NET 10, vì .NET 8 hết hỗ trợ ngày 10/11/2026.
 - [ ] Kiểm tra hết các mục còn thiếu của v0.1.0, sửa lỗi phát sinh. Chat nhóm đạt, chat mã hóa bỏ qua vì không có nhóm để thử.
-- [ ] Đo bộ nhớ riêng của app khi chạy lâu; nếu trang tăng dần thì tải lại định kỳ.
+- [ ] Đo bộ nhớ riêng của app khi chạy lâu; nếu trang tăng dần thì tải lại định kỳ. Mới đo lúc vừa mở và một lần 8 giờ ở bản cũ, xem mục Tài nguyên trong [README](../README.md#tài-nguyên); bản hiện tại chưa đo khi chạy lâu.
 - [x] Báo lỗi ở khay khi khung chat không mở được cuộc trò chuyện.
 - [x] Rút hoặc cắm màn hình lúc đang chạy: bóng phải về màn hình còn lại.
 - [x] Bóng được đưa lên từ `+N` phải có avatar ngay.
