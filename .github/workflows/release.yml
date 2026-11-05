@@ -26,5 +26,12 @@ jobs:
           -p:Version=$($env:TAG.TrimStart('v')) -o out
       - name: Publish release
         run: |
-          Move-Item out/MessengerBubbles.exe "MessengerBubbles-$env:TAG-win-x64.exe"
-          gh release create $env:TAG "MessengerBubbles-$env:TAG-win-x64.exe" --generate-notes
+          $exe = "MessengerBubbles-$env:TAG-win-x64.exe"
+          Move-Item out/MessengerBubbles.exe $exe
+          # A release made on the GitHub website already exists, so only attach the file to it.
+          gh release view $env:TAG *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $env:TAG $exe --clobber
+          } else {
+            gh release create $env:TAG $exe --generate-notes
+          }

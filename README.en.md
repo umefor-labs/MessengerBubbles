@@ -294,6 +294,8 @@ git tag -a v0.5.0 -m "v0.5.0"
 git push origin v0.5.0
 ```
 
+Without a computer, create the release on the GitHub Releases page: `Draft a new release`, type a new tag such as `v0.5.0`, target `main`, click `Generate release notes`, then `Publish release`. The new tag still runs the workflow, which attaches the `.exe` to that release a few minutes later.
+
 ## Resources
 
 Measured once on one machine, 3 minutes after starting, with both WebView2 pages loaded:
