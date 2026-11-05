@@ -292,6 +292,8 @@ git tag -a v0.5.0 -m "v0.5.0"
 git push origin v0.5.0
 ```
 
+Không có máy tính thì tạo bản mới trên trang Releases của GitHub: `Draft a new release`, gõ tag mới như `v0.5.0`, đích `main`, bấm `Generate release notes` rồi `Publish release`. Tag mới vẫn chạy workflow, và workflow gắn file `.exe` vào bản đã tạo sau vài phút.
+
 ## Tài nguyên
 
 Đo một lần trên một máy, 3 phút sau khi mở, với hai trang WebView2 đang tải:
