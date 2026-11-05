@@ -8,7 +8,7 @@ App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, m
 
 Video giới thiệu 49 giây, dựng lại giao diện bằng dữ liệu giả. Ảnh trên không có tiếng, bản có âm báo là [file MP4](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4) (GitHub sẽ tải về, không phát trực tiếp). Mã nguồn video ở `promo/`, xuất lại bằng `python promo/render.py`.
 
-Phiên bản mới nhất: `v0.6.1`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
+Phiên bản mới nhất: `v0.7.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
 
 ## Rủi ro
 
@@ -317,6 +317,7 @@ Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 7
 ## Tài liệu khác
 
 - [Lộ trình](docs/ROADMAP.md)
+- [Thay đổi từng phiên bản](CHANGELOG.md)
 - [Thiết kế ban đầu](docs/2026-11-02-messenger-bubbles-design.md)
 - [Danh sách kiểm tra khi Facebook đổi giao diện](docs/FACEBOOK-CHECKLIST.md)
 - [Ghi chú về công khai repo](docs/PUBLISHING.md)
