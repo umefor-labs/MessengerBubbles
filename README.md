@@ -48,6 +48,7 @@ App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ng�
 | `Ngôn ngữ` | Hỏi ở lần đầu | Tiếng Việt hoặc English |
 | `Báo bản mới` | Bật | Hỏi GitHub phiên bản mới nhất, 1 phút sau khi mở và mỗi 24 giờ. Có bản mới thì hiện thông báo, bấm vào để mở trang tải. App không tự tải hay tự cài |
 | `Khởi động cùng Windows` | Tắt | Ghi giá trị `MessengerBubbles` vào `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. Khi đang bật, mỗi lần mở app ghi lại đường dẫn của chính nó, nên chuyển file đi chỗ khác rồi mở một lần là đủ |
+| `Tắt GPU (giảm RAM)` | Tắt | Chạy WebView2 với `--disable-gpu`, nên không còn tiến trình GPU và trang được vẽ bằng CPU. Có hiệu lực từ lần mở app sau. Xem cách đo ở mục [Tài nguyên](#tài-nguyên) |
 | `Thoát` | | Tắt app |
 
 Icon khay chuyển đỏ khi cần đăng nhập lại hoặc khi đọc danh sách chat thất bại.
@@ -306,6 +307,23 @@ Không có máy tính thì tạo bản mới trên trang Releases của GitHub: 
 Working set cộng dồn cả bộ nhớ dùng chung giữa các tiến trình. Trang theo dõi chạy với `MemoryUsageTargetLevel = Low`.
 
 Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 700 MB sau 8 giờ. Chưa đo bản hiện tại khi chạy lâu, nên chưa kết luận được có rò rỉ hay không.
+
+### Đo bộ nhớ khi tắt GPU
+
+`Tắt GPU (giảm RAM)` bỏ tiến trình GPU của WebView2. Bù lại, trang được vẽ bằng CPU nên CPU có thể nhích lên khi cuộn hoặc mở khung chat. Mức tiết kiệm tuỳ card đồ họa và driver, nên đo trên chính máy mình:
+
+1. Mở app, đợi 3 phút cho hai trang tải xong, không bấm gì.
+2. Chạy lệnh dưới trong PowerShell, ghi lại kết quả.
+3. Bật `Tắt GPU (giảm RAM)`, chọn `Thoát`, mở lại app, đợi 3 phút rồi chạy lại lệnh.
+
+```powershell
+$p = Get-CimInstance Win32_Process -Filter "Name='msedgewebview2.exe'" | Where-Object CommandLine -like '*MessengerBubbles*'
+$gpu = @($p | Where-Object CommandLine -like '*--type=gpu-process*').Count
+$mb = ($p | ForEach-Object { (Get-Process -Id $_.ProcessId).PrivateMemorySize64 } | Measure-Object -Sum).Sum / 1MB
+"WebView2: $($p.Count) tiến trình, $gpu tiến trình GPU, {0:N0} MB bộ nhớ riêng" -f $mb
+```
+
+Lệnh chỉ đếm tiến trình WebView2 của app, nhận ra qua thư mục hồ sơ trong `%LOCALAPPDATA%\MessengerBubbles`. Khi tắt GPU, số tiến trình GPU phải là 0; nếu vẫn là 1 thì app chưa được mở lại. Bộ nhớ của chính app (`MessengerBubbles.exe`) không đổi theo tuỳ chọn này. Chưa có số đo trên máy thật cho tuỳ chọn này.
 
 ## Giới hạn đã biết
 

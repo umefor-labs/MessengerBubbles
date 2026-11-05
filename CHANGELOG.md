@@ -2,6 +2,10 @@
 
 Các thay đổi đáng chú ý của từng bản phát hành. Số phiên bản theo [lộ trình](docs/ROADMAP.md).
 
+## Chưa phát hành
+
+- Thêm `Tắt GPU (giảm RAM)` trong menu khay, mặc định tắt. Bật thì WebView2 chạy với `--disable-gpu` từ lần mở app sau. README có lệnh PowerShell để đo bộ nhớ trước và sau.
+
 ## v0.7.0 (05/11/2026)
 
 - Cuộc chat đã tắt thông báo trên Facebook không bật bóng và không kêu nữa. App nhận biết qua icon chuông gạch ngang trong danh sách chat, nên Facebook đổi icon là lại bật bóng. Tin của các cuộc chat này vẫn được tính vào số trên bóng thường trực.

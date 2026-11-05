@@ -18,6 +18,7 @@ public class SettingsTests : IDisposable
         Assert.False(s.Autostart);
         Assert.Null(s.Language);
         Assert.True(s.CheckUpdates);
+        Assert.False(s.DisableGpu);
         Assert.Empty(s.Positions);
     }
 
@@ -39,10 +40,11 @@ public class SettingsTests : IDisposable
     [Fact]
     public void SaveLoad_RoundTrips()
     {
-        var s = new Settings { Preview = false, Language = AppLanguage.English, Positions = { ["anchor"] = new Box(1, 2, 56, 56) } };
+        var s = new Settings { Preview = false, DisableGpu = true, Language = AppLanguage.English, Positions = { ["anchor"] = new Box(1, 2, 56, 56) } };
         s.Save(Path_);
         var loaded = Settings.Load(Path_);
         Assert.False(loaded.Preview);
+        Assert.True(loaded.DisableGpu);
         Assert.Equal(AppLanguage.English, loaded.Language);
         Assert.False(loaded.PersistentBubble);
         Assert.Equal(new Box(1, 2, 56, 56), loaded.Positions["anchor"]);

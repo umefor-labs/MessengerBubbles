@@ -50,6 +50,7 @@ The app comes in Vietnamese and English. On first run it asks for a language bef
 | `Language` | Asked on first run | Tiếng Việt or English |
 | `Notify about updates` | On | Asks GitHub for the latest version, 1 minute after starting and every 24 hours. If there is a newer one it shows a notice, and clicking it opens the download page. The app never downloads or installs anything itself |
 | `Start with Windows` | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. While on, the app rewrites its own path each time it opens, so after moving the file, opening it once is enough |
+| `Disable GPU (less RAM)` | Off | Runs WebView2 with `--disable-gpu`, so there is no GPU process and pages are drawn on the CPU. Applies the next time the app opens. See [Resources](#resources) for how to measure it |
 | `Quit` | | Quits the app |
 
 The tray icon turns red when you need to log in again or when reading the chat list fails.
@@ -308,6 +309,23 @@ Measured once on one machine, 3 minutes after starting, with both WebView2 pages
 The working set total counts memory shared between processes more than once. The watcher page runs with `MemoryUsageTargetLevel = Low`.
 
 The build before that setting used 658 MB of WebView2 memory after 6 minutes and 700 MB after 8 hours. The current build has not been measured over a long run, so whether there is a leak is still unknown.
+
+### Measuring memory with the GPU disabled
+
+`Disable GPU (less RAM)` removes WebView2's GPU process. In exchange pages are drawn on the CPU, so CPU use can rise a little while scrolling or opening the chat panel. How much it saves depends on the graphics card and driver, so measure on your own machine:
+
+1. Open the app and wait 3 minutes for both pages to load, without clicking anything.
+2. Run the command below in PowerShell and note the result.
+3. Turn on `Disable GPU (less RAM)`, choose `Quit`, open the app again, wait 3 minutes and run the command again.
+
+```powershell
+$p = Get-CimInstance Win32_Process -Filter "Name='msedgewebview2.exe'" | Where-Object CommandLine -like '*MessengerBubbles*'
+$gpu = @($p | Where-Object CommandLine -like '*--type=gpu-process*').Count
+$mb = ($p | ForEach-Object { (Get-Process -Id $_.ProcessId).PrivateMemorySize64 } | Measure-Object -Sum).Sum / 1MB
+"WebView2: $($p.Count) processes, $gpu GPU processes, {0:N0} MB private memory" -f $mb
+```
+
+The command only counts the app's own WebView2 processes, found by the profile folder under `%LOCALAPPDATA%\MessengerBubbles`. With the GPU disabled the GPU process count must be 0; if it is still 1, the app has not been reopened. The app's own memory (`MessengerBubbles.exe`) does not change with this option. There are no measurements from a real machine for this option yet.
 
 ## Known limits
 

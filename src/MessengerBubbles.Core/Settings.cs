@@ -12,6 +12,8 @@ public record Settings
     public bool Sound { get; set; } = true;
     public bool GroupBubbles { get; set; }
     public bool CheckUpdates { get; set; } = true;
+    // Read once at launch, so a change applies the next time the app opens.
+    public bool DisableGpu { get; set; }
     // Null until chosen, so the first run asks.
     public AppLanguage? Language { get; set; }
     public PanelSize PanelSize { get; set; } = PanelSize.Medium;

@@ -14,11 +14,14 @@ static class AppPaths
 
     public static string SettingsFile => Path.Combine(Dir, "settings.json");
 
+    // Read once, because a running browser process keeps the options it started with.
+    static readonly Lazy<string> BrowserArgs = new(() => WebViewArgs.For(Settings.Load(SettingsFile).DisableGpu));
+
     // Same folder and options on every call, so all WebView2s share one browser process and login.
     public static Task<CoreWebView2Environment> CreateEnvironmentAsync()
     {
         Directory.CreateDirectory(Dir);
-        var options = new CoreWebView2EnvironmentOptions("--disable-background-timer-throttling --disable-renderer-backgrounding --disk-cache-size=1");
+        var options = new CoreWebView2EnvironmentOptions(BrowserArgs.Value);
         return CoreWebView2Environment.CreateAsync(null, Path.Combine(Dir, "profile"), options);
     }
 

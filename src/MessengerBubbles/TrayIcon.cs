@@ -63,6 +63,11 @@ class TrayIcon : IDisposable
         {
             settings.CheckUpdates = on;
         }));
+        menu.Items.Add(Toggle(texts.DisableGpu, settings.DisableGpu, on =>
+        {
+            settings.DisableGpu = on;
+            Balloon(texts.RestartToApply, WinForms.ToolTipIcon.Info);
+        }));
         menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add(texts.Exit, null, (_, _) => _exit());
         return menu;
