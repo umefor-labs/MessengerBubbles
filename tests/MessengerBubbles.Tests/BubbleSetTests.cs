@@ -157,4 +157,16 @@ public class BubbleSetTests
         s.OnNewMessage(Row(1));
         Assert.Equal(1, Assert.Single(s.Visible).Unread);
     }
+
+    [Fact]
+    public void DismissAll_ClearsVisibleAndOverflow()
+    {
+        var s = new BubbleSet();
+        for (var i = 1; i <= BubbleSet.Max + 2; i++) s.OnNewMessage(Row(i));
+        s.DismissAll();
+        Assert.Empty(s.Visible);
+        Assert.Equal(0, s.Overflow);
+        s.OnNewMessage(Row(1));
+        Assert.Equal(1, Assert.Single(s.Visible).Unread);
+    }
 }

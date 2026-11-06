@@ -285,16 +285,31 @@ class BubbleController
             var area = FloatingWindow.WorkAreaAt(box.X, box.Y);
             if (canDismiss && Geometry.InDismissZone(box, area))
             {
-                // Out of _windows first, so Refresh leaves this window to the animation.
-                _windows.Remove(href());
-                _set.Dismiss(href());
+                // Dragging the top of a group takes the whole group with it.
+                List<BubbleWindow> gone = _stacked && w == _stackTop ? StackMembers() : [w];
+                // Out of _windows first, so Refresh leaves these windows to the animation.
+                if (gone.Count > 1)
+                {
+                    _windows.Clear();
+                    _overflow = null;
+                    _stackTop = null;
+                    _set.DismissAll();
+                }
+                else
+                {
+                    _windows.Remove(href());
+                    _set.Dismiss(href());
+                }
+                if (_previewFor != null && gone.Contains(_previewFor)) _preview.Hide();
                 Refresh();
                 var (x, y) = Geometry.DismissTarget(box, area);
-                w.SuckInto(x, y, () =>
-                {
-                    w.Close();
-                    _zone.Hide();
-                });
+                var left = gone.Count;
+                foreach (var g in gone)
+                    g.SuckInto(x, y, () =>
+                    {
+                        g.Close();
+                        if (--left == 0) _zone.Hide();
+                    });
                 return;
             }
             _zone.Hide();

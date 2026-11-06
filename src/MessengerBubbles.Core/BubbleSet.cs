@@ -75,6 +75,13 @@ public class BubbleSet
         }
     }
 
+    // The whole group went to the dismiss zone, including the chats waiting in overflow.
+    public void DismissAll()
+    {
+        _visible.Clear();
+        _overflow.Clear();
+    }
+
     static bool Bump(List<BubbleState> list, RowSnapshot r)
     {
         var i = list.FindIndex(b => b.ThreadHref == r.ThreadHref);
