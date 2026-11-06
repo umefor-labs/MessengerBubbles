@@ -2,7 +2,7 @@
 
 Các thay đổi đáng chú ý của từng bản phát hành. Số phiên bản theo [lộ trình](docs/ROADMAP.md).
 
-## Chưa phát hành
+## v0.8.0 (06/11/2026)
 
 - Thêm `Tắt GPU (giảm RAM)` trong menu khay, mặc định tắt. Bật thì WebView2 chạy với `--disable-gpu` từ lần mở app sau. README có lệnh PowerShell để đo bộ nhớ trước và sau.
 
