@@ -2,7 +2,7 @@
 
 Các thay đổi đáng chú ý của từng bản phát hành. Số phiên bản theo [lộ trình](docs/ROADMAP.md).
 
-## Chưa phát hành
+## v0.8.1 (06/11/2026)
 
 - Khi bật `Gom bóng`, kéo cả cụm xuống dấu X sẽ đóng toàn bộ cụm (kể cả bóng `+N` cuộc chat khác), không chỉ cuộc trò chuyện nằm trên cùng. Tin mới đến sau đó vẫn bật bóng lại như thường.
 

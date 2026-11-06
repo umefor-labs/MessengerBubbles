@@ -4,7 +4,7 @@ Mỗi phiên bản là một đợt phát hành nhỏ, có tiêu chí đạt rõ
 
 Các tính năng ở v0.3 trở đi là đề xuất, chưa được người dùng chốt. Mỗi đợt nên chốt lại phạm vi trước khi làm.
 
-Bản phát hành mới nhất là `v0.8.0`, các thay đổi từng bản nằm trong [CHANGELOG](../CHANGELOG.md). Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
+Bản phát hành mới nhất là `v0.8.1`, các thay đổi từng bản nằm trong [CHANGELOG](../CHANGELOG.md). Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
 
 ## v0.1.0: Bản dùng được
 
