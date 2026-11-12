@@ -13,7 +13,35 @@ public static partial class RowText
     [GeneratedRegex(@"^(?:đang hoạt động|active now|hoạt động .+ trước|active .+ ago)$", RegexOptions.IgnoreCase)]
     private static partial Regex PresenceLabel();
 
+    [GeneratedRegex(@"(?:^|·|\s)(?:(\d+)\s*(phút|giờ|ngày|tuần|tháng|năm|mins?|hrs?|m|h|d|w|y)|vừa xong|just now)\s*$", RegexOptions.IgnoreCase)]
+    private static partial Regex AgeAtEnd();
+
     public static string WithoutTime(string text) => string.Join('\n', ContentLines(text));
+
+    // How old the row's last message is by its time label, or null if the row shows none.
+    public static TimeSpan? Age(string text)
+    {
+        var lines = text.Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0).ToList();
+        var dot = lines.IndexOf("·");
+        var candidates = dot > 0 ? lines.Skip(dot + 1).Take(1) : lines.Skip(1).TakeLast(1);
+        foreach (var line in candidates)
+        {
+            var m = AgeAtEnd().Match(line);
+            if (!m.Success) continue;
+            if (!m.Groups[1].Success) return TimeSpan.Zero;
+            var n = int.Parse(m.Groups[1].Value);
+            return m.Groups[2].Value.ToLowerInvariant() switch
+            {
+                "phút" or "m" or "min" or "mins" => TimeSpan.FromMinutes(n),
+                "giờ" or "h" or "hr" or "hrs" => TimeSpan.FromHours(n),
+                "ngày" or "d" => TimeSpan.FromDays(n),
+                "tuần" or "w" => TimeSpan.FromDays(7 * n),
+                "tháng" => TimeSpan.FromDays(30 * n),
+                _ => TimeSpan.FromDays(365 * n),
+            };
+        }
+        return null;
+    }
 
     public static (string Name, string Preview) Parse(string text)
     {

@@ -14,6 +14,9 @@ namespace MessengerBubbles;
 class Watcher : Window
 {
     static readonly TimeSpan SilenceLimit = TimeSpan.FromSeconds(60);
+    // Facebook's page grows in memory over a long run; a reload while the user is away gives it back.
+    static readonly TimeSpan FreshReloadAfter = TimeSpan.FromHours(6);
+    static readonly TimeSpan IdleBeforeReload = TimeSpan.FromMinutes(5);
 
     readonly NewMessageDetector _detector = new();
     readonly RowsHealth _health = new();
@@ -25,7 +28,8 @@ class Watcher : Window
     int _lastRowCount;
     List<RowSnapshot> _lastRows = [];
     int _attempt;
-    bool _broken, _needsLogin, _exiting;
+    DateTime _loadedAt = DateTime.Now;
+    bool _broken, _needsLogin, _exiting, _planned;
 
     public event Action<ScanResult>? Scanned;
     public event Action<bool>? NeedsLogin;
@@ -104,7 +108,12 @@ class Watcher : Window
             core.MemoryUsageTargetLevel = CoreWebView2MemoryUsageTargetLevel.Low;
             AppPaths.Harden(core);
             core.WebMessageReceived += OnMessage;
-            core.NavigationStarting += (_, _) => _detector.Reset();
+            core.NavigationStarting += (_, _) =>
+            {
+                if (_planned) _detector.Restart();
+                else _detector.Reset();
+                _planned = false;
+            };
             core.NavigationCompleted += OnNavigationCompleted;
             core.ProcessFailed += OnProcessFailed;
             await core.AddScriptToExecuteOnDocumentCreatedAsync(ReadProbe());
@@ -200,6 +209,7 @@ class Watcher : Window
         }
         _attempt = 0;
         _lastPost = DateTime.Now;
+        _loadedAt = DateTime.Now;
         if (new Uri(_web.CoreWebView2.Source).AbsolutePath is "/" or "/home.php")
             _web.CoreWebView2.Navigate(AppPaths.MessagesUrl);
         CheckHealth();
@@ -243,10 +253,36 @@ class Watcher : Window
             if (login) ShowWindow();
         }
 
+        if (core != null && !login && !_broken && !IsVisible && !_reload.IsEnabled &&
+            now - _loadedAt > FreshReloadAfter && UserIdle() > IdleBeforeReload)
+        {
+            AppPaths.Log("planned reload");
+            _loadedAt = now;
+            _planned = true;
+            core.Navigate(AppPaths.MessagesUrl);
+        }
+
         var broken = _health.IsBroken(login ? 1 : _lastRowCount, now);
         if (broken == _broken) return;
         _broken = broken;
         AppPaths.Log($"health broken={broken}");
         HealthChanged?.Invoke(broken);
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct LastInputInfo
+    {
+        public uint Size;
+        public uint Time;
+    }
+
+    [DllImport("user32.dll")]
+    static extern bool GetLastInputInfo(ref LastInputInfo info);
+
+    static TimeSpan UserIdle()
+    {
+        var info = new LastInputInfo { Size = (uint)Marshal.SizeOf<LastInputInfo>() };
+        if (!GetLastInputInfo(ref info)) return TimeSpan.Zero;
+        return TimeSpan.FromMilliseconds(unchecked((uint)Environment.TickCount - info.Time));
     }
 }

@@ -63,4 +63,21 @@ public class RowTextTests
     {
         Assert.Equal(("", ""), RowText.Parse(""));
     }
+
+    [Theory]
+    [InlineData("An\nChào\n·\n5 phút", 5)]
+    [InlineData("An\nChào · 2 giờ", 120)]
+    [InlineData("An\nChào\n·\n1 ngày\n·\nĐã xem", 1440)]
+    [InlineData("An\nHi\n·\n3m", 3)]
+    [InlineData("An\nHi\n·\n1w", 10080)]
+    [InlineData("An\nChào\n·\nVừa xong", 0)]
+    [InlineData("An\nHi · Just now", 0)]
+    public void Age_ReadsTimeLabel(string text, int minutes) =>
+        Assert.Equal(TimeSpan.FromMinutes(minutes), RowText.Age(text));
+
+    [Theory]
+    [InlineData("An\nChào")]
+    [InlineData("An")]
+    [InlineData("")]
+    public void Age_NullWithoutTimeLabel(string text) => Assert.Null(RowText.Age(text));
 }

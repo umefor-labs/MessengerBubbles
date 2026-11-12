@@ -8,7 +8,7 @@ App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, m
 
 Video giới thiệu 49 giây, dựng lại giao diện bằng dữ liệu giả. Ảnh trên không có tiếng, bản có âm báo là [file MP4](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4) (GitHub sẽ tải về, không phát trực tiếp). Mã nguồn video ở `promo/`, xuất lại bằng `python promo/render.py`.
 
-Phiên bản mới nhất: `v0.8.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
+Phiên bản mới nhất: `v0.9.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
 
 ## Rủi ro
 
@@ -44,6 +44,7 @@ App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ng�
 | `Gom bóng` | Tắt | Từ 2 bóng trở lên thì xếp chồng, bấm thì xòe, 5 giây sau gom lại |
 | `Xem trước nội dung` | Bật | Hiện thẻ tên và nội dung tin bên cạnh bóng trong 5 giây |
 | `Âm báo` | Bật | Âm riêng của app, cách nhau ít nhất 3 giây |
+| `Tạm im lặng` | | `1 giờ` hoặc `Đến 7 giờ sáng`: tin mới không bật bóng, không xem trước, không kêu. Tin vẫn chưa đọc trên Facebook và vẫn tính vào số của bóng thường trực. Hết giờ thì tự báo lại, hoặc chọn `Bật lại thông báo`. Đang im lặng thì menu ghi giờ kết thúc |
 | `Kích thước khung chat` | Vừa | Nhỏ 340×480, Vừa 380×560, Lớn 460×720 (DIP). Áp dụng từ lần mở sau |
 | `Ngôn ngữ` | Hỏi ở lần đầu | Tiếng Việt hoặc English |
 | `Báo bản mới` | Bật | Hỏi GitHub phiên bản mới nhất, 1 phút sau khi mở và mỗi 24 giờ. Có bản mới thì hiện thông báo, bấm vào để mở trang tải. App không tự tải hay tự cài |
@@ -220,6 +221,7 @@ Mọi thứ nằm trong `%LOCALAPPDATA%\MessengerBubbles\`:
 | `CheckUpdates` | bool | `true` |
 | `Language` | 0 tiếng Việt, 1 tiếng Anh | `null`, tức chưa chọn |
 | `PanelSize` | 0 nhỏ, 1 vừa, 2 lớn | `1` |
+| `SnoozedUntil` | Giờ máy, kết thúc `Tạm im lặng` | `null` |
 | `Positions` | Từ khóa `anchor`, `persistent` sang `{X, Y, W, H}` | rỗng |
 
 Các hạn chế trong `AppPaths.Harden` và `FacebookUrl`:
@@ -306,7 +308,7 @@ Không có máy tính thì tạo bản mới trên trang Releases của GitHub: 
 
 Working set cộng dồn cả bộ nhớ dùng chung giữa các tiến trình. Trang theo dõi chạy với `MemoryUsageTargetLevel = Low`.
 
-Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 700 MB sau 8 giờ. Chưa đo bản hiện tại khi chạy lâu, nên chưa kết luận được có rò rỉ hay không.
+Bản trước khi hạ mức bộ nhớ dùng 658 MB WebView2 sau 6 phút và 700 MB sau 8 giờ. Chưa đo bản hiện tại khi chạy lâu, nên chưa kết luận được có rò rỉ hay không. Từ v0.9.0, trang theo dõi tự tải lại khi đã mở quá 6 giờ và máy không có thao tác chuột, phím trong 5 phút, để trả lại bộ nhớ trang tích lũy. Tin đến trong lúc tải lại vẫn bật bóng sau khi trang tải xong.
 
 ### Đo bộ nhớ khi tắt GPU
 

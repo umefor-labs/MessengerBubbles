@@ -4,7 +4,7 @@ Mỗi phiên bản là một đợt phát hành nhỏ, có tiêu chí đạt rõ
 
 Các tính năng ở v0.3 trở đi là đề xuất, chưa được người dùng chốt. Mỗi đợt nên chốt lại phạm vi trước khi làm.
 
-Bản phát hành mới nhất là `v0.8.0`, các thay đổi từng bản nằm trong [CHANGELOG](../CHANGELOG.md). Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
+Bản phát hành mới nhất là `v0.9.0`, các thay đổi từng bản nằm trong [CHANGELOG](../CHANGELOG.md). Tiêu chí của v0.2, v0.3 và v0.4 chưa đạt hết; xem các mục chưa đánh dấu bên dưới.
 
 ## v0.1.0: Bản dùng được
 
@@ -23,7 +23,7 @@ Mục tiêu: dùng cả ngày mà không phải để ý đến app.
 
 - [x] Đổi lên .NET 10, vì .NET 8 hết hỗ trợ ngày 10/11/2026.
 - [ ] Kiểm tra hết các mục còn thiếu của v0.1.0, sửa lỗi phát sinh. Chat nhóm đạt, chat mã hóa bỏ qua vì không có nhóm để thử.
-- [ ] Đo bộ nhớ riêng của app khi chạy lâu; nếu trang tăng dần thì tải lại định kỳ. Mới đo lúc vừa mở và một lần 8 giờ ở bản cũ, xem mục Tài nguyên trong [README](../README.md#tài-nguyên); bản hiện tại chưa đo khi chạy lâu.
+- [ ] Đo bộ nhớ riêng của app khi chạy lâu. Từ v0.9.0 trang theo dõi tự tải lại sau 6 giờ khi máy rảnh, nhưng chưa đo xem có cần không. Mới đo lúc vừa mở và một lần 8 giờ ở bản cũ, xem mục Tài nguyên trong [README](../README.md#tài-nguyên); bản hiện tại chưa đo khi chạy lâu.
 - [x] Báo lỗi ở khay khi khung chat không mở được cuộc trò chuyện.
 - [x] Rút hoặc cắm màn hình lúc đang chạy: bóng phải về màn hình còn lại.
 - [x] Bóng được đưa lên từ `+N` phải có avatar ngay.
@@ -42,7 +42,7 @@ Mục tiêu: cảm giác như chat head thật.
 - [x] Không bật bóng và không kêu với cuộc chat đã tắt thông báo trên Facebook, nhận biết qua icon chuông gạch ngang trong danh sách chat.
 - [x] Đổi kích thước khung chat bằng menu khay (Nhỏ, Vừa, Lớn) và nhớ lại. Chưa kéo cạnh được, vì WebView2 che mất vùng kéo nếu không chừa viền.
 - [x] Rời khung chat khi đang mở cuộc chat khác thì bóng đổi sang cuộc chat đó.
-- [ ] Đếm đúng khi hai tin giống hệt nhau đến liên tiếp.
+- [x] Đếm đúng khi hai tin giống hệt nhau đến liên tiếp, nhận ra qua nhãn thời gian trẻ lại. Hai tin giống nhau trong cùng một phút vẫn tính là một.
 
 **Đạt khi:** người dùng thấy dùng thay được cửa sổ Facebook hằng ngày.
 

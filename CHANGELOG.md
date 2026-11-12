@@ -2,7 +2,13 @@
 
 Các thay đổi đáng chú ý của từng bản phát hành. Số phiên bản theo [lộ trình](docs/ROADMAP.md).
 
-## Chưa phát hành
+## v0.9.0 (chưa phát hành)
+
+- Thêm `Tạm im lặng` trong menu khay: `1 giờ` hoặc `Đến 7 giờ sáng`. Trong lúc đó tin mới không bật bóng, không xem trước, không kêu; hết giờ tự báo lại, hoặc chọn `Bật lại thông báo`.
+- Hai tin giống hệt nhau đến liên tiếp giờ bật bóng lại, nếu cách nhau đủ lâu để nhãn thời gian của cuộc chat trẻ lại (ví dụ `5 phút` về `Vừa xong`).
+- Trang theo dõi tự tải lại khi đã mở quá 6 giờ và máy rảnh 5 phút, để không phình bộ nhớ khi chạy qua đêm. Tin đến trong lúc tải lại vẫn được báo.
+
+## v0.8.1 (06/11/2026)
 
 - Khi bật `Gom bóng`, kéo cả cụm xuống dấu X sẽ đóng toàn bộ cụm (kể cả bóng `+N` cuộc chat khác), không chỉ cuộc trò chuyện nằm trên cùng. Tin mới đến sau đó vẫn bật bóng lại như thường.
 
