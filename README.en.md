@@ -10,7 +10,7 @@ The documents in `docs/` are in Vietnamese.
 
 A 49-second intro video, in Vietnamese, recreating the interface with made-up data. The image above is silent. The version with the notification sound is the [MP4 file](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4), which GitHub downloads rather than plays. The source is in `promo/`, and `python promo/render.py` exports it again.
 
-Latest version: `v0.8.1`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
+Latest version: `v0.9.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
 
 ## Risks
 
@@ -46,6 +46,7 @@ The app comes in Vietnamese and English. On first run it asks for a language bef
 | `Group bubbles` | Off | Two or more bubbles stack. A click spreads them, and they regroup after 5 seconds |
 | `Preview messages` | On | Shows a card with the name and message beside the bubble for 5 seconds |
 | `Sound` | On | The app's own sound, at least 3 seconds apart |
+| `Pause notifications` | | `For 1 hour` or `Until 7 AM`: new messages pop no bubble, no preview and no sound. They stay unread on Facebook and still count on the persistent bubble. Notifications come back by themselves at the end, or with `Resume notifications`. While paused, the menu shows when it ends |
 | `Chat panel size` | Medium | Small 340×480, Medium 380×560, Large 460×720 (DIP). Applies from the next time the panel opens |
 | `Language` | Asked on first run | Tiếng Việt or English |
 | `Notify about updates` | On | Asks GitHub for the latest version, 1 minute after starting and every 24 hours. If there is a newer one it shows a notice, and clicking it opens the download page. The app never downloads or installs anything itself |
@@ -222,6 +223,7 @@ Everything is in `%LOCALAPPDATA%\MessengerBubbles\`:
 | `CheckUpdates` | bool | `true` |
 | `Language` | 0 Vietnamese, 1 English | `null`, meaning not chosen yet |
 | `PanelSize` | 0 small, 1 medium, 2 large | `1` |
+| `SnoozedUntil` | Local time when `Pause notifications` ends | `null` |
 | `Positions` | Map of `anchor`, `persistent` to `{X, Y, W, H}` | empty |
 
 Restrictions in `AppPaths.Harden` and `FacebookUrl`:
@@ -308,7 +310,7 @@ Measured once on one machine, 3 minutes after starting, with both WebView2 pages
 
 The working set total counts memory shared between processes more than once. The watcher page runs with `MemoryUsageTargetLevel = Low`.
 
-The build before that setting used 658 MB of WebView2 memory after 6 minutes and 700 MB after 8 hours. The current build has not been measured over a long run, so whether there is a leak is still unknown.
+The build before that setting used 658 MB of WebView2 memory after 6 minutes and 700 MB after 8 hours. The current build has not been measured over a long run, so whether there is a leak is still unknown. Since v0.9.0, the watcher page reloads itself once it has been open for more than 6 hours and the mouse and keyboard have been idle for 5 minutes, to give back memory the page builds up. A message that arrives during the reload still pops a bubble once the page has loaded.
 
 ### Measuring memory with the GPU disabled
 

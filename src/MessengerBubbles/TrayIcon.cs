@@ -52,6 +52,7 @@ class TrayIcon : IDisposable
         {
             settings.Sound = on;
         }));
+        menu.Items.Add(SnoozeMenu());
         menu.Items.Add(SizeMenu());
         menu.Items.Add(LanguageMenu());
         menu.Items.Add(Toggle(texts.Autostart, Autostart.IsOn(), on =>
@@ -87,6 +88,32 @@ class TrayIcon : IDisposable
                 parent.DropDownItems.Add(item);
             }
             return parent;
+        }
+
+        WinForms.ToolStripMenuItem SnoozeMenu()
+        {
+            var parent = new WinForms.ToolStripMenuItem(texts.Snooze);
+            var off = new WinForms.ToolStripMenuItem(texts.SnoozeOff, null, (_, _) => Set(null));
+            parent.DropDownItems.Add(texts.SnoozeHour, null, (_, _) => Set(Snooze.ForOneHour(DateTime.Now)));
+            parent.DropDownItems.Add(texts.SnoozeMorning, null, (_, _) => Set(Snooze.UntilMorning(DateTime.Now)));
+            parent.DropDownItems.Add(new WinForms.ToolStripSeparator());
+            parent.DropDownItems.Add(off);
+            // The pause ends by itself, so the label is worked out each time the menu opens.
+            menu.Opening += (_, _) =>
+            {
+                var on = settings.IsSnoozed(DateTime.Now);
+                parent.Text = on ? string.Format(texts.SnoozedUntil, settings.SnoozedUntil) : texts.Snooze;
+                parent.Checked = on;
+                off.Enabled = on;
+            };
+            return parent;
+
+            void Set(DateTime? until)
+            {
+                settings.SnoozedUntil = until;
+                settings.Save(AppPaths.SettingsFile);
+                _settingsChanged();
+            }
         }
 
         WinForms.ToolStripMenuItem LanguageMenu()

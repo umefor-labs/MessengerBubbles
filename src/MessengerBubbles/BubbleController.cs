@@ -67,9 +67,11 @@ class BubbleController
     {
         // The user is already reading the conversation open in the panel.
         var fresh = new List<RowSnapshot>();
-        foreach (var row in r.NewMessages)
-            if (!await _isShowing(row.ThreadHref))
-                fresh.Add(row);
+        // While paused the messages stay unread on Facebook; they only skip the bubble, preview and sound.
+        if (!_settings.IsSnoozed(DateTime.Now))
+            foreach (var row in r.NewMessages)
+                if (!await _isShowing(row.ThreadHref))
+                    fresh.Add(row);
 
         var known = _windows.Keys.ToHashSet();
         foreach (var row in fresh) _set.OnNewMessage(row);

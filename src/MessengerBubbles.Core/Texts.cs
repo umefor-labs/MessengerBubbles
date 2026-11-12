@@ -8,7 +8,8 @@ public record Texts(
     string PanelSize, string Small, string Medium, string Large, string Autostart, string Language, string Exit,
     string NeedLogin, string PanelBroken, string ListBroken, string LoginTitle, string NoRuntime,
     string OtherChats, string ChatList, string CheckUpdates, string UpdateAvailable,
-    string DisableGpu, string RestartToApply)
+    string DisableGpu, string RestartToApply,
+    string Snooze, string SnoozeHour, string SnoozeMorning, string SnoozeOff, string SnoozedUntil)
 {
     public static readonly Texts Vietnamese = new(
         "Mở Facebook", "Bóng thường trực", "Gom bóng", "Xem trước nội dung", "Âm báo",
@@ -19,7 +20,8 @@ public record Texts(
         "Messenger Bubbles: đăng nhập Facebook, xong thì đóng cửa sổ này",
         "Máy chưa có WebView2 Runtime, app không chạy được.",
         "Các cuộc chat khác", "Danh sách chat", "Báo bản mới", "Có bản mới {0}. Bấm vào đây để tải",
-        "Tắt GPU (giảm RAM)", "Thoát rồi mở lại app để áp dụng");
+        "Tắt GPU (giảm RAM)", "Thoát rồi mở lại app để áp dụng",
+        "Tạm im lặng", "1 giờ", "Đến 7 giờ sáng", "Bật lại thông báo", "Tạm im lặng đến {0:HH:mm}");
 
     public static readonly Texts English = new(
         "Open Facebook", "Persistent bubble", "Group bubbles", "Preview messages", "Sound",
@@ -30,7 +32,8 @@ public record Texts(
         "Messenger Bubbles: log in to Facebook, then close this window",
         "WebView2 Runtime is not installed, so the app cannot run.",
         "Other chats", "Chat list", "Notify about updates", "Version {0} is available. Click here to download",
-        "Disable GPU (less RAM)", "Quit and reopen the app to apply this");
+        "Disable GPU (less RAM)", "Quit and reopen the app to apply this",
+        "Pause notifications", "For 1 hour", "Until 7 AM", "Resume notifications", "Paused until {0:HH:mm}");
 
     public static Texts Current { get; set; } = Vietnamese;
 

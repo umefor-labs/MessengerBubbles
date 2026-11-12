@@ -17,7 +17,11 @@ public record Settings
     // Null until chosen, so the first run asks.
     public AppLanguage? Language { get; set; }
     public PanelSize PanelSize { get; set; } = PanelSize.Medium;
+    // Local time until which new messages pop no bubble and play no sound.
+    public DateTime? SnoozedUntil { get; set; }
     public Dictionary<string, Box> Positions { get; set; } = new();
+
+    public bool IsSnoozed(DateTime now) => SnoozedUntil > now;
 
     public static Settings Load(string path)
     {

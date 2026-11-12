@@ -152,4 +152,66 @@ public class NewMessageDetectorTests
         var r = d.Scan([new RowSnapshot("/t/1", "A\nmoi", true, "")], start.AddMinutes(2));
         Assert.Single(r.NewMessages);
     }
+
+    [Fact]
+    public void SameTextAgainWithYoungerTime_IsNew()
+    {
+        var d = SettledOn(Row("/t/1", "An\nChào\n·\n5 phút", true));
+        var r = d.Scan([Row("/t/1", "An\nChào\n·\nVừa xong", true)], Settled);
+        Assert.Equal("/t/1", Assert.Single(r.NewMessages).ThreadHref);
+    }
+
+    [Fact]
+    public void SameTextAgainAfterHourLabel_IsNew()
+    {
+        var d = SettledOn(Row("/t/1", "An\nChào · 2 giờ", true));
+        Assert.Single(d.Scan([Row("/t/1", "An\nChào · 1 phút", true)], Settled).NewMessages);
+    }
+
+    [Fact]
+    public void TimeLabelMovingToNextUnit_IsNotNew()
+    {
+        var d = SettledOn(Row("/t/1", "An\nChào\n·\n59 phút", true));
+        Assert.Empty(d.Scan([Row("/t/1", "An\nChào\n·\n1 giờ", true)], Settled).NewMessages);
+    }
+
+    [Fact]
+    public void YoungerTimeWithoutPriorLabel_IsNotNew()
+    {
+        var d = SettledOn(Row("/t/1", "An\nChào", true));
+        Assert.Empty(d.Scan([Row("/t/1", "An\nChào\n·\nVừa xong", true)], Settled).NewMessages);
+    }
+
+    [Fact]
+    public void Restart_ReportsMessageThatArrivedDuringReload()
+    {
+        var d = SettledOn(Row("/t/1", "An\nChào", false));
+        d.Scan([Row("/t/1", "An\nChào", false)], Settled);
+        d.Restart();
+        var later = Settled.AddHours(6);
+        Assert.Empty(d.Scan([Row("/t/1", "An", true)], later).NewMessages);
+        Assert.Empty(d.Scan([Row("/t/1", "An\nMới", true)], later.AddSeconds(5)).NewMessages);
+        var r = d.Scan([Row("/t/1", "An\nMới", true)], later.AddSeconds(11));
+        Assert.Equal("/t/1", Assert.Single(r.NewMessages).ThreadHref);
+    }
+
+    [Fact]
+    public void Restart_DoesNotRepeatMessagesSeenBeforeReload()
+    {
+        var d = SettledOn(Row("/t/1", "An\nChào", true));
+        d.Scan([Row("/t/1", "An\nChào", true)], Settled);
+        d.Restart();
+        var later = Settled.AddHours(6);
+        d.Scan([Row("/t/1", "An\nChào", true)], later);
+        Assert.Empty(d.Scan([Row("/t/1", "An\nChào", true)], later.AddSeconds(11)).NewMessages);
+    }
+
+    [Fact]
+    public void Restart_OnEmptyDetector_ActsLikeReset()
+    {
+        var d = new NewMessageDetector();
+        d.Restart();
+        d.Scan([Row("/t/1", "An\nChào", true)], T0);
+        Assert.Empty(d.Scan([Row("/t/1", "An\nChào", true)], Settled).NewMessages);
+    }
 }
