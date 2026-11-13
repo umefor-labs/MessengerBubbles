@@ -49,7 +49,7 @@ class UpdateChecker
         return answer;
     }
 
-    async Task<(CheckResult, Version?)> FetchAsync()
+    async Task<(CheckResult Result, Version? Newer)> FetchAsync()
     {
         try
         {
