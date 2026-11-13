@@ -24,6 +24,9 @@ public static class UpdateCheck
         return Comparable(latest) > Comparable(current) ? latest : null;
     }
 
+    // Shown to the user as three parts, the way release tags are written.
+    public static string Display(Version v) => $"{v.Major}.{v.Minor}.{Math.Max(v.Build, 0)}";
+
     // A missing part reads as -1, which would make 0.5.0 older than 0.5.0.0.
     static Version Comparable(Version v) => new(v.Major, v.Minor, Math.Max(v.Build, 0));
 }

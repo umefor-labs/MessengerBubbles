@@ -9,7 +9,8 @@ public record Texts(
     string NeedLogin, string PanelBroken, string ListBroken, string LoginTitle, string NoRuntime,
     string OtherChats, string ChatList, string CheckUpdates, string UpdateAvailable,
     string DisableGpu, string RestartToApply,
-    string Snooze, string SnoozeHour, string SnoozeMorning, string SnoozeOff, string SnoozedUntil)
+    string Snooze, string SnoozeHour, string SnoozeMorning, string SnoozeOff, string SnoozedUntil,
+    string VersionLabel, string CheckNow, string UpToDate, string CheckFailed)
 {
     public static readonly Texts Vietnamese = new(
         "Mở Facebook", "Bóng thường trực", "Gom bóng", "Xem trước nội dung", "Âm báo",
@@ -21,7 +22,9 @@ public record Texts(
         "Máy chưa có WebView2 Runtime, app không chạy được.",
         "Các cuộc chat khác", "Danh sách chat", "Báo bản mới", "Có bản mới {0}. Bấm vào đây để tải",
         "Tắt GPU (giảm RAM)", "Thoát rồi mở lại app để áp dụng",
-        "Tạm im lặng", "1 giờ", "Đến 7 giờ sáng", "Bật lại thông báo", "Tạm im lặng đến {0:HH:mm}");
+        "Tạm im lặng", "1 giờ", "Đến 7 giờ sáng", "Bật lại thông báo", "Tạm im lặng đến {0:HH:mm}",
+        "Phiên bản {0}", "Kiểm tra bản mới", "Đang dùng bản mới nhất ({0})",
+        "Không kiểm tra được bản mới. Kiểm tra mạng rồi thử lại");
 
     public static readonly Texts English = new(
         "Open Facebook", "Persistent bubble", "Group bubbles", "Preview messages", "Sound",
@@ -33,7 +36,9 @@ public record Texts(
         "WebView2 Runtime is not installed, so the app cannot run.",
         "Other chats", "Chat list", "Notify about updates", "Version {0} is available. Click here to download",
         "Disable GPU (less RAM)", "Quit and reopen the app to apply this",
-        "Pause notifications", "For 1 hour", "Until 7 AM", "Resume notifications", "Paused until {0:HH:mm}");
+        "Pause notifications", "For 1 hour", "Until 7 AM", "Resume notifications", "Paused until {0:HH:mm}",
+        "Version {0}", "Check for updates", "You have the latest version ({0})",
+        "Could not check for updates. Check the network and try again");
 
     public static Texts Current { get; set; } = Vietnamese;
 
