@@ -50,6 +50,7 @@ The app comes in Vietnamese and English. On first run it asks for a language bef
 | `Chat panel size` | Medium | Small 340×480, Medium 380×560, Large 460×720 (DIP). Applies from the next time the panel opens |
 | `Language` | Asked on first run | Tiếng Việt or English |
 | `Notify about updates` | On | Asks GitHub for the latest version, 1 minute after starting and every 24 hours. If there is a newer one it shows a notice, and clicking it opens the download page. The app never downloads or installs anything itself |
+| `Check for updates` | | Asks GitHub right away, then says whether there is a newer version, you have the latest, or the check failed. The line above it shows the running version |
 | `Start with Windows` | Off | Writes the value `MessengerBubbles` to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. While on, the app rewrites its own path each time it opens, so after moving the file, opening it once is enough |
 | `Disable GPU (less RAM)` | Off | Runs WebView2 with `--disable-gpu`, so there is no GPU process and pages are drawn on the CPU. Applies the next time the app opens. See [Resources](#resources) for how to measure it |
 | `Quit` | | Quits the app |
@@ -233,7 +234,7 @@ Restrictions in `AppPaths.Harden` and `FacebookUrl`:
 - Opens no new windows inside the app.
 - Rejects conversation links not under `/messages/`.
 
-Apart from the requests the Facebook page makes itself, the app only sends one request to `api.github.com` to ask for the latest version, with no user data in it. GitHub sees the machine's IP address. Turning off `Notify about updates` stops this request. Avatars are read from images the page already loaded, through CDP `Page.getResourceContent`, kept in memory, up to 2 MB each. WebView2 runs with `--disk-cache-size=1`, plus `--disable-background-timer-throttling` and `--disable-renderer-backgrounding` so hidden pages keep running on time. The watcher page is muted.
+Apart from the requests the Facebook page makes itself, the app only sends one request to `api.github.com` to ask for the latest version, with no user data in it. GitHub sees the machine's IP address. Turning off `Notify about updates` stops this request, except when you click `Check for updates`. Avatars are read from images the page already loaded, through CDP `Page.getResourceContent`, kept in memory, up to 2 MB each. WebView2 runs with `--disk-cache-size=1`, plus `--disable-background-timer-throttling` and `--disable-renderer-backgrounding` so hidden pages keep running on time. The watcher page is muted.
 
 To uninstall: log out of Facebook through `Open Facebook`, turn off `Start with Windows`, choose `Quit`, then delete the folder above and the `.exe`.
 

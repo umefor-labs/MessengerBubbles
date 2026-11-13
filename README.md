@@ -48,6 +48,7 @@ App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ng�
 | `Kích thước khung chat` | Vừa | Nhỏ 340×480, Vừa 380×560, Lớn 460×720 (DIP). Áp dụng từ lần mở sau |
 | `Ngôn ngữ` | Hỏi ở lần đầu | Tiếng Việt hoặc English |
 | `Báo bản mới` | Bật | Hỏi GitHub phiên bản mới nhất, 1 phút sau khi mở và mỗi 24 giờ. Có bản mới thì hiện thông báo, bấm vào để mở trang tải. App không tự tải hay tự cài |
+| `Kiểm tra bản mới` | | Hỏi GitHub ngay khi bấm, rồi báo có bản mới, đang dùng bản mới nhất, hoặc không kiểm tra được. Dòng phía trên nó hiện phiên bản đang chạy |
 | `Khởi động cùng Windows` | Tắt | Ghi giá trị `MessengerBubbles` vào `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. Khi đang bật, mỗi lần mở app ghi lại đường dẫn của chính nó, nên chuyển file đi chỗ khác rồi mở một lần là đủ |
 | `Tắt GPU (giảm RAM)` | Tắt | Chạy WebView2 với `--disable-gpu`, nên không còn tiến trình GPU và trang được vẽ bằng CPU. Có hiệu lực từ lần mở app sau. Xem cách đo ở mục [Tài nguyên](#tài-nguyên) |
 | `Thoát` | | Tắt app |
@@ -231,7 +232,7 @@ Các hạn chế trong `AppPaths.Harden` và `FacebookUrl`:
 - Không mở cửa sổ mới trong app.
 - Từ chối link cuộc chat không nằm dưới `/messages/`.
 
-Ngoài các request của chính trang Facebook, app chỉ gửi một request tới `api.github.com` để hỏi phiên bản mới, không kèm dữ liệu của người dùng. GitHub thấy địa chỉ IP của máy. Tắt `Báo bản mới` thì không còn request này. Avatar đọc từ ảnh trang đã tải qua CDP `Page.getResourceContent`, giữ trong bộ nhớ, tối đa 2 MB mỗi ảnh. WebView2 chạy với `--disk-cache-size=1`, cùng `--disable-background-timer-throttling` và `--disable-renderer-backgrounding` để trang ẩn vẫn chạy đúng giờ. Trang theo dõi bị tắt tiếng.
+Ngoài các request của chính trang Facebook, app chỉ gửi một request tới `api.github.com` để hỏi phiên bản mới, không kèm dữ liệu của người dùng. GitHub thấy địa chỉ IP của máy. Tắt `Báo bản mới` thì không còn request này, trừ khi bấm `Kiểm tra bản mới`. Avatar đọc từ ảnh trang đã tải qua CDP `Page.getResourceContent`, giữ trong bộ nhớ, tối đa 2 MB mỗi ảnh. WebView2 chạy với `--disk-cache-size=1`, cùng `--disable-background-timer-throttling` và `--disable-renderer-backgrounding` để trang ẩn vẫn chạy đúng giờ. Trang theo dõi bị tắt tiếng.
 
 Gỡ app: đăng xuất Facebook trong `Mở Facebook`, tắt `Khởi động cùng Windows`, chọn `Thoát`, rồi xóa thư mục trên và file `.exe`.
 

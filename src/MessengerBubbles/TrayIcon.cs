@@ -7,16 +7,19 @@ namespace MessengerBubbles;
 
 class TrayIcon : IDisposable
 {
-    readonly WinForms.NotifyIcon _icon = new() { Text = "Messenger Bubbles", Visible = true };
+    readonly WinForms.NotifyIcon _icon = new() { Text = $"Messenger Bubbles {UpdateCheck.Display(UpdateChecker.Current)}", Visible = true };
     readonly Icon _ok = Icon.ExtractAssociatedIcon(Environment.ProcessPath!)!;
     readonly Icon _error = DrawError();
     readonly Settings _settings;
     readonly Action _openFacebook, _settingsChanged, _exit;
+    readonly Func<Task<(CheckResult Result, Version? Newer)>> _checkNow;
     bool _login, _broken, _updateBalloon;
 
-    public TrayIcon(Settings settings, Action openFacebook, Action settingsChanged, Action exit)
+    public TrayIcon(Settings settings, Action openFacebook, Action settingsChanged, Action exit,
+        Func<Task<(CheckResult Result, Version? Newer)>> checkNow)
     {
         _settings = settings;
+        _checkNow = checkNow;
         _openFacebook = openFacebook;
         _settingsChanged = settingsChanged;
         _exit = exit;
@@ -70,8 +73,34 @@ class TrayIcon : IDisposable
             Balloon(texts.RestartToApply, WinForms.ToolTipIcon.Info);
         }));
         menu.Items.Add(new WinForms.ToolStripSeparator());
+        menu.Items.Add(new WinForms.ToolStripMenuItem(string.Format(texts.VersionLabel, UpdateCheck.Display(UpdateChecker.Current))) { Enabled = false });
+        menu.Items.Add(CheckNowItem());
+        menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add(texts.Exit, null, (_, _) => _exit());
         return menu;
+
+        WinForms.ToolStripMenuItem CheckNowItem()
+        {
+            var item = new WinForms.ToolStripMenuItem(texts.CheckNow);
+            item.Click += async (_, _) =>
+            {
+                item.Enabled = false;
+                try
+                {
+                    var (result, newer) = await _checkNow();
+                    switch (result)
+                    {
+                        case CheckResult.Newer: NotifyUpdate(newer!); break;
+                        case CheckResult.UpToDate:
+                            Balloon(string.Format(Texts.Current.UpToDate, UpdateCheck.Display(UpdateChecker.Current)), WinForms.ToolTipIcon.Info);
+                            break;
+                        default: Balloon(Texts.Current.CheckFailed, WinForms.ToolTipIcon.Warning); break;
+                    }
+                }
+                finally { item.Enabled = true; }
+            };
+            return item;
+        }
 
         WinForms.ToolStripMenuItem SizeMenu()
         {

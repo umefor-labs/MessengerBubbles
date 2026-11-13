@@ -2,7 +2,12 @@
 
 Các thay đổi đáng chú ý của từng bản phát hành. Số phiên bản theo [lộ trình](docs/ROADMAP.md).
 
-## v0.9.0 (chưa phát hành)
+## v0.9.1 (chưa phát hành)
+
+- Menu khay hiện phiên bản đang chạy (`Phiên bản 0.9.1`), và di chuột lên icon khay cũng thấy số phiên bản.
+- Thêm `Kiểm tra bản mới` trong menu khay: hỏi GitHub ngay lúc bấm và luôn trả lời bằng thông báo, gồm có bản mới (bấm để mở trang tải), đang dùng bản mới nhất, hoặc không kiểm tra được vì mất mạng. Dùng được cả khi đã tắt `Báo bản mới`.
+
+## v0.9.0 (12/11/2026)
 
 - Thêm `Tạm im lặng` trong menu khay: `1 giờ` hoặc `Đến 7 giờ sáng`. Trong lúc đó tin mới không bật bóng, không xem trước, không kêu; hết giờ tự báo lại, hoặc chọn `Bật lại thông báo`.
 - Hai tin giống hệt nhau đến liên tiếp giờ bật bóng lại, nếu cách nhau đủ lâu để nhãn thời gian của cuộc chat trẻ lại (ví dụ `5 phút` về `Vừa xong`).

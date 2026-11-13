@@ -35,13 +35,14 @@ static class Program
         var watcher = new Watcher();
         var panel = new ChatPanel(settings);
         var bubbles = new BubbleController(settings, watcher.GetLoadedResourceAsync, panel.IsShowingAsync, () => panel.ScreenBox);
+        var updates = new UpdateChecker(settings);
         TrayIcon? tray = null;
         tray = new TrayIcon(settings, watcher.ShowWindow, bubbles.Refresh, () =>
         {
             tray?.Dispose();
             watcher.Exit();
             app.Shutdown();
-        });
+        }, updates.CheckNowAsync);
 
         watcher.Scanned += bubbles.Apply;
         watcher.NeedsLogin += tray.SetLogin;
@@ -54,7 +55,6 @@ static class Program
         };
         bubbles.Refresh();
 
-        var updates = new UpdateChecker(settings);
         updates.NewerFound += tray.NotifyUpdate;
         updates.Start();
 

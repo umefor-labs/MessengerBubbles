@@ -32,4 +32,11 @@ public class UpdateCheckTests
     [InlineData("{\"tag_name\":\"v1.0.0-beta\"}")]
     public void Unreadable_IsNull(string json) =>
         Assert.Null(UpdateCheck.NewerVersion(json, new Version(0, 5, 0, 0)));
+
+    [Theory]
+    [InlineData("0.9.1.0", "0.9.1")]
+    [InlineData("0.9.1", "0.9.1")]
+    [InlineData("1.0", "1.0.0")]
+    public void Display_ShowsThreeParts(string version, string expected) =>
+        Assert.Equal(expected, UpdateCheck.Display(Version.Parse(version)));
 }
