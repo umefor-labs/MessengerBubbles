@@ -94,7 +94,7 @@ class FloatingWindow : Window
         _glide.Tick += (_, _) =>
         {
             var t = Math.Min(1, clock.ElapsedMilliseconds / HopMs);
-            SetPosition(rest.X, rest.Y - Geometry.HopOffset(t, height));
+            SetPosition(rest.X, rest.Y - Core.Geometry.HopOffset(t, height));
             if (t >= 1) StopGlide();
         };
         _glide.Start();
