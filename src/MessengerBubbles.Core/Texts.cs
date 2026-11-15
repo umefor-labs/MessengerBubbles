@@ -10,7 +10,8 @@ public record Texts(
     string OtherChats, string ChatList, string CheckUpdates, string UpdateAvailable,
     string DisableGpu, string RestartToApply,
     string Snooze, string SnoozeHour, string SnoozeMorning, string SnoozeOff, string SnoozedUntil,
-    string VersionLabel, string CheckNow, string UpToDate, string CheckFailed)
+    string VersionLabel, string CheckNow, string UpToDate, string CheckFailed,
+    string HideBubbles, string HotkeyTaken)
 {
     public static readonly Texts Vietnamese = new(
         "Mở Facebook", "Bóng thường trực", "Gom bóng", "Xem trước nội dung", "Âm báo",
@@ -24,7 +25,8 @@ public record Texts(
         "Tắt GPU (giảm RAM)", "Thoát rồi mở lại app để áp dụng",
         "Tạm im lặng", "1 giờ", "Đến 7 giờ sáng", "Bật lại thông báo", "Tạm im lặng đến {0:HH:mm}",
         "Phiên bản {0}", "Kiểm tra bản mới", "Đang dùng bản mới nhất ({0})",
-        "Không kiểm tra được bản mới. Kiểm tra mạng rồi thử lại");
+        "Không kiểm tra được bản mới. Kiểm tra mạng rồi thử lại",
+        "Ẩn bóng", "Ctrl+Alt+M đang bị app khác dùng, phím tắt ẩn bóng không chạy. Vẫn ẩn được bằng menu này");
 
     public static readonly Texts English = new(
         "Open Facebook", "Persistent bubble", "Group bubbles", "Preview messages", "Sound",
@@ -38,7 +40,8 @@ public record Texts(
         "Disable GPU (less RAM)", "Quit and reopen the app to apply this",
         "Pause notifications", "For 1 hour", "Until 7 AM", "Resume notifications", "Paused until {0:HH:mm}",
         "Version {0}", "Check for updates", "You have the latest version ({0})",
-        "Could not check for updates. Check the network and try again");
+        "Could not check for updates. Check the network and try again",
+        "Hide bubbles", "Another app already uses Ctrl+Alt+M, so the hide shortcut is off. This menu still hides them");
 
     public static Texts Current { get; set; } = Vietnamese;
 

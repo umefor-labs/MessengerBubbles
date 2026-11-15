@@ -36,13 +36,17 @@ static class Program
         var panel = new ChatPanel(settings);
         var bubbles = new BubbleController(settings, watcher.GetLoadedResourceAsync, panel.IsShowingAsync, () => panel.ScreenBox);
         var updates = new UpdateChecker(settings);
+        var hotkey = new GlobalHotkey();
+        hotkey.Pressed += bubbles.ToggleHidden;
         TrayIcon? tray = null;
         tray = new TrayIcon(settings, watcher.ShowWindow, bubbles.Refresh, () =>
         {
+            hotkey.Dispose();
             tray?.Dispose();
             watcher.Exit();
             app.Shutdown();
-        }, updates.CheckNowAsync);
+        }, updates.CheckNowAsync, () => bubbles.Hidden, bubbles.ToggleHidden);
+        if (!hotkey.Registered) tray.NotifyHotkeyTaken();
 
         watcher.Scanned += bubbles.Apply;
         watcher.NeedsLogin += tray.SetLogin;

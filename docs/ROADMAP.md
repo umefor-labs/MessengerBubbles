@@ -36,7 +36,7 @@ Mục tiêu: dùng cả ngày mà không phải để ý đến app.
 
 Mục tiêu: cảm giác như chat head thật.
 
-- [x] Hiệu ứng: bóng bật ra, trượt hít vào cạnh, hút vào vùng đóng. Tắt theo cài đặt "Animation effects" của Windows. Chưa có độ nảy.
+- [x] Hiệu ứng: bóng bật ra, trượt hít vào cạnh, hút vào vùng đóng. Tắt theo cài đặt "Animation effects" của Windows. Bóng nảy lên khi có tin mới (từ v0.10.0). Bật ra vẫn chưa vọt quá cỡ, vì cửa sổ 56 px sẽ cắt mất.
 - [x] Gom bóng: nhiều bóng xếp chồng, bấm vào thì xòe ra, 5 giây sau gom lại. Bật ở menu khay, mặc định tắt.
 - [x] Tùy chọn tắt âm báo (menu khay).
 - [x] Không bật bóng và không kêu với cuộc chat đã tắt thông báo trên Facebook, nhận biết qua icon chuông gạch ngang trong danh sách chat.

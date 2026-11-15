@@ -2,6 +2,11 @@
 
 Các thay đổi đáng chú ý của từng bản phát hành. Số phiên bản theo [lộ trình](docs/ROADMAP.md).
 
+## v0.10.0 (chưa phát hành)
+
+- Tin mới đến cuộc chat đã có bóng thì bóng nảy lên hai nhịp (cũng vậy với bóng `+N` và chồng bóng khi bật `Gom bóng`). Tắt theo cài đặt "Animation effects" của Windows như các hiệu ứng khác.
+- Thêm `Ẩn bóng` trong menu khay và phím tắt toàn cục `Ctrl+Alt+M` để ẩn hoặc hiện lại mọi bóng. Lúc ẩn, bấm xuyên qua chỗ bóng được, tin vẫn được đếm và vẫn kêu, chỉ không hiện thẻ xem trước. Nếu app khác đã giữ phím tắt này, app báo một lần.
+
 ## v0.9.1 (chưa phát hành)
 
 - Menu khay hiện phiên bản đang chạy (`Phiên bản 0.9.1`), và di chuột lên icon khay cũng thấy số phiên bản.

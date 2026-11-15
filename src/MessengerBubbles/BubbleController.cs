@@ -33,6 +33,16 @@ class BubbleController
 
     public event Action<string, Box>? BubbleClicked;
 
+    // Set by the hotkey or the tray. Hidden bubbles stay in place but are invisible and let clicks through.
+    public bool Hidden { get; private set; }
+
+    public void ToggleHidden()
+    {
+        Hidden = !Hidden;
+        if (Hidden) _preview.Hide();
+        Refresh();
+    }
+
     public BubbleController(Settings settings, Func<string, Task<byte[]?>> loadResource, Func<string, Task<bool>> isShowing, Func<Box?> panelBox)
     {
         _panelBox = panelBox;
@@ -86,13 +96,28 @@ class BubbleController
 
         if (fresh.Count == 0) return;
         if (_settings.Sound && _sound.ShouldPlay(DateTime.Now)) _player.Play();
+        Bounce(fresh, known);
         var last = fresh[^1];
-        if (_settings.Preview && _windows.TryGetValue(last.ThreadHref, out var bubble))
+        if (_settings.Preview && !Hidden && _windows.TryGetValue(last.ThreadHref, out var bubble))
         {
             var (name, text) = RowText.Parse(last.Text);
             _previewFor = bubble;
             _preview.ShowBeside(bubble.PixelBox(), name, text, bubble.Avatar, _panelBox());
         }
+    }
+
+    // A bubble that was already on screen hops; a new one pops in instead.
+    void Bounce(List<RowSnapshot> fresh, HashSet<string> known)
+    {
+        if (Hidden) return;
+        var hops = new HashSet<BubbleWindow>();
+        foreach (var row in fresh)
+        {
+            if (_stacked && _stackTop != null) hops.Add(_stackTop);
+            else if (_windows.TryGetValue(row.ThreadHref, out var w)) { if (known.Contains(row.ThreadHref)) hops.Add(w); }
+            else if (_overflow != null) hops.Add(_overflow);
+        }
+        foreach (var w in hops) w.Hop(w.PixelBox().H / 4.0);
     }
 
     // The new bubble takes the old one's place on screen.
@@ -128,6 +153,8 @@ class BubbleController
         RefreshOverflow();
         RefreshPersistent();
         ApplyGrouping();
+        foreach (var w in _windows.Values.Append(_overflow).Append(_persistent).OfType<BubbleWindow>())
+            w.Opacity = Hidden ? 0 : 1;
     }
 
     // Oldest first; the last one is on top of the stack. The persistent bubble stays apart.

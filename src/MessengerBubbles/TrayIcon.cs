@@ -13,12 +13,16 @@ class TrayIcon : IDisposable
     readonly Settings _settings;
     readonly Action _openFacebook, _settingsChanged, _exit;
     readonly Func<Task<(CheckResult Result, Version? Newer)>> _checkNow;
+    readonly Func<bool> _hidden;
+    readonly Action _toggleHidden;
     bool _login, _broken, _updateBalloon;
 
     public TrayIcon(Settings settings, Action openFacebook, Action settingsChanged, Action exit,
-        Func<Task<(CheckResult Result, Version? Newer)>> checkNow)
+        Func<Task<(CheckResult Result, Version? Newer)>> checkNow, Func<bool> hidden, Action toggleHidden)
     {
         _settings = settings;
+        _hidden = hidden;
+        _toggleHidden = toggleHidden;
         _checkNow = checkNow;
         _openFacebook = openFacebook;
         _settingsChanged = settingsChanged;
@@ -38,6 +42,7 @@ class TrayIcon : IDisposable
         var settings = _settings;
         var menu = new WinForms.ContextMenuStrip();
         menu.Items.Add(texts.OpenFacebook, null, (_, _) => _openFacebook());
+        menu.Items.Add(HideItem());
         menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add(Toggle(texts.PersistentBubble, settings.PersistentBubble, on =>
         {
@@ -78,6 +83,15 @@ class TrayIcon : IDisposable
         menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add(texts.Exit, null, (_, _) => _exit());
         return menu;
+
+        // The hotkey flips it too, so the tick is read each time the menu opens.
+        WinForms.ToolStripMenuItem HideItem()
+        {
+            var item = new WinForms.ToolStripMenuItem(texts.HideBubbles) { ShortcutKeyDisplayString = "Ctrl+Alt+M" };
+            item.Click += (_, _) => _toggleHidden();
+            menu.Opening += (_, _) => item.Checked = _hidden();
+            return item;
+        }
 
         WinForms.ToolStripMenuItem CheckNowItem()
         {
@@ -193,6 +207,8 @@ class TrayIcon : IDisposable
         _icon.Icon = _login || _broken ? _error : _ok;
         if (needed) Balloon(Texts.Current.NeedLogin, WinForms.ToolTipIcon.Warning);
     }
+
+    public void NotifyHotkeyTaken() => Balloon(Texts.Current.HotkeyTaken, WinForms.ToolTipIcon.Warning);
 
     public void NotifyPanelBroken() => Balloon(Texts.Current.PanelBroken, WinForms.ToolTipIcon.Error);
 
