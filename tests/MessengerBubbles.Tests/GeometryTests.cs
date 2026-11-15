@@ -148,4 +148,21 @@ public class GeometryTests
     [InlineData(100, 950, false)]
     public void InDismissZone_OnlyNearBottomCentre(double x, double y, bool expected) =>
         Assert.Equal(expected, Geometry.InDismissZone(new Box(x, y, 56, 56), Screen));
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(0.5)]
+    [InlineData(1)]
+    public void HopOffset_IsAtRestAtStartMiddleAndEnd(double t) =>
+        Assert.Equal(0, Geometry.HopOffset(t, 14), 6);
+
+    [Fact]
+    public void HopOffset_SecondHopIsLowerAndNothingGoesBelowRest()
+    {
+        var first = Enumerable.Range(1, 49).Max(i => Geometry.HopOffset(i / 100.0, 14));
+        var second = Enumerable.Range(51, 49).Max(i => Geometry.HopOffset(i / 100.0, 14));
+        Assert.InRange(first, 7, 14);
+        Assert.True(second < first / 2);
+        Assert.All(Enumerable.Range(0, 101), i => Assert.InRange(Geometry.HopOffset(i / 100.0, 14), 0, 14));
+    }
 }

@@ -42,6 +42,7 @@ The app comes in Vietnamese and English. On first run it asks for a language bef
 | Item | Default | Effect |
 |---|---|---|
 | `Open Facebook` | | Shows the watcher page window. Double-clicking the icon does the same |
+| `Hide bubbles` | Off | Hides every bubble, and clicks go through where they were, for example while presenting. Click it again or press `Ctrl+Alt+M` anywhere to bring them back. Messages still count and still play the sound. Bubbles show again when the app restarts. If another app already holds `Ctrl+Alt+M`, the app says so once and only this menu item works |
 | `Persistent bubble` | Off | A fixed bubble that opens the chat list and shows the number of unread chats |
 | `Group bubbles` | Off | Two or more bubbles stack. A click spreads them, and they regroup after 5 seconds |
 | `Preview messages` | On | Shows a card with the name and message beside the bubble for 5 seconds |
@@ -176,6 +177,7 @@ When a screen is plugged in or removed, `SystemEvents.DisplaySettingsChanged` br
 | Drag threshold | 4 px | `BubbleWindow.DragThreshold` |
 | Glide time | 180 ms | `FloatingWindow.GlideMs` |
 | Pop and dismiss time | 180 ms | `BubbleWindow.PopTime` |
+| New-message hop | 600 ms, a quarter of the bubble high | `FloatingWindow.HopMs` |
 | Offset between stacked bubbles | 4 | `BubbleController.StackPeek` |
 | Regroup time | 5 seconds | `BubbleController._collapse` |
 

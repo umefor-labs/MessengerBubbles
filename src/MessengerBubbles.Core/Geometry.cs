@@ -104,5 +104,12 @@ public static class Geometry
         return slots;
     }
 
+    // Height above rest at progress t (0..1) of a new-message hop: a big hop, a small one, then rest.
+    public static double HopOffset(double t, double height)
+    {
+        if (t <= 0 || t >= 1) return 0;
+        return height * Math.Abs(Math.Sin(2 * Math.PI * t)) * (1 - t);
+    }
+
     static double Clamp(double v, double min, double max) => Math.Max(min, Math.Min(v, max));
 }

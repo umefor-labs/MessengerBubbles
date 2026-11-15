@@ -16,7 +16,7 @@ class FloatingWindow : Window
     const long WsExNoActivate = 0x08000000, WsExToolWindow = 0x00000080;
     const uint SwpNoMove = 0x0002;
     const uint SwpNoSize = 0x0001, SwpNoZOrder = 0x0004, SwpNoActivate = 0x0010;
-    const double GlideMs = 180;
+    const double GlideMs = 180, HopMs = 600;
 
     [DllImport("user32.dll")] static extern long GetWindowLongPtr(IntPtr hWnd, int index);
     [DllImport("user32.dll")] static extern long SetWindowLongPtr(IntPtr hWnd, int index, long value);
@@ -79,6 +79,22 @@ class FloatingWindow : Window
             var t = Math.Min(1, clock.ElapsedMilliseconds / GlideMs);
             var eased = 1 - Math.Pow(1 - t, 3);
             SetPosition(from.X + (x - from.X) * eased, from.Y + (y - from.Y) * eased);
+            if (t >= 1) StopGlide();
+        };
+        _glide.Start();
+    }
+
+    // Hops up and lands back where it was; shares the glide timer, so a drag or glide cancels it.
+    public void Hop(double height)
+    {
+        if (!MotionOn || _glide != null) return;
+        var rest = PixelBox();
+        var clock = Stopwatch.StartNew();
+        _glide = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(15) };
+        _glide.Tick += (_, _) =>
+        {
+            var t = Math.Min(1, clock.ElapsedMilliseconds / HopMs);
+            SetPosition(rest.X, rest.Y - Geometry.HopOffset(t, height));
             if (t >= 1) StopGlide();
         };
         _glide.Start();

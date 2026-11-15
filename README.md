@@ -40,6 +40,7 @@ App có tiếng Việt và tiếng Anh. Lần chạy đầu, app hỏi ngôn ng�
 | Mục | Mặc định | Tác dụng |
 |---|---|---|
 | `Mở Facebook` | | Hiện cửa sổ trang theo dõi. Bấm đúp icon cũng vậy |
+| `Ẩn bóng` | Tắt | Ẩn mọi bóng, bấm xuyên qua chỗ của chúng được, ví dụ khi trình chiếu. Bấm lần nữa hoặc nhấn `Ctrl+Alt+M` ở bất cứ đâu để hiện lại. Tin vẫn được đếm và vẫn kêu. Mở lại app thì bóng hiện như thường. Nếu app khác đã giữ `Ctrl+Alt+M`, app báo một lần và chỉ còn menu này |
 | `Bóng thường trực` | Tắt | Một bóng cố định mở danh sách chat, có số cuộc chat chưa đọc |
 | `Gom bóng` | Tắt | Từ 2 bóng trở lên thì xếp chồng, bấm thì xòe, 5 giây sau gom lại |
 | `Xem trước nội dung` | Bật | Hiện thẻ tên và nội dung tin bên cạnh bóng trong 5 giây |
@@ -174,6 +175,7 @@ Khi cắm hoặc rút màn hình, `SystemEvents.DisplaySettingsChanged` đưa b�
 | Ngưỡng tính là kéo | 4 px | `BubbleWindow.DragThreshold` |
 | Thời gian trượt | 180 ms | `FloatingWindow.GlideMs` |
 | Thời gian bật ra, hút vào | 180 ms | `BubbleWindow.PopTime` |
+| Cú nảy khi có tin mới | 600 ms, cao 1/4 bóng | `FloatingWindow.HopMs` |
 | Độ lộ giữa các bóng trong chồng | 4 | `BubbleController.StackPeek` |
 | Thời gian tự gom | 5 giây | `BubbleController._collapse` |
 
