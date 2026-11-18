@@ -21,8 +21,9 @@ $Shortcut = Join-Path ([Environment]::GetFolderPath('Programs')) 'Messenger Bubb
 $RunKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 
 # The app allows one copy at a time, so any running copy has to go before the file can be replaced.
+# A copy downloaded from Releases runs under its own file name (MessengerBubbles-v0.9.1-win-x64), hence the wildcard.
 function Stop-App {
-    $running = @(Get-Process MessengerBubbles -ErrorAction SilentlyContinue)
+    $running = @(Get-Process -Name 'MessengerBubbles*' -ErrorAction SilentlyContinue)
     if ($running.Count -eq 0) { return $false }
     Write-Host 'Closing Messenger Bubbles...'
     $running | Stop-Process -Force
@@ -69,7 +70,11 @@ if ((Get-Item $download).Length -ne $asset.size) {
 }
 
 $wasRunning = Stop-App
-Move-Item $download $Exe -Force
+# Windows can hold the exe for a moment after the process has exited.
+for ($try = 1; ; $try++) {
+    try { Move-Item $download $Exe -Force; break }
+    catch { if ($try -ge 20) { throw }; Start-Sleep -Milliseconds 500 }
+}
 # Windows marks downloaded files, which makes SmartScreen ask before the first run.
 Unblock-File $Exe
 
