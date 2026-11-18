@@ -35,3 +35,20 @@ jobs:
           } else {
             gh release create $env:TAG $exe --generate-notes
           }
+
+  # Needs a WINGET_TOKEN secret (classic token, public_repo scope) and the package already in winget.
+  # Without the secret this job does nothing.
+  winget:
+    needs: release
+    runs-on: windows-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+    steps:
+      - name: Send the new version to winget
+        if: env.WINGET_TOKEN != ''
+        run: |
+          $version = $env:TAG.TrimStart('v')
+          $url = "https://github.com/${{ github.repository }}/releases/download/$env:TAG/MessengerBubbles-$env:TAG-win-x64.exe"
+          Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+          .\wingetcreate.exe update umefor-labs.MessengerBubbles --version $version --urls $url --submit --token $env:WINGET_TOKEN

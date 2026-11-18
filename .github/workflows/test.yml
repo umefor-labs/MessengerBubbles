@@ -14,6 +14,12 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: dotnet test
+      - name: Check install.ps1 parses
+        shell: powershell
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\install.ps1", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors) { $errors; exit 1 }
       # A PR's exe to try before merging; download it from the run's Artifacts.
       - name: Build test exe
         if: github.event_name == 'pull_request'

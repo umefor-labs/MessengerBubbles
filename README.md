@@ -8,7 +8,7 @@ App desktop cho Windows 11 hiển thị chat Facebook dạng bong bóng nổi, m
 
 Video giới thiệu 49 giây, dựng lại giao diện bằng dữ liệu giả. Ảnh trên không có tiếng, bản có âm báo là [file MP4](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4) (GitHub sẽ tải về, không phát trực tiếp). Mã nguồn video ở `promo/`, xuất lại bằng `python promo/render.py`.
 
-Phiên bản mới nhất: `v0.9.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
+Phiên bản mới nhất: `v1.0.0`. Trạng thái từng tiêu chí nằm trong [lộ trình](docs/ROADMAP.md).
 
 ## Rủi ro
 
@@ -27,7 +27,23 @@ App đọc giao diện web của Facebook do không có API công khai:
 
 ## Cài và chạy
 
-Tải `MessengerBubbles-<tag>-win-x64.exe` ở GitHub Releases rồi chạy. File không có chữ ký số, nên SmartScreen có thể cảnh báo. 
+Cài hoặc cập nhật bằng một lệnh PowerShell, không cần quyền admin:
+
+```powershell
+irm https://raw.githubusercontent.com/umefor-labs/MessengerBubbles/main/install.ps1 | iex
+```
+
+Lệnh tải bản mới nhất về `%LOCALAPPDATA%\Programs\MessengerBubbles`, tạo lối tắt trong Start menu rồi mở app. Chạy lại đúng lệnh đó để cập nhật: nếu đã là bản mới nhất thì không làm gì, còn không thì tắt app, thay file và mở lại. Gỡ bằng:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/umefor-labs/MessengerBubbles/main/install.ps1))) -Uninstall
+```
+
+Lệnh gỡ không xóa cài đặt và phiên đăng nhập Facebook trong `%LOCALAPPDATA%\MessengerBubbles`.
+
+Khi app có trên winget thì dùng `winget install umefor-labs.MessengerBubbles` để cài và `winget upgrade umefor-labs.MessengerBubbles` để cập nhật. Thoát app trước khi cập nhật, vì file đang chạy không thay được.
+
+Hoặc tải `MessengerBubbles-<tag>-win-x64.exe` ở GitHub Releases rồi chạy. File không có chữ ký số, nên SmartScreen có thể cảnh báo.
 
 Lần đầu, cửa sổ đăng nhập hiện ra. Đăng nhập Facebook, nhập mã PIN tin nhắn mã hóa nếu được hỏi, rồi đóng cửa sổ. Đóng cửa sổ chỉ ẩn nó đi. Muốn tắt app thì chọn `Thoát` trong menu khay.
 
