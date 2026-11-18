@@ -10,7 +10,7 @@ The documents in `docs/` are in Vietnamese.
 
 A 49-second intro video, in Vietnamese, recreating the interface with made-up data. The image above is silent. The version with the notification sound is the [MP4 file](https://github.com/umefor-labs/MessengerBubbles/raw/main/docs/media/messenger-bubbles-intro.mp4), which GitHub downloads rather than plays. The source is in `promo/`, and `python promo/render.py` exports it again.
 
-Latest version: `v0.9.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
+Latest version: `v1.0.0`. The status of each milestone is in the [roadmap](docs/ROADMAP.md).
 
 ## Risks
 
@@ -29,7 +29,23 @@ The app reads Facebook's web interface because there is no public API:
 
 ## Install and run
 
-Download `MessengerBubbles-<tag>-win-x64.exe` from GitHub Releases and run it. The file has no digital signature, so SmartScreen may warn you.
+Install or update with one PowerShell command, no admin rights needed:
+
+```powershell
+irm https://raw.githubusercontent.com/umefor-labs/MessengerBubbles/main/install.ps1 | iex
+```
+
+It downloads the latest version to `%LOCALAPPDATA%\Programs\MessengerBubbles`, adds a Start menu shortcut and starts the app. Run the same command again to update: if you already have the latest version it does nothing, otherwise it closes the app, replaces the file and starts it again. To uninstall:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/umefor-labs/MessengerBubbles/main/install.ps1))) -Uninstall
+```
+
+Uninstalling keeps the settings and Facebook login in `%LOCALAPPDATA%\MessengerBubbles`.
+
+Once the app is on winget, use `winget install umefor-labs.MessengerBubbles` to install and `winget upgrade umefor-labs.MessengerBubbles` to update. Quit the app before updating, because a running file cannot be replaced.
+
+Or download `MessengerBubbles-<tag>-win-x64.exe` from GitHub Releases and run it. The file has no digital signature, so SmartScreen may warn you.
 
 On first run a login window appears. Log in to Facebook, enter your encrypted messages PIN if asked, then close the window. Closing it only hides it. To quit the app, choose `Quit` in the tray menu.
 
